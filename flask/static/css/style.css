@@ -1,0 +1,48 @@
+/*#header {
+	padding: 0px 300px;
+}*/
+
+#main {
+	position: relative;
+	text-align: center;
+}
+
+#d2t-title-wrapper{
+	display: inline-block;
+	margin-top: 100px;
+	margin-bottom: 30px;
+}
+
+#d2t-title {
+	display: table;
+}
+
+#d2t-logo {
+	display: table-cell;
+	vertical-align: middle;
+	height: 130px;
+	width: 130px;
+	margin-right: 20px;
+}
+
+#d2t-label {
+	display: table-cell;
+	vertical-align: middle;
+	font-size: 50pt;
+}
+
+#d2t-search-row {
+	display: inline-block;
+}
+
+#search-button {
+	height: 150%;
+}
+
+#search-button {
+	height: 46px;
+}
+
+.col-lg-offset-right-2 {
+  margin-right: 16.66666667%;
+}
