@@ -13,7 +13,7 @@
 ##############################
 import sys
 import pandas as pd
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, send_file
 
 ##############################
 ##### 1.2 Custom Libraries
@@ -37,6 +37,22 @@ app = Flask(__name__)
 @app.route('/datasets2tools')
 def main():
 	return render_template('index.html')
+
+@app.route('/datasets2tools/cannedanalyses')
+def cannedanalyses():
+	return render_template('cannedanalyses.html')
+
+@app.route('/datasets2tools/datasets')
+def datasets():
+	return render_template('datasets.html')
+
+@app.route('/datasets2tools/tools')
+def tools():
+	return render_template('tools.html')
+
+@app.route('/datasets2tools/about')
+def about():
+	return render_template('about.html')
 
 #######################################################
 ########## 3. Run Flask App ###########################

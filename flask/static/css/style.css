@@ -46,3 +46,7 @@
 .col-lg-offset-right-2 {
   margin-right: 16.66666667%;
 }
+
+.dropdown-menu li {
+	cursor: pointer;
+}
