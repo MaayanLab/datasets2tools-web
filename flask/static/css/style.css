@@ -1,42 +1,23 @@
+@media (min-width: 768px) {
+.navbar-brand.abs
+    {
+        position: absolute;
+        width: 100%;
+        left: 0;
+        text-align: center;
+        margin:0 auto;
+    }
+}
+
 .bg-custom {
 	background-color: #011627;
 }
 
 #navbar {
-	padding: 0;
+	padding: 0px 0px;
 	min-height: 100px;
 	min-width: 300px;
 	line-height: 100px;
-}
-
-.navbar-logo::before {
-	content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 109%;
-    padding-bottom: 108%;
-    background: #5e4eaa;
-    -webkit-transform-origin: 0 0;
-    -moz-transform-origin: 0 0;
-    -o-transform-origin: 0 0;
-    -ms-transform-origin: 0 0;
-    transform-origin: 0 0;
-    -moz-transform: rotate(41deg) translate(-43%, -50%) skewX(-8deg);
-    -ms-transform: rotate(41deg) translate(-43%, -50%) skewX(-8deg);
-    -o-transform: rotate(41deg) translate(-43%, -50%) skewX(-8deg);
-    -webkit-transform: rotate(41deg) translate(-43%, -50%) skewX(-8deg);
-    transform: rotate(41deg) translate(-43%, -50%) skewX(-8deg);
-    z-index: -1;
-}
-
-.navbar-header {
-	text-align: center;
-}
-
-.nav-link {
-	height: 100px;
-	line-height: 80px;
 }
 
 .nav-item {
@@ -46,6 +27,6 @@
 }
 
 .nav-item:hover {
-	background-color: #3A506B;
+	color: #3A506B;
 	transition: 0.5s;
 }
