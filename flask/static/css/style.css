@@ -1,52 +1,51 @@
-/*#header {
-	padding: 0px 300px;
-}*/
+.bg-custom {
+	background-color: #011627;
+}
 
-#main {
-	position: relative;
+#navbar {
+	padding: 0;
+	min-height: 100px;
+	min-width: 300px;
+	line-height: 100px;
+}
+
+.navbar-logo::before {
+	content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 109%;
+    padding-bottom: 108%;
+    background: #5e4eaa;
+    -webkit-transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -moz-transform: rotate(41deg) translate(-43%, -50%) skewX(-8deg);
+    -ms-transform: rotate(41deg) translate(-43%, -50%) skewX(-8deg);
+    -o-transform: rotate(41deg) translate(-43%, -50%) skewX(-8deg);
+    -webkit-transform: rotate(41deg) translate(-43%, -50%) skewX(-8deg);
+    transform: rotate(41deg) translate(-43%, -50%) skewX(-8deg);
+    z-index: -1;
+}
+
+.navbar-header {
 	text-align: center;
 }
 
-#d2t-title-wrapper{
-	display: inline-block;
-	margin-top: 100px;
-	margin-bottom: 30px;
+.nav-link {
+	height: 100px;
+	line-height: 80px;
 }
 
-#d2t-title {
-	display: table;
+.nav-item {
+	padding: 0px 30px;
+	border: none;
+	outline: none;
 }
 
-#d2t-logo {
-	display: table-cell;
-	vertical-align: middle;
-	height: 130px;
-	width: 130px;
-	margin-right: 20px;
-}
-
-#d2t-label {
-	display: table-cell;
-	vertical-align: middle;
-	font-size: 50pt;
-}
-
-#d2t-search-row {
-	display: inline-block;
-}
-
-#search-button {
-	height: 150%;
-}
-
-#search-button {
-	height: 46px;
-}
-
-.col-lg-offset-right-2 {
-  margin-right: 16.66666667%;
-}
-
-.dropdown-menu li {
-	cursor: pointer;
+.nav-item:hover {
+	background-color: #3A506B;
+	transition: 0.5s;
 }
