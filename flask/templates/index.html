@@ -1,61 +1,255 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html> <html>
 	<head>
 		<meta charset="UTF-8">
 		<title>Datasets2Tools</title>
 		<!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}"> -->
 		<link rel="stylesheet" type="text/css" href="https://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css">
+		<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome.css') }}">
 	</head>
 	<body>
-		<div id="main_container">
+		<div id="main_container" class="container-fluid">
 			<div id="navbar_container">
-				<nav id="navbar" class="navbar navbar-toggleable-sm navbar-inverse bg-custom justify-content-center justify-content-middle d-flex">
-					<div id="left-collapse" class="navbar-collapse collapse">
-						<ul class="navbar-nav mr-auto">
-							<li class="nav-item active">
-								<a class="nav-link" href="#">HOME</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">SEARCH</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">EXPLORE</a>
-							</li>
-						</ul>
-					</div>
-					<!-- <div id="navbar-logo"> -->
-					<div id="header_logo" class="row"><a class="navbar-brand d-flex mx-auto order-first" href="#">Navbar 2</a></div>
-					<!-- </div> -->
-					<div id="right-collapse" class="navbar-collapse collapse order-first">
-						<ul class="navbar-nav ml-auto">
-							<li class="nav-item">
-								<a class="nav-link" href="#">API</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">HELP</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">ABOUT</a>
-							</li>
-						</ul>
-					</div>
-					<button class="navbar-toggler navbar-toggler-left" type="button" data-toggle="collapse" data-target="#left-collapse">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#right-collapse">
-						<span class="navbar-toggler-icon"></span>
-					</button>
+				<nav id="navbar" class="navbar bg-custom justify-content-center">
+					<div id="logo-xl">Datasets2Tools</div>
+					<div id="logo-xl" class="hidden-xl-up hidden-sm-down"></div>
+					<ul class="hidden-lg-down">
+						<div class="float-left">
+							<li><a href="#">HOME</a></li>
+							<li><a href="#">SEARCH</a></li>
+							<li><a href="#">EXPLORE</a></li>
+						</div>
+						<div class="float-right">
+							<li><a href="#">ABOUT</a></li>
+							<li><a href="#">HELP</a></li>
+							<li><a href="#">API</a></li>
+						</div>
+					</ul>
+					<ul class="hidden-xl-up">
+						<div class="float-left">
+							<div class="dropdown">
+								<a class="dropdown-toggle" id="left-dropdown-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<i class="fa fa-search fa-3x" aria-hidden="true"></i>
+								</a>
+								<div class="dropdown-menu" aria-labelledby="left-dropdown-menu">
+									<a class="dropdown-item" href="#"><i class="fa fa-home fa-2x" aria-hidden="true"></i><span>HOME</span></a>
+									<a class="dropdown-item" href="#"><i class="fa fa-search fa-2x" aria-hidden="true"></i>SEARCH</a>
+									<a class="dropdown-item" href="#"><i class="fa fa-compass fa-2x" aria-hidden="true"></i>EXPLORE</a>
+								</div>
+							</div>
+						</div>
+						<div class="float-right">
+							<div class="dropdown">
+								<a class="dropdown-toggle" id="right-dropdown-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<i class="fa fa-question-circle fa-3x" aria-hidden="true"></i>
+								</a>
+								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="right-dropdown-menu">
+									<a class="dropdown-item" href="#"><i class="fa fa-cogs fa-2x" aria-hidden="true"></i>API</a>
+									<a class="dropdown-item" href="#"><i class="fa fa-question-circle fa-2x" aria-hidden="true"></i>HELP</a>
+									<a class="dropdown-item" href="#"><i class="fa fa-info-circle fa-2x" aria-hidden="true"></i>ABOUT</a>
+								</div>
+							</div>
+						</div>
+					</ul>
 				</nav>
 			</div> <!-- #navbar_container -->
-			<div id="search_container">
-			</div> <!-- #search_container -->
+			<div id="jumbotron_container">
+				<div class="jumbotron">
+					<div class="container">
+						<h1 class="my-2">Promoting the findability, accessibility and sharability of bioinformatics analyses. </h1>
+						<br>
+						<p class="lead">By introducing a new type of digital object, the canned analysis, we aim to make it easier for researchers and tool developers
+						to share and discover biological knowledge.</p>
+						<hr class="my-4">
+						<p class="lead">Here are a few suggestions on getting started.</p>
+						<div id="jumbotron_button_row" class="row justify-content-center">
+							<div class="col-md-3">
+								<a href="#" id="jumbotron_search_button" class="jumbotron-button center-block">
+									<i class="fa fa-search fa-5x" aria-hidden="true"></i>
+									<br>
+									Search
+								</a>
+							</div>
+
+							<div class="col-md-3">
+								<a href="#" id="jumbotron_explore_button" class="jumbotron-button center-block align-middle">
+									<i class="fa fa-compass fa-5x" aria-hidden="true"></i>
+									<br>
+									Explore
+								</a>
+							</div>
+							<div class="col-md-3">
+								<a href="#" id="jumbotron_upload_button" class="jumbotron-button center-block">
+									<i class="fa fa-upload fa-5x" aria-hidden="true"></i>
+									<br>
+									Upload
+								</a>
+							</div>
+
+						</div> <!-- #jumbotron_button_row -->
+					</div>
+				</div>
+			</div> <!-- #jumbotron_container -->
+			<div id="intro_container">
+				<div id="info_title_container" class="container-fluid">
+					<div class="container">
+						<div class="row">
+							<h2>Introducing a new type of digital object: the Canned Analysis.</h2>
+							<hr class="my-4">
+							<p class="lead">The section below contains an overview of this new digital object, frequently asked questions, its key features, and its properties.</p>
+						</div> <!-- .row -->
+					</div> <!-- .container -->
+				</div> <!-- .container-fluid -->
+				<div id="info_container" class="container-fluid">
+					<div class="container">
+						<div id="faq_row_title" class="row">
+							<div class="col text-center">
+								<p class="h5">
+									Frequently Asked Questions
+								</p>
+								<hr width="35%">
+							</div> <!-- .col -->
+						</div> <!-- .row -->
+						<div id="faq_row" class="row">
+							<div class="col-md-4 text-center">
+								<i class="fa fa-question-circle fa-3x" aria-hidden="true"></i>
+								<p class="h6">
+									What is a Canned Analysis?
+								</p>
+								<p class="subtext-2">
+									A Canned Analysis is a pre-run analysis of a biomedical dataset by computational tool.	It is stored on a website and can be easily accessed by any user.
+								</p>
+							</div> <!-- .col -->
+							<div class="col-md-4 text-center">
+								<i class="fa fa-table fa-3x" aria-hidden="true"></i>
+								<p class="h6">
+									Where are they indexed?
+								</p>
+								<p class="subtext-2">
+									Information about Canned Analyses, relevant datasets, and tools is currently indexed in a database managed by the <a href="http://icahn.mssm.edu/research/labs/maayan-laboratory">Ma'ayan Lab</a> at the <a href="http://icahn.mssm.edu/">Icahn School of Medicine at Mount Sinai</a>.
+								</p>
+							</div> <!-- .col -->
+							<div class="col-md-4 text-center">
+								<i class="fa fa-globe fa-3x" aria-hidden="true"></i>
+								<p class="h6">
+									Where are they hosted?
+								</p>
+								<p class="subtext-2">
+									Canned Analyses are hosted on websites maintained by external developers.	We do not currently provide hosting services.
+								</p>
+							</div> <!-- .col -->
+						</div> <!-- #faq_row -->
+						<div id="key_features_row_title" class="row">
+							<div class="col text-center">
+								<p class="h5">
+									Key Features
+								</p>
+								<hr width="25%">
+							</div> <!-- .col -->
+						</div> <!-- .row -->
+						<div id="key_features_row" class="row">
+							<div class="col-md-3 text-center">
+								<i class="fa fa-database fa-3x" aria-hidden="true"></i>
+								<p class="h6">
+									Dataset
+								</p>
+								<p class="subtext-2">
+									The first key feature of a Canned Analysis is a biomedical dataset.	It is identified by a unique accession, and must be accessible through an online repository.
+								</p>
+							</div> <!-- .col -->
+							<div class="col-md-3 text-center">
+								<i class="fa fa-cogs fa-3x" aria-hidden="true"></i>
+								<p class="h6">
+									Tool
+								</p>
+								<p class="subtext-2">
+									The second key feature is a computational tool.	It must be able to perform an analysis on the specified dataset, and has its own website.
+								</p>
+							</div> <!-- .col -->
+							<div class="col-md-3 text-center">
+								<i class="fa fa-link fa-3x" aria-hidden="true"></i>
+								<p class="h6">
+									URL
+								</p>
+								<p class="subtext-2">
+									The third key feature is the Canned Analysis URL.	It is a hard-coded link to a webpage containing the results of the analysis run by the tool on the dataset.
+								</p>
+							</div> <!-- .col -->
+							<div class="col-md-3 text-center">
+								<i class="fa fa-tags fa-3x" aria-hidden="true"></i>
+								<p class="h6">
+									Annotations
+								</p>
+								<p class="subtext-2">
+									Canned Analyses can be annotated by adding a brief description and any number of relevant metadata tags or keywords.
+								</p>
+							</div> <!-- .col -->
+						</div> <!-- #key_features_row -->
+						<div id="properties_row_title" class="row">
+							<div class="col text-center">
+								<p class="h5">
+									Properties
+								</p>
+								<hr width="25%">
+							</div> <!-- .col -->
+						</div> <!-- .row -->
+						<div id="properties_row" class="row">
+							<div class="col-md-3 text-center">
+								<i class="fa fa-search fa-3x" aria-hidden="true"></i>
+								<p class="h6">
+									Findable
+								</p>
+								<div class="subtext-2">
+									Canned analyses relevant to the desired data can be easily found by using the embedded interfaces.
+									They are available on dataset search result pages and dataset landing pages.	Demos available <a href="#demos">here</a>.<br>&nbsp
+								</div>
+							</div> <!-- .col -->
+							<div class="col-md-3 text-center">
+								<i class="fa fa-universal-access fa-3x" aria-hidden="true"></i>
+								<p class="h6">
+									Accessible
+								</p>
+								<div class="subtext-2">
+									Canned analyses can be rapidly accessed by clicking on the links provided in the embedded interfaces.	They are displayed as small icons with the tool's logo.
+								</div>
+							</div> <!-- .col -->
+							<div class="col-md-3 text-center">
+								<i class="fa fa-connectdevelop fa-3x" aria-hidden="true"></i>
+								<p class="h6">
+									Flexible
+								</p>
+								<div class="subtext-2">
+									Canned analyses can support multiple data types, tool types and analysis types.
+								</div>
+							</div> <!-- .col -->
+							<div class="col-md-3 text-center">
+								<i class="fa fa-share-alt fa-3x" aria-hidden="true"></i>
+								<p class="h6">
+									Shareable
+								</p>
+								<div class="subtext-2">
+									Canned analyses can be easily shared by copy-pasting their URLs, or by embedding them as icons in websites.
+									The interface provides access to both solutions.
+								</div>
+							</div> <!-- .col -->
+						</div> <!-- #properties_row -->
+					</div> <!-- .container -->
+				</div> <!-- #info_container -->
+				<div id="footer">
+					<div class="row">
+						<div class="col-md-12 text-center">
+						<hr width="75%">
+								Developed by the <a href="http://icahn.mssm.edu/research/labs/maayan-laboratory">Ma'ayan Lab</a> at the <a href="http://icahn.mssm.edu/">Icahn School of Medicine at Mount Sinai</a>.
+						</div> <!-- .col -->
+					</div> <!-- .row -->
+				</div> <!-- #footer -->
+			</div> <!-- #info_container -->
 		</div> <!-- #main_container -->
 	</body>
-  	<div id="footer">
-  		<script src="{{ url_for('static', filename='js/jquery-3.1.1.js') }}"></script>
-  		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-  		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-  	</div> <!-- #footer -->
+		<div id="footer">
+			<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+		</div> <!-- #footer -->
 </html>

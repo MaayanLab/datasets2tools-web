@@ -1,67 +1,233 @@
-.bg-custom {
-	background-color: #011627;
+body {
+	/*background-color: rgba(1,22,39,.05);*/
+	min-width: 550px;
+}
+
+#main_container {
+	padding: 0;
+}
+
+#jumbotron_container {
+	text-align: center;
+}
+
+.container {
+	width: 1000px;
+	min-width: 550px;
+}
+
+.jumbotron {
+	padding-bottom: 50px;
+	margin-bottom: 0px;
 }
 
 #navbar {
 	padding: 0;
-	min-height: 100px;
-	min-width: 300px;
-	line-height: 100px;
 }
 
-.navbar-header {
-	text-align: center;
+.float-left li {
+    float: left;
 }
 
-.nav-link {
-	height: 100px;
-	line-height: 80px;
+.float-right li {
+    float: right;
 }
 
-.nav-item {
-	padding: 0px 30px;
-	border: none;
-	outline: none;
+#navbar a {
+    display: block;
+    padding: 8px;
+    height: 100%;
+    background-color: transparent;
+    color: rgba(255,255,255,.5);
+    height: 100px;
+    padding: 0 35px;
+    line-height: 100px;
 }
 
-.navbar-brand {
-	padding: 0;
-	z-index: 2;
-}
-
-.nav-item:hover {
+#navbar a:hover {
+	text-decoration: none;
+	cursor: pointer;
+	color: rgba(255,255,255,.75);
+	transition: 0.3s;
 	background-color: #3A506B;
+}
+
+#navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#navbar .dropdown-toggle {
+	cursor: pointer;
+}
+
+.dropdown-toggle::after {
+    display:none
+}
+
+#navbar .dropdown-menu {
+	background-color: #011627;
+	padding: 0;
+	margin: 0;
+	border: none;
+	border-radius: 0;
+}
+
+#navbar .dropdown.show .dropdown-toggle {
+	background-color: #3A506B;
+}
+
+#navbar .fa-3x {
+	padding-top: 25px;
+}
+
+.dropdown-item .fa-2x {
+	padding-right: 20px;
+}
+
+.bg-custom {
+	background-color: #011627;
+}
+
+.dropdown-item {
+	display: table;
+}
+
+.dropdown-item span {
+	vertical-align: middle;
+}
+
+.dropdown-item i {
+	vertical-align: middle;
+	margin-top: -5px;
+	margin-left: -5px;
+}
+
+#logo-xl {
+    width:400px;
+    right: 0;
+    left: 0;
+    margin: auto;
+	position: absolute;
+	font-size: 35pt;
+	align-content: center;
+	text-align: center;
+	color: rgba(255,255,255,.75);
+	font-family: 'Quicksand', sans-serif;
+	cursor: pointer;
+}
+
+#logo-xl:hover {
+	color: rgba(255,255,255,.9);
 	transition: 0.5s;
 }
 
-/*#header_logo:before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: -200px;
-    width: 250px;
-    padding-bottom: 250px;
-    background: #5e4eaa;
-    -webkit-transform-origin: 0 0;
-    -moz-transform-origin: 0 0;
-    -o-transform-origin: 0 0;
-    -ms-transform-origin: 0 0;
-    transform-origin: 0 0;
-    -webkit-transform: skew(20deg);
-    -moz-transform: skew(20deg);
-    -o-transform: skew(20deg);
-    -ms-transform: skew(20deg);
-    transform: skew(20deg);
-    z-index: 1;
+p.h5 {
+	margin-top: 25px;
 }
-*/
-#header_logo:before {
+
+p.h6 {
+	margin-top: 15px;
+}
+
+#intro_container .fa {
+	padding-top: 15px;
+}
+
+#intro_container .fa:hover {
+	color: rgba(28, 37, 65, 0.6);
+	transition: 0.5s;
+}
+
+#footer {
+	padding-bottom: 15px;
+	font-size: 15px;
+	background-color: rgba(1,22,39,.05);
+}
+
+#jumbotron_button_row {
+	margin-top: 30px;
+	max-width: 1000px;
+}
+
+#jumbotron_button_row .fa {
+	padding: 20px 0px;
+}
+
+.jumbotron-button {
+	color: white;
+	background-color: rgba(28, 37, 65, 1);
+	height: 165px;
+	width: 165px;
+	margin: 5px 0px;
+}
+
+.center-block {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+ }
+
+ #intro_container {
+ 	text-align: center;
+ }
+
+ #jumbotron_button_row a {
+	text-decoration: none;
+}
+
+ #jumbotron_button_row a:hover,
+ #jumbotron_button_row a:visited,
+ #jumbotron_button_row a:active {
+	text-decoration: none;
+	color: white;
+	transition: 0.3s;
+	background-color: rgba(28, 37, 65, 0.9);
+}
+
+#info_title_container {
+ 	padding-top: 50px;
+ 	padding-bottom: 20px;
+	background-color: rgba(1,22,39,.05);
+}
+
+#info_container {
+	background-color: rgba(1,22,39,.05);
+}
+
+/*
+#logo-xl::before {
 	content: '';
 	position: absolute;
-	left: 40%;
-	border-left: 150px solid transparent;
-	border-right: 150px solid transparent;
-	border-top: 150px solid red;
-	z-index: 1;
+	left: -263px;
+	top: -50px;
+	width: 0;
+	height: 0;
+	border: 300px solid transparent;
+	border-top: 170px solid #011627;
+	z-index: -1;
+}*/
+/*
+#logo-xl::after {
+	content: '';
+	position: absolute;
+	left: -162px;
+	top: -50px;
+	width: 0;
+	height: 0;
+	border: 200px solid transparent;
+	border-top: 155px solid #A9BCD0;
+	z-index: -2;
+
 }
-}
+*/
+/*#navbar .fa-database {
+	font-size: 75pt;
+	position: absolute;
+	top: -35px;
+	left: -5px;
+	color: rgba(255,255,255,.75);
+}*/
+
+
