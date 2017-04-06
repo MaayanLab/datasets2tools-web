@@ -47,6 +47,14 @@ def cannedanalyses():
 def explore():
 	return render_template('explore.html')
 
+@app.route('/datasets2tools/test.html')
+def test():
+	return render_template('test.html')
+
+@app.route('/datasets2tools/about.html')
+def about():
+	return render_template('about.html')
+
 #######################################################
 ########## 3. Run Flask App ###########################
 #######################################################

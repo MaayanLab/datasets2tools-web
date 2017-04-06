@@ -21,7 +21,7 @@
 							<li><a href="#">EXPLORE</a></li>
 						</div>
 						<div class="float-right">
-							<li><a href="#" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Coming Soon...">ABOUT</a></li>
+							<li><a href="/datasets2tools/about.html">ABOUT</a></li>
 							<li><a href="#" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Coming Soon...">HELP</a></li>
 							<li><a href="#" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Coming Soon...">API</a></li>
 						</div>
@@ -33,7 +33,7 @@
 									<i class="fa fa-search fa-3x" aria-hidden="true"></i>
 								</a>
 								<div class="dropdown-menu" aria-labelledby="left-dropdown-menu">
-									<a class="dropdown-item" href="#"><i class="fa fa-home fa-2x" aria-hidden="true"></i>HOME</a>
+									<a class="dropdown-item" href="/datasets2tools"><i class="fa fa-home fa-2x" aria-hidden="true"></i>HOME</a>
 									<a class="dropdown-item" href="#"><i class="fa fa-search fa-2x" aria-hidden="true"></i>SEARCH</a>
 									<a class="dropdown-item" href="#"><i class="fa fa-compass fa-2x" aria-hidden="true"></i>EXPLORE</a>
 								</div>
@@ -47,7 +47,7 @@
 								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="right-dropdown-menu">
 									<a class="dropdown-item" href="#"><i class="fa fa-cogs fa-2x" aria-hidden="true"></i>API</a>
 									<a class="dropdown-item" href="#"><i class="fa fa-question-circle fa-2x" aria-hidden="true"></i>HELP</a>
-									<a class="dropdown-item" href="#"><i class="fa fa-info-circle fa-2x" aria-hidden="true"></i>ABOUT</a>
+									<a class="dropdown-item" href="/datasets2tools/about.html"><i class="fa fa-info-circle fa-2x" aria-hidden="true"></i>ABOUT</a>
 								</div>
 							</div>
 						</div>
@@ -66,7 +66,7 @@
 						</div> <!-- .row -->
 						<div id="object-selector" class="row justify-content-center">
 							<div class="col-md-3" data-toggle="buttons">
-								<label class="btn btn-primary">
+								<label id="datasets" class="btn btn-primary">
 									<input type="checkbox" autocomplete="off">
 									<i class="fa fa-database fa-5x" aria-hidden="true"></i>
 									<br>
@@ -75,7 +75,7 @@
 							</div>
 
 							<div class="col-md-3" data-toggle="buttons">
-								<label class="btn btn-primary">
+								<label id="tools" class="btn btn-primary">
 									<input type="checkbox" autocomplete="off">
 									<i class="fa fa-cogs fa-5x" aria-hidden="true"></i>
 									<br>
@@ -84,7 +84,7 @@
 							</div>
 
 							<div class="col-md-3" data-toggle="buttons">
-								<label class="btn btn-primary">
+								<label id="analyses" class="btn btn-primary">
 									<input type="checkbox" autocomplete="off">
 									<i class="fa fa-pie-chart fa-5x" aria-hidden="true"></i>
 									<br>
@@ -92,48 +92,46 @@
 								</label>
 							</div>
 						</div>
-						<div class="row justify-content-center continue-row">
+						<div class="row">
 							<div class="col-md-12">
-								<button type="button" class="btn btn-primary continue-button">Continue &nbsp<i class="fa fa-arrow-down fa-1x" aria-hidden="true"></i></button>
-							</div>
+								<hr class="my-4" width="50%">
+								<p class="lead my-4">Second, enter a list of keywords revelant to your search:<sup>&nbsp<i class="fa fa-question-circle fa-1x" aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="Enter multiple tags, separating each one by pressing Enter.  Tags may contain spaces."></i></sup></p>
+							</div> <!-- .col-md-12 -->
+						</div> <!-- .row -->
+						<div class="row">
+							<div class="col-md-12">
+								<form id="keywords-form">
+									<label id="keywords-label">
+										<input name="keywords" type="tags" pattern="^#" placeholder="Add keywords..." required>
+									</label>
+								</form>
+							</div> <!-- .col-md-12 -->
+						</div> <!-- .row -->
+						<div class="row justify-content-center">
+							<div class="col-md-12">
+								<button id="search-button" type="button" class="btn btn-primary continue-button my-3">Search &nbsp<i class="fa fa-search fa-1x" aria-hidden="true"></i></button>
+							</div> <!-- .col-md-12 -->
 						</div> <!-- .continue-row -->
 					</div> <!-- .container -->
 				</div> <!-- .jumbotron -->
 			</div> <!-- #jumbotron_container -->
-			<div id="intro_container">
-				<div id="info_title_container" class="container-fluid">
-					<div class="container">
-						<div id="input-tags" class="row">
-							<div class="col-md-12">
-								<h1>What knowledge would you like to find?</h1>
-								<hr class="my-4">
-								<p class="lead my-4">Enter a list of keywords revelant to your search:</p>
-							</div> <!-- .col-md-12 -->
-						</div> <!-- .row -->
-						<div class="row">
-							<div class="col-md-12">
-								<input type="text" class="form-control" id="tokenfield" placeholder="Insert keywords..." />
-							</div> <!-- .col-md-12 -->
-						</div> <!-- .row -->
-						<div class="row justify-content-center continue-row">
-							<div class="col-md-12">
-								<button type="button" class="btn btn-primary continue-button">Search &nbsp<i class="fa fa-search fa-1x" aria-hidden="true"></i></button>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-							</div> <!-- .col-md-12 -->
-						</div> <!-- .continue-row -->
-					</div> <!-- .container -->
-				</div> <!-- .container-fluid -->
-			</div> <!-- #intro_container -->
+			
+
 			<div id="footer" class="container-fluid">
 				<div class="container">
 						<div class="row">
 							<div class="col-md-12 text-center">
+							<br>
+							<br>
+							<br>
+							<br>
+							<br>
+							<br>
+							<br>
+							<br>
+							<br>
+							<br>
+							<br>
 									<hr width="75%">
 									Developed by the <a href="http://icahn.mssm.edu/research/labs/maayan-laboratory">Ma'ayan Lab</a> at the <a href="http://icahn.mssm.edu/">Icahn School of Medicine at Mount Sinai</a>.
 							</div> <!-- .col-md-12 -->
@@ -146,6 +144,9 @@
 			<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+			<script src="{{ url_for('static', filename='js/tags-input.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+			<script>[].forEach.call(document.querySelectorAll('input[type="tags"]'), tagsInput);</script>
 			<script> $(function() {$('[data-toggle="tooltip"]').tooltip()}) </script>
 		</div> <!-- #footer -->
 </html>

@@ -1,5 +1,5 @@
 body {
-	/*background-color: rgba(1,22,39,.05);*/
+	/*background-color: #F3F4F3;*/
 	min-width: 550px;
 }
 
@@ -9,6 +9,10 @@ body {
 
 #jumbotron_container {
 	text-align: center;
+}
+
+i {
+	text-align: left;
 }
 
 .container {
@@ -78,7 +82,7 @@ body {
 	background-color: #3A506B;
 }
 
-#navbar .fa {
+#navbar .fa-3x {
 	padding-top: 25px;
 }
 
@@ -210,11 +214,11 @@ p.h6 {
 	text-align: center;
 	box-shadow: none;
 	border: none;
-	background-color: #006494;
+	background-color: #13293D;
 }
 
 #object-selector label.active {
-	background-color: #13293D;
+	background-color: #006494;
 }
 
 #object-selector .fa {
@@ -231,10 +235,19 @@ p.h6 {
 }
 
 .continue-button {
-	box-shadow: none;
 	border: none;
 	color: white;
-	background-color: #00171F;
+	background-color: #13293D;
+}
+
+.continue-button:hover {
+	background-color: #13293D;
+}
+
+.continue-button:focus {
+	background-color: #006494;
+	box-shadow: none;
+	-webkit-box-shadow: none;
 }
 
 #explore_jumbotron {
@@ -244,6 +257,76 @@ p.h6 {
 .row input {
 	margin: 15px 0;
 }
+
+#keywords-label {
+	width: 80%;
+	text-align: left;
+}
+
+.tags-input {
+	display:inline-block;
+	padding:5px 5px;
+	background:#FFF;
+	border:1px solid #CCC;
+	width:100%;
+	border-radius:2px;
+	box-shadow:inset 0 1px 2px rgba(0,0,0,.1);
+	cursor: text;
+}
+
+.tags-input .tag {
+	display:inline-block;
+	background:#EEE;
+	color:#444;
+	padding:1px 10px;
+	margin:3px 2px;
+	border:1px solid #CCC;
+	border-radius:2px;
+	font:inherit;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-ms-user-select:none;
+	user-select:none;
+	cursor:pointer;
+	transition:all .1s ease
+}
+
+.tags-input .tag.selected {
+	background-color:#777;
+	border-color:#777;
+	color:#EEE
+}
+
+.tags-input .tag.dupe {
+	-webkit-transform:scale3d(1.2,1.2,1.2);
+	transform:scale3d(1.2,1.2,1.2);
+	background-color:#FCC;
+	border-color:#700
+}
+
+.tags-input input {
+	-webkit-appearance:none!important;
+	-moz-appearance:none!important;
+	appearance:none!important;
+	display:inline-block!important;
+	padding:5px 0px 5px 10px;
+	margin:0!important;
+	background:0 0!important;
+	border:none!important;
+	box-shadow:none!important;
+	font:inherit!important;
+	font-size:105%!important;
+	outline:0!important;
+}
+
+.tags-input .selected~input {
+	opacity:.3
+}
+
+sup i {
+	cursor: pointer;
+}
+
 /*
 #logo-xl::before {
 	content: '';
