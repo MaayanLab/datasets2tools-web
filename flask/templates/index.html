@@ -17,13 +17,13 @@
 					<ul class="hidden-lg-down">
 						<div class="float-left">
 							<li><a href="#">HOME</a></li>
-							<li><a href="#">SEARCH</a></li>
-							<li><a href="#">EXPLORE</a></li>
+							<li><a href="#" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Coming Soon...">SEARCH</a></li>
+							<li><a href="datasets2tools/explore.html">EXPLORE</a></li>
 						</div>
 						<div class="float-right">
-							<li><a href="#">ABOUT</a></li>
-							<li><a href="#">HELP</a></li>
-							<li><a href="#">API</a></li>
+							<li><a href="#" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Coming Soon...">ABOUT</a></li>
+							<li><a href="#" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Coming Soon...">HELP</a></li>
+							<li><a href="#" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Coming Soon...">API</a></li>
 						</div>
 					</ul>
 					<ul class="hidden-xl-up">
@@ -33,7 +33,7 @@
 									<i class="fa fa-search fa-3x" aria-hidden="true"></i>
 								</a>
 								<div class="dropdown-menu" aria-labelledby="left-dropdown-menu">
-									<a class="dropdown-item" href="#"><i class="fa fa-home fa-2x" aria-hidden="true"></i><span>HOME</span></a>
+									<a class="dropdown-item" href="#"><i class="fa fa-home fa-2x" aria-hidden="true"></i>HOME</a>
 									<a class="dropdown-item" href="#"><i class="fa fa-search fa-2x" aria-hidden="true"></i>SEARCH</a>
 									<a class="dropdown-item" href="#"><i class="fa fa-compass fa-2x" aria-hidden="true"></i>EXPLORE</a>
 								</div>
@@ -95,9 +95,10 @@
 				<div id="info_title_container" class="container-fluid">
 					<div class="container">
 						<div class="row">
-							<h2>Introducing a new type of digital object: the Canned Analysis.</h2>
-							<hr class="my-4">
-							<p class="lead">The section below contains an overview of this new digital object, frequently asked questions, its key features, and its properties.</p>
+							<div class="col">
+								<h2>Introducing a new type of digital object: the Canned Analysis.</h2>
+								<p class="lead my-4">The section below contains an overview of this new digital object, frequently asked questions, its key features, and its properties.</p>
+							</div> <!-- .col -->
 						</div> <!-- .row -->
 					</div> <!-- .container -->
 				</div> <!-- .container-fluid -->
@@ -202,7 +203,7 @@
 								</p>
 								<div class="subtext-2">
 									Canned analyses relevant to the desired data can be easily found by using the embedded interfaces.
-									They are available on dataset search result pages and dataset landing pages.	Demos available <a href="#demos">here</a>.<br>&nbsp
+									They are available on dataset search result pages and dataset landing pages.
 								</div>
 							</div> <!-- .col -->
 							<div class="col-md-3 text-center">
@@ -220,7 +221,7 @@
 									Flexible
 								</p>
 								<div class="subtext-2">
-									Canned analyses can support multiple data types, tool types and analysis types.
+									Canned analyses can support multiple data, tool and analysis types.
 								</div>
 							</div> <!-- .col -->
 							<div class="col-md-3 text-center">
@@ -236,20 +237,23 @@
 						</div> <!-- #properties_row -->
 					</div> <!-- .container -->
 				</div> <!-- #info_container -->
-				<div id="footer">
-					<div class="row">
-						<div class="col-md-12 text-center">
-						<hr width="75%">
-								Developed by the <a href="http://icahn.mssm.edu/research/labs/maayan-laboratory">Ma'ayan Lab</a> at the <a href="http://icahn.mssm.edu/">Icahn School of Medicine at Mount Sinai</a>.
-						</div> <!-- .col -->
-					</div> <!-- .row -->
-				</div> <!-- #footer -->
-			</div> <!-- #info_container -->
+			</div> <!-- #intro_container -->
+			<div id="footer" class="container-fluid">
+				<div class="container">
+						<div class="row">
+							<div class="col-md-12 text-center">
+									<hr width="75%">
+									Developed by the <a href="http://icahn.mssm.edu/research/labs/maayan-laboratory">Ma'ayan Lab</a> at the <a href="http://icahn.mssm.edu/">Icahn School of Medicine at Mount Sinai</a>.
+							</div> <!-- .col-md-12 -->
+						</div> <!-- .row -->
+				</div> <!-- .container -->
+			</div> <!-- #footer -->
 		</div> <!-- #main_container -->
 	</body>
-		<div id="footer">
+		<div>
 			<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+			<script> $(function() {$('[data-toggle="tooltip"]').tooltip()}) </script>
 		</div> <!-- #footer -->
 </html>

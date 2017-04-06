@@ -78,11 +78,11 @@ body {
 	background-color: #3A506B;
 }
 
-#navbar .fa-3x {
+#navbar .fa {
 	padding-top: 25px;
 }
 
-.dropdown-item .fa-2x {
+.dropdown-item .fa {
 	padding-right: 20px;
 }
 
@@ -124,14 +124,14 @@ body {
 }
 
 p.h5 {
-	margin-top: 25px;
+	margin-top: 40px;
 }
 
 p.h6 {
-	margin-top: 15px;
+	margin: 20px 0px;
 }
 
-#intro_container .fa {
+#intro_container .fa-3x {
 	padding-top: 15px;
 }
 
@@ -141,6 +141,7 @@ p.h6 {
 }
 
 #footer {
+	padding-top: 20px;
 	padding-bottom: 15px;
 	font-size: 15px;
 	background-color: rgba(1,22,39,.05);
@@ -161,6 +162,7 @@ p.h6 {
 	height: 165px;
 	width: 165px;
 	margin: 5px 0px;
+	border-radius: 10px;
 }
 
 .center-block {
@@ -173,6 +175,7 @@ p.h6 {
  	text-align: center;
  }
 
+ #navbar a,
  #jumbotron_button_row a {
 	text-decoration: none;
 }
@@ -188,7 +191,6 @@ p.h6 {
 
 #info_title_container {
  	padding-top: 50px;
- 	padding-bottom: 20px;
 	background-color: rgba(1,22,39,.05);
 }
 
@@ -196,6 +198,52 @@ p.h6 {
 	background-color: rgba(1,22,39,.05);
 }
 
+#object-selector {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+#object-selector label {
+	height: 150px;
+	width: 150px;
+	cursor: pointer;
+	text-align: center;
+	box-shadow: none;
+	border: none;
+	background-color: #006494;
+}
+
+#object-selector label.active {
+	background-color: #13293D;
+}
+
+#object-selector .fa {
+	padding-top: 10px;
+	padding-bottom: 15px;
+}
+
+.continue-row {
+	padding-top: 20px;
+}
+
+.btn {
+	cursor: pointer;
+}
+
+.continue-button {
+	box-shadow: none;
+	border: none;
+	color: white;
+	background-color: #00171F;
+}
+
+#explore_jumbotron {
+	padding-top: 150px;
+}
+
+.row input {
+	margin: 15px 0;
+}
 /*
 #logo-xl::before {
 	content: '';
