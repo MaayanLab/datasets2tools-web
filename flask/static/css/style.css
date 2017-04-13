@@ -465,7 +465,7 @@ sup i {
 	font-weight: 500;
 }
 
-.tool-cell-text-description {
+.tool-cell-text {
     font-size: 11pt;
     font-weight: 300;
 }
@@ -493,7 +493,21 @@ sup i {
 	font-weight: 500;
 }
 
-.dataset-cell-text-description {
+.dataset-cell-text {
+    font-size: 11pt;
+    font-weight: 300;
+}
+
+.analysis-cell {
+	padding: 0px 20px;
+}
+
+.analysis-cell-icon {
+	margin: 5px 10px 5px 10px;
+	border: 1px solid #9fa1a5;
+}
+
+.analysis-cell-text {
     font-size: 11pt;
     font-weight: 300;
 }

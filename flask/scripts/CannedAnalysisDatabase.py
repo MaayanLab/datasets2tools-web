@@ -22,15 +22,14 @@ class CannedAnalysisDatabase:
 
     def make_canned_analysis_table(self, ids, limit=25):
         ids = ids[:limit]
-        canned_analyses = pd.read_sql_query('SELECT ca.id as id, tool_name, tool_icon_url, tool_homepage_url, tool_description, repository_name, repository_homepage_url, repository_icon_url, repository_description, dataset_description, dataset_title, dataset_landing_url, dataset_accession, canned_analysis_url FROM canned_analysis ca LEFT JOIN dataset d ON d.id=ca.dataset_fk LEFT JOIN tool t ON t.id=ca.tool_fk LEFT JOIN repository r ON r.id=d.repository_fk WHERE ca.id IN ('+', '.join([str(x) for x in ids])+')', self.engine, index_col='id')
+        canned_analyses = pd.read_sql_query('SELECT ca.id as id, tool_name, tool_icon_url, tool_homepage_url, tool_description, repository_name, repository_homepage_url, repository_icon_url, repository_description, dataset_description, dataset_title, dataset_landing_url, dataset_accession, canned_analysis_url, tool_screenshot_url FROM canned_analysis ca LEFT JOIN dataset d ON d.id=ca.dataset_fk LEFT JOIN tool t ON t.id=ca.tool_fk LEFT JOIN repository r ON r.id=d.repository_fk WHERE ca.id IN ('+', '.join([str(x) for x in ids])+')', self.engine, index_col='id')
         metadata = pd.read_sql_query('SELECT canned_analysis_fk, term_name, value FROM canned_analysis_metadata cam LEFT JOIN term t on t.id = cam.term_fk WHERE cam.canned_analysis_fk IN ('+', '.join([str(x) for x in ids])+')', self.engine)
         result_list = []
         for index, rowData in canned_analyses.iterrows():
-            tool_html = '<div class="tool-cell"><div class="tool-cell-logo"><a href="'+rowData['tool_homepage_url']+'"><img class="tool-cell-logo-icon" src="'+rowData['tool_icon_url']+'"></a><span class="tool-cell-logo-title">'+rowData['tool_name']+'</span></div><span class="tool-cell-text-description">'+rowData['tool_description']+'</span></div>'
-            dataset_html = '<div class="dataset-cell"><div class="dataset-cell-logo"><a href="'+rowData['dataset_landing_url']+'""><img class="dataset-cell-logo-icon" src="'+rowData['repository_icon_url']+'"></a><span class="dataset-cell-logo-title">'+rowData['dataset_accession']+'</div><span class="dataset-cell-text-description">'+rowData['dataset_title']+'</span></div>'
-            url_html = '''<a href="'''+rowData['canned_analysis_url']+'''" data-animation="false" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<iframe src=\''''+rowData['canned_analysis_url']+'''\'>"><img src="'''+rowData['tool_icon_url']+'''"></a>'''
-            description_html = 'Analysis Description.'
+            tool_html = '<div class="tool-cell"><div class="tool-cell-logo"><a href="'+rowData['tool_homepage_url']+'"><img class="tool-cell-logo-icon" src="'+rowData['tool_icon_url']+'"></a><span class="tool-cell-logo-title">'+rowData['tool_name']+'</span></div><span class="tool-cell-text">'+rowData['tool_description']+'</span></div>'
+            dataset_html = '<div class="dataset-cell"><div class="dataset-cell-logo"><a href="'+rowData['dataset_landing_url']+'""><img class="dataset-cell-logo-icon" src="'+rowData['repository_icon_url']+'"></a><span class="dataset-cell-logo-title">'+rowData['dataset_accession']+'</div><span class="dataset-cell-text">'+rowData['dataset_title']+'</span></div>'
+            analysis_hyml = '<div class="analysis-cell"><img class="analysis-cell-icon" src="'+rowData['tool_screenshot_url']+'"><span class="analysis-cell-text">'+'Description'+'</span></div>'
             metadata_html = '<ul class="metadata-list"><li>'+'</li><li>'.join(['<b>'+metadataRowData['term_name'].replace('_', ' ').title()+'</b>: '+metadataRowData['value'] for metadataIndex, metadataRowData in metadata[metadata['canned_analysis_fk'] == index].iterrows()]) + '</li></ul>'
-            result_list.append([tool_html, dataset_html, url_html, description_html, metadata_html])
-        result_dataframe = pd.DataFrame(result_list, columns=['Tool', 'Dataset', 'Analysis', 'Description', 'Metadata'])
+            result_list.append([tool_html, dataset_html, analysis_hyml, metadata_html])
+        result_dataframe = pd.DataFrame(result_list, columns=['Tool', 'Dataset', 'Analysis', 'Metadata'])
         return result_dataframe.to_html(escape=False, index=False, classes='canned-analysis-table').encode('ascii', 'ignore')
