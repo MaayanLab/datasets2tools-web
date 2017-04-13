@@ -33,3 +33,23 @@ class CannedAnalysisDatabase:
             result_list.append([tool_html, dataset_html, analysis_hyml, metadata_html])
         result_dataframe = pd.DataFrame(result_list, columns=['Tool', 'Dataset', 'Analysis', 'Metadata'])
         return result_dataframe.to_html(escape=False, index=False, classes='canned-analysis-table').encode('ascii', 'ignore')
+
+    def search_datasets_by_keyword(self, keywords):
+        similar_search_results = pd.read_sql_query('SELECT id FROM dataset WHERE id IN (SELECT id FROM dataset WHERE CONCAT(dataset_title, " ", dataset_description) LIKE "%%' + '%%") AND canned_analysis_fk IN (SELECT id FROM dataset WHERE CONCAT(dataset_title, " ", dataset_description) LIKE "%%'.join(keywords)+'%%")', self.engine)
+        ids = similar_search_results['id'].tolist()
+        return ids
+
+    def make_dataset_table(self, ids, limit=25):
+        ids = ids[:limit]
+        analysis_counts = pd.read_sql_query('SELECT dataset_accession, tool_name, tool_icon_url, tool_description, count(dataset_accession) AS count FROM canned_analysis ca LEFT JOIN dataset d on d.id=ca.dataset_fk LEFT JOIN tool t on t.id = ca.tool_fk WHERE d.id in ('+', '.join([str(x) for x in ids])+') GROUP BY dataset_accession, tool_name ORDER BY dataset_accession ASC, count DESC', self.engine)
+        datasets = pd.read_sql_query('SELECT * FROM dataset d LEFT JOIN repository r on r.id = d.repository_fk WHERE d.id in ('+', '.join([str(x) for x in ids])+')', self.engine)
+        datasets = datasets.set_index('dataset_accession', drop=False).loc[analysis_counts.groupby('dataset_accession').sum().sort_values('count', ascending=False).index].reset_index(drop=True)
+        result_list = []
+        for index, rowData in datasets.iterrows():
+            repository_html = '<div class="dataset-repository-cell">'+rowData['repository_name']+'</div>'
+            dataset_html = '<div class="dataset-title-cell">'+rowData['dataset_accession']+'</div>'
+            description_html = '<div class="dataset-description-cell">'+rowData['dataset_description']+'</div>'
+            analysis_html = '<div class="dataset-tool-analysis-count-cell">'+''.join('<div class="dataset-tool-analysis-count"><img class="dataset-tool-analysis-count-icon" src="'+countRowData['tool_icon_url']+'"><div class="dataset-tool-analysis-count-title">'+countRowData['tool_name']+' <sup><i class="fa fa-info-circle fa-1x"  aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="'+countRowData['tool_description']+'"></i></sup></span>: ' + str(countRowData['count']) + '</div></div><br>' for countIndex, countRowData in analysis_counts[analysis_counts['dataset_accession']==rowData['dataset_accession']].iterrows()) + '</div>'
+            result_list.append([repository_html, dataset_html, description_html, analysis_html])
+        result_dataframe = pd.DataFrame(result_list, columns=['Repository', 'Dataset', 'Description', 'Analysis']).set_index('Dataset', drop=False)#.loc[analysis_counts['dataset_accession'].unique()]
+        return result_dataframe.to_html(escape=False, index=False, classes='datasets-table').encode('ascii', 'ignore')

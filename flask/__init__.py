@@ -85,6 +85,12 @@ def keyword_search():
 		ids = Database.search_analyses_by_keyword(keywords)
 		table_html = Database.make_canned_analysis_table(ids)
 		return str(table_html)
+	elif obj == 'datasets':
+		ids = Database.search_datasets_by_keyword(keywords)
+		table_html = Database.make_dataset_table(ids)
+		return str(table_html)
+	elif obj == 'tools':
+		return 'tools'
 
 
 

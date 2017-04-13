@@ -569,3 +569,29 @@ sup i {
 .metadata-cell-value {
 	font-weight: 100;
 }
+
+.dataset-tool-analysis-count {
+	display: table;
+}
+
+.dataset-tool-analysis-count-icon {
+	display: table-cell;
+	vertical-align: middle;
+	height: 50px;
+}
+
+.dataset-tool-analysis-count-title {
+	display: table-cell;
+	vertical-align: middle;
+
+}
+
+.dataset-tool-analysis-count-cell {
+	min-width: 250px;
+}
+
+.dataset-description-cell {
+    font-weight: 300;
+    font-size: 11pt;
+	padding: 10px 15px;
+}
