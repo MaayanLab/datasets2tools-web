@@ -1,3 +1,5 @@
+$('#analyses').click();
+
 $('#search-button').click(function(evt) {
 
 	var objects = [];
@@ -49,11 +51,12 @@ $('#search-button').click(function(evt) {
 		    	$("#search-results").html('Sorry, no search results found for the specified query.');
 		    }
 		  });
-
-		$("#results_container").show();
-		$('html, body').animate({
-		        scrollTop: $("#results_container").offset().top - $('#navbar').height()
-		    }, 750);
+		setTimeout(function() {
+			$("#results_container").show();
+			$('html, body').animate({
+			        scrollTop: $("#results_container").offset().top - $('#navbar').height()
+			    }, 750);	
+		}, 500)
 	}
 
 });
