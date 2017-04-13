@@ -43,7 +43,10 @@ $('#search-button').click(function(evt) {
 		    },
 		    success: function(data) {
 		    	$("#search-results").html(data);
-			  $(function() {$('[data-toggle="tooltip"]').tooltip()})
+				$(function() {$('[data-toggle="tooltip"]').tooltip()});
+		    },
+		    error: function() {
+		    	$("#search-results").html('Sorry, no search results found for the specified query.');
 		    }
 		  });
 

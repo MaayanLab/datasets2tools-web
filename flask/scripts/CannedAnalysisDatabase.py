@@ -15,7 +15,8 @@ class CannedAnalysisDatabase:
         # self.canned_analysis_metadata = pd.read_sql_query('SELECT * FROM canned_analysis_metadata', self.engine, index_col='id')
         
     def search_analyses_by_keyword(self, keywords):
-        sorted_search_results = pd.read_sql_query('SELECT canned_analysis_fk, count(canned_analysis_fk) as count FROM canned_analysis_metadata WHERE value IN ("' + '", "'.join(keywords) + '") GROUP BY canned_analysis_fk ORDER BY count DESC', self.engine)
+        sorted_search_results = pd.read_sql_query('SELECT DISTINCT canned_analysis_fk FROM canned_analysis_metadata WHERE canned_analysis_fk IN (SELECT canned_analysis_fk FROM canned_analysis_metadata WHERE value = "' + '") AND canned_analysis_fk IN (SELECT canned_analysis_fk FROM canned_analysis_metadata WHERE value = "'.join(keywords)+'")', self.engine)
+        # sorted_search_results = pd.read_sql_query('SELECT canned_analysis_fk, count(canned_analysis_fk) as count FROM canned_analysis_metadata WHERE value IN ("' + '", "'.join(keywords) + '") GROUP BY canned_analysis_fk ORDER BY count DESC', self.engine)
         ids = sorted_search_results['canned_analysis_fk'].tolist()
         return ids
 
@@ -25,12 +26,11 @@ class CannedAnalysisDatabase:
         metadata = pd.read_sql_query('SELECT canned_analysis_fk, term_name, value FROM canned_analysis_metadata cam LEFT JOIN term t on t.id = cam.term_fk WHERE cam.canned_analysis_fk IN ('+', '.join([str(x) for x in ids])+')', self.engine)
         result_list = []
         for index, rowData in canned_analyses.iterrows():
-            tool_html = '<a href="'+rowData['tool_homepage_url']+'"><img class="tool-icon" src="'+rowData['tool_icon_url']+'"></a>'
-            dataset_html = '<a class="dataset-cell" data-animation="false" data-toggle="tooltip" data-placement="bottom" data-html="true" title="'+rowData['dataset_title']+'"><img class="repository-icon" src="'+rowData['repository_icon_url']+'">'+rowData['dataset_accession']+'</a>'
+            tool_html = '<div class="tool-cell"><div class="tool-cell-logo"><a href="'+rowData['tool_homepage_url']+'"><img class="tool-cell-logo-icon" src="'+rowData['tool_icon_url']+'"></a><span class="tool-cell-logo-title">'+rowData['tool_name']+'</span></div><span class="tool-cell-text-description">'+rowData['tool_description']+'</span></div>'
+            dataset_html = '<div class="dataset-cell"><div class="dataset-cell-logo"><a href="'+rowData['dataset_landing_url']+'""><img class="dataset-cell-logo-icon" src="'+rowData['repository_icon_url']+'"></a><span class="dataset-cell-logo-title">'+rowData['dataset_accession']+'</div><span class="dataset-cell-text-description">'+rowData['dataset_title']+'</span></div>'
             url_html = '''<a href="'''+rowData['canned_analysis_url']+'''" data-animation="false" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<iframe src=\''''+rowData['canned_analysis_url']+'''\'>"><img src="'''+rowData['tool_icon_url']+'''"></a>'''
             description_html = 'Analysis Description.'
-            metadata_html = '<ul><li>'+'</li><li>'.join(['<b>'+metadataRowData['term_name'].replace('_', ' ').title()+'</b>: '+metadataRowData['value'] for metadataIndex, metadataRowData in metadata[metadata['canned_analysis_fk'] == index].iterrows()]) + '</li></ul>'
-            print ['<b>'+metadataRowData['term_name'].replace('_', ' ').title()+'</b>: '+metadataRowData['value'] for metadataIndex, metadataRowData in metadata[metadata['canned_analysis_fk'] == index].iterrows()]
+            metadata_html = '<ul class="metadata-list"><li>'+'</li><li>'.join(['<b>'+metadataRowData['term_name'].replace('_', ' ').title()+'</b>: '+metadataRowData['value'] for metadataIndex, metadataRowData in metadata[metadata['canned_analysis_fk'] == index].iterrows()]) + '</li></ul>'
             result_list.append([tool_html, dataset_html, url_html, description_html, metadata_html])
         result_dataframe = pd.DataFrame(result_list, columns=['Tool', 'Dataset', 'Analysis', 'Description', 'Metadata'])
         return result_dataframe.to_html(escape=False, index=False, classes='canned-analysis-table').encode('ascii', 'ignore')

@@ -423,15 +423,80 @@ sup i {
 
 
 .canned-analysis-table {
-	width: 100%;
 	text-align: center;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .canned-analysis-table th {
 	text-align: center;
 }
 
+.metadata-list {
+    overflow-wrap: break-word;
+    max-width: 500px;
+}
+
 .canned-analysis-table img {
 	height: 50px;
 }
+
+.tool-cell {
+	padding: 0px 20px;
+}
+
+.tool-cell-logo {
+	display: table;
+	margin: 0 auto;
+}
+
+.tool-cell-logo-icon {
+	display: table-cell;
+	vertical-align: middle;
+	margin: 5px 10px 5px 10px;
+	border: 1px solid #9fa1a5;
+}
+
+.tool-cell-logo-title {
+	display: table-cell;
+	vertical-align: middle;
+	font-size: 13pt;
+	font-weight: 500;
+}
+
+.tool-cell-text-description {
+    font-size: 11pt;
+    font-weight: 300;
+}
+
+.dataset-cell {
+	padding: 0px 20px;
+}
+
+.dataset-cell-logo {
+	display: table;
+	margin: 0 auto;
+}
+
+.dataset-cell-logo-icon {
+	display: table-cell;
+	vertical-align: middle;
+	margin: 5px 10px 5px 10px;
+	border: 1px solid #9fa1a5;
+}
+
+.dataset-cell-logo-title {
+	display: table-cell;
+	vertical-align: middle;
+	font-size: 13pt;
+	font-weight: 500;
+}
+
+.dataset-cell-text-description {
+    font-size: 11pt;
+    font-weight: 300;
+}
+
+
 
