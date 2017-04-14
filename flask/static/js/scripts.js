@@ -2,7 +2,7 @@ $('input[type="radio"]').click(function(evt) {
 	var objects = $(evt.target).attr('id');
 
 	if (objects === 'analyses') {
-		$('#search-example').html('Examples: <a class="search-example-link" href="#">enrichment, prostate cancer, upregulated</a>; or <a class="search-example-link" href="#">small molecule, reverse, heart disease</a>.')
+		$('#search-example').html('Examples: <a class="search-example-link" href="#">enrichment, prostate cancer, upregulated</a>; or <a class="search-example-link" href="#">small molecule, reverse, myocardial infarction</a>.')
 	} else if (objects === 'datasets') {
 		$('#search-example').html('Examples: <a class="search-example-link" href="#">breast cancer, estrogen positive</a>; or <a class="search-example-link" href="#">GSE10325</a>.')
 	} else if (objects === 'tools') {
