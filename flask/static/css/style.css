@@ -420,6 +420,7 @@ sup i {
 	color: rgba(255,255,255,.75);
 }*/
 
+.tool-table,
 .dataset-table,
 .canned-analysis-table {
 	text-align: center;
@@ -429,16 +430,19 @@ sup i {
     border: none;
 }
 
+.tool-table tbody tr:nth-child(odd),
 .dataset-table tbody tr:nth-child(odd),
 .canned-analysis-table tbody tr:nth-child(odd) {
    background-color: #f8f8f8;
 }
 
+.tool-table tbody tr:nth-child(even),
 .dataset-table tbody tr:nth-child(even),
 .canned-analysis-table tbody tr:nth-child(even) {
    background-color: #fcfcfc;
 }
 
+.tool-table th,
 .dataset-table th,
 .canned-analysis-table th {
 	text-align: center;
@@ -449,7 +453,7 @@ sup i {
     font-weight: 300;
     border: none;
 }
-
+.tool-table td,
 .dataset-table td,
 .canned-analysis-table td {
     border-bottom: 1px dotted #b4bec6;
@@ -549,6 +553,7 @@ sup i {
 }
 
 .canned-analysis-table a,
+.tool-table a,
 .dataset-table a {
 	color: #001333;
 }
@@ -560,6 +565,7 @@ sup i {
 .metadata-cell {
 	padding: 15px 10px;
 	max-width: 500px;
+	word-wrap: break-word;
 }
 
 .metadata-cell sup {
@@ -670,4 +676,48 @@ input[type="radio"] + label:hover {
 
 input[type="radio"]:checked + label {
      background-color: #025aa5;
+}
+
+.tool-icon-cell {
+	display: table;
+}
+
+.tool-icon-cell-logo {
+	display: table-cell;
+	vertical-align: middle;
+	height: 50px;
+	border: 1px solid #9fa1a5;
+	margin: 15px;
+	background-color: white;
+}
+
+.tool-icon-cell-text {
+	display: table-cell;
+	vertical-align: middle;
+	font-weight: 500;
+	font-size: 13pt;
+	padding-right: 30px;
+}
+
+.tool-description-cell {
+	padding: 5px 25px;
+}
+
+.tool-analysis-count-cell {
+	min-width: 100px;
+	padding: 0 50px;
+}
+
+#search-example {
+	margin-left: 105px;
+	font-size: 12pt;
+	font-weight: 100;
+	margin-bottom: 0px;
+	margin-top: 5px;
+}
+
+.search-example-link:hover,
+.search-example-link:focus {
+	text-decoration: none;
+	color: #0275d8;
 }

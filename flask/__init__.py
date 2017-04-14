@@ -90,7 +90,9 @@ def keyword_search():
 		table_html = Database.make_dataset_table(ids)
 		return str(table_html)
 	elif obj == 'tools':
-		return 'tools'
+		ids = Database.search_tools_by_keyword(keywords)
+		table_html = Database.make_tool_table(ids)
+		return str(table_html)
 
 
 

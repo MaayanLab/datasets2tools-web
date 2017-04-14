@@ -1,3 +1,27 @@
+$('input[type="radio"]').click(function(evt) {
+	var objects = $(evt.target).attr('id');
+
+	if (objects === 'analyses') {
+		$('#search-example').html('Examples: <a class="search-example-link" href="#">enrichment, prostate cancer, upregulated</a>; or <a class="search-example-link" href="#">small molecule, reverse, heart disease</a>.')
+	} else if (objects === 'datasets') {
+		$('#search-example').html('Examples: <a class="search-example-link" href="#">breast cancer, estrogen positive</a>; or <a class="search-example-link" href="#">GSE10325</a>.')
+	} else if (objects === 'tools') {
+		$('#search-example').html('Examples: <a class="search-example-link" href="#">enrichment</a>; or <a class="search-example-link" href="#">L1000</a>; or <a class="search-example-link" href="#">image data</a>.')
+	}
+
+	$('.search-example-link').click(function(evt) {
+		// var example_tags = '';
+		var $tags_input = $('#keywords-label').find('.tags-input');
+		$tags_input.find('.tag').remove();
+		$.each($(evt.target).text().split(', '), function(index, value) {
+			$tags_input.prepend('<span class="tag" data-tag="'+value+'">'+value+'</span>')
+		})
+		$('#search-button').click()
+	});
+});
+
+$('#analyses').click();
+
 $('#search-button').click(function(evt) {
 
 	var objects = $('input[type="radio"][name="radio"]:checked').attr('id');
@@ -43,7 +67,6 @@ $('#search-button').click(function(evt) {
 			    }, 750);	
 		}, 500)
 	}
-
 });
 
 $('#back-button').click(function(evt) {
@@ -55,3 +78,4 @@ $('#back-button').click(function(evt) {
         scrollTop: $("#main_container").offset().top 
     }, 750);
 });
+

@@ -35,7 +35,7 @@ class CannedAnalysisDatabase:
         return result_dataframe.to_html(escape=False, index=False, classes='canned-analysis-table').encode('ascii', 'ignore')
 
     def search_datasets_by_keyword(self, keywords):
-        similar_search_results = pd.read_sql_query('SELECT id FROM dataset WHERE id IN (SELECT id FROM dataset WHERE CONCAT(dataset_title, " ", dataset_description) LIKE "%%' + '%%") AND id IN (SELECT id FROM dataset WHERE CONCAT(dataset_title, " ", dataset_description) LIKE "%%'.join(keywords)+'%%")', self.engine)
+        similar_search_results = pd.read_sql_query('SELECT id FROM dataset WHERE id IN (SELECT id FROM dataset WHERE CONCAT(dataset_accession, " ", dataset_title, " ", dataset_description) LIKE "%%' + '%%") AND id IN (SELECT id FROM dataset WHERE CONCAT(dataset_accession, " ", dataset_title, " ", dataset_description) LIKE "%%'.join(keywords)+'%%")', self.engine)
         ids = similar_search_results['id'].tolist()
         return ids
 
@@ -54,3 +54,21 @@ class CannedAnalysisDatabase:
             result_list.append([dataset_html, description_html, repository_html, analysis_html])
         result_dataframe = pd.DataFrame(result_list, columns=['Dataset', 'Description', 'Repository', 'Analyses']).set_index('Dataset', drop=False)#.loc[analysis_counts['dataset_accession'].unique()]
         return result_dataframe.to_html(escape=False, index=False, classes='dataset-table').encode('ascii', 'ignore')
+
+    def search_tools_by_keyword(self, keywords):
+        similar_search_results = pd.read_sql_query('SELECT id FROM tool WHERE id IN (SELECT id FROM tool WHERE CONCAT(tool_name, " ", tool_description) LIKE "%%' + '%%") AND id IN (SELECT id FROM tool WHERE CONCAT(tool_name, " ", tool_description) LIKE "%%'.join(keywords)+'%%")', self.engine)
+        ids = similar_search_results['id'].tolist()
+        return ids
+
+    def make_tool_table(self, ids, limit=25):
+        ids = ids[:limit]
+        tools = pd.read_sql_query('SELECT tool_name, tool_icon_url, tool_homepage_url, tool_description, count(*)-1 AS count FROM tool t LEFT JOIN canned_analysis ca on t.id = ca.tool_fk WHERE t.id IN ('+', '.join([str(x) for x in ids])+') GROUP BY tool_name ORDER BY count desc', self.engine)
+        result_list = []
+        for indew, rowData in tools.iterrows():
+            tool_icon_html = '<a href="'+rowData['tool_homepage_url']+'" class="tool-icon-cell"><img class="tool-icon-cell-logo" src="'+rowData['tool_icon_url']+'"><div class="tool-icon-cell-text">'+rowData['tool_name']+'</div></a>'
+            tool_description_html = '<div class="tool-description-cell">'+rowData['tool_description']+'</div>'
+            analysis_html = '<a href="#" class="tool-analysis-count-cell">' + str(rowData['count']) + '</div>'
+            result_list.append([tool_icon_html, tool_description_html, analysis_html])
+        result_dataframe = pd.DataFrame(result_list, columns=['Tool', 'Description', 'Analyses'])
+        return result_dataframe.to_html(escape=False, index=False, classes='tool-table').encode('ascii', 'ignore')
+
