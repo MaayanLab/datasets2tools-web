@@ -421,7 +421,7 @@ sup i {
 	color: rgba(255,255,255,.75);
 }*/
 
-
+.dataset-table,
 .canned-analysis-table {
 	text-align: center;
     max-width: 100%;
@@ -430,14 +430,17 @@ sup i {
     border: none;
 }
 
+.dataset-table tbody tr:nth-child(odd),
 .canned-analysis-table tbody tr:nth-child(odd) {
    background-color: #f8f8f8;
 }
 
+.dataset-table tbody tr:nth-child(even),
 .canned-analysis-table tbody tr:nth-child(even) {
    background-color: #fcfcfc;
 }
 
+.dataset-table th,
 .canned-analysis-table th {
 	text-align: center;
 	height: 50px;
@@ -448,6 +451,7 @@ sup i {
     border: none;
 }
 
+.dataset-table td,
 .canned-analysis-table td {
     border-bottom: 1px dotted #b4bec6;
 }
@@ -545,7 +549,8 @@ sup i {
     word-wrap: break-word;
 }
 
-.canned-analysis-table a {
+.canned-analysis-table a,
+.dataset-table a {
 	color: #001333;
 }
 
@@ -570,28 +575,85 @@ sup i {
 	font-weight: 100;
 }
 
+.dataset-description-cell {
+    font-weight: 300;
+    font-size: 11pt;
+	padding: 10px 15px;
+	min-width: 300px;
+}
+
+.dataset-title-cell {
+	padding: 10px 15px;
+	min-width: 250px;
+}
+
+.dataset-title-cell-accession {
+    font-size: 13pt;
+    font-weight: 700;
+    padding-bottom: px;
+}
+
+.dataset-title-cell-accession {
+    font-size: 14pt;
+    font-weight: 700;
+    padding-bottom: 5px;
+}
+
+.dataset-title-cell-text {
+    font-size: 11pt;
+    font-weight: 100;
+    margin-top: 7px;
+    padding: 0 5px;
+}
+
+.dataset-repository-cell {
+	padding: 10px 15px;
+	min-width: 150px;
+}
+
+.dataset-repository-cell-icon {
+	width: 100px;
+	margin: 5px 10px 5px 10px;
+	border: 1px solid #9fa1a5;
+}
+
+.dataset-repository-cell-text {
+	font-size: 11pt;
+	font-weight: 300;
+}
+
+.dataset-tool-analysis-count-cell {
+	min-width: 300px;
+	padding: 5px 10px;
+}
+
 .dataset-tool-analysis-count {
 	display: table;
+	padding: 3px 0;
 }
 
 .dataset-tool-analysis-count-icon {
 	display: table-cell;
 	vertical-align: middle;
-	height: 50px;
+	height: 35px;
+	border: 1px solid #9fa1a5;
+	margin: 5px;
+	background-color: white;
+}
+
+.dataset-tool-analysis-count-text {
+	display: table-cell;
+	vertical-align: middle;
+	font-weight: 100;
 }
 
 .dataset-tool-analysis-count-title {
-	display: table-cell;
-	vertical-align: middle;
-
+	font-size: 12pt;
+	font-weight: 400;
 }
 
-.dataset-tool-analysis-count-cell {
-	min-width: 250px;
+.dataset-tool-analysis-count-analyses {
+	font-size: 12pt;
+	font-weight: 100;
 }
 
-.dataset-description-cell {
-    font-weight: 300;
-    font-size: 11pt;
-	padding: 10px 15px;
-}
