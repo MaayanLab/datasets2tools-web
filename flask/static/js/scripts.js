@@ -1,12 +1,6 @@
-$('#analyses').click();
-
 $('#search-button').click(function(evt) {
 
-	var objects = [];
-
-	$('.btn.btn-primary.active').each(function(i, elem) {
-		objects.push($(elem).attr('id'));
-	});
+	var objects = $('input[type="radio"][name="radio"]:checked').attr('id');
 
 	var keywords = [];
 
@@ -16,18 +10,9 @@ $('#search-button').click(function(evt) {
 
 	var alertdiv = '<div class="form-alert justify-content-center"><i class="fa fa-exclamation-circle fa-2x" aria-hidden="true"></i>Please fill in the following information.</div>'
 
-	if (objects.length === 0) {
-		$('#object-select-text .form-alert').hide();
-		$('#object-select-text').prepend(alertdiv);
-	}
-
 	if (keywords.length === 0) {
 		$('#keyword-input-text .form-alert').hide();
 		$('#keyword-input-text').prepend(alertdiv);
-	}
-
-	if (objects.length > 0 && keywords.length == 0) {
-		$('#object-select-text .form-alert').hide();
 	}
 
 	if (objects.length == 0 && keywords.length > 0) {
@@ -40,7 +25,7 @@ $('#search-button').click(function(evt) {
 		  $.ajax({
 		    url: 'http://localhost:5000/datasets2tools/keyword_search',
 		    data: {
-		      'obj': objects.join(','),
+		      'obj': objects,
 		      'keywords': keywords.join(','),
 		    },
 		    success: function(data) {
