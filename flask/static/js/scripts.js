@@ -13,7 +13,7 @@ $('input[type="radio"]').click(function(evt) {
 		// var example_tags = '';
 		var $tags_input = $('#keywords-label').find('.tags-input');
 		$tags_input.find('.tag').remove();
-		$.each($(evt.target).text().split(', '), function(index, value) {
+		$.each($(evt.target).text().split(', ').reverse(), function(index, value) {
 			$tags_input.prepend('<span class="tag" data-tag="'+value+'">'+value+'</span>')
 		})
 		$('#search-button').click()
