@@ -47,7 +47,7 @@ $('#search-button').click(function(evt) {
 		$('.form-alert').hide();
 		// var alertstring = 'You are searching <strong>' + objects.join('</strong>, <strong>') + '</strong> for the following keywords: <strong>' + keywords.join('</strong>, <strong>') + '</strong>.';
 		  $.ajax({
-		    url: 'http://localhost:5000/datasets2tools/keyword_search',
+		    url: 'http://amp.pharm.mssm.edu/datasets2tools-dev/keyword_search',
 		    data: {
 		      'obj': objects,
 		      'keywords': keywords.join(','),
