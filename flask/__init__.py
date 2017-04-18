@@ -64,6 +64,10 @@ def cannedanalyses():
 def search():
 	return render_template('search.html')
 
+@app.route('/datasets2tools/explore.html')
+def explore():
+	return render_template('explore.html')
+
 @app.route('/datasets2tools/test.html')
 def test():
 	return render_template('test.html')
@@ -93,6 +97,19 @@ def keyword_search():
 		ids = Database.search_tools_by_keyword(keywords)
 		table_html = Database.make_tool_table(ids)
 		return str(table_html)
+
+@app.route('/datasets2tools/keyword_tree')
+def keyword_tree():
+	Database = CannedAnalysisDatabase(engine)
+	keyword_dict = Database.get_keyword_json()
+	return json.dumps(keyword_dict)
+
+@app.route('/datasets2tools/flare.json')
+def flare():
+	with open('static/flare.json', 'r') as openfile:
+		return openfile.read()
+
+
 
 
 

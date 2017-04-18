@@ -19,7 +19,7 @@
 						<div class="float-left">
 							<li><a href="/datasets2tools">HOME</a></li>
 							<li><a href="#">SEARCH</a></li>
-							<li><a href="#" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Coming Soon...">EXPLORE</a></li>
+							<li><a href="/datasets2tools/explore.html"">EXPLORE</a></li>
 						</div>
 						<div class="float-right">
 							<li><a href="/datasets2tools/about.html">ABOUT</a></li>
@@ -36,7 +36,7 @@
 								<div class="dropdown-menu" aria-labelledby="left-dropdown-menu">
 									<a class="dropdown-item" href="/datasets2tools"><i class="fa fa-home fa-2x" aria-hidden="true"></i>HOME</a>
 									<a class="dropdown-item" href="/datasets2tools/search.html"><i class="fa fa-search fa-2x" aria-hidden="true"></i>SEARCH</a>
-									<a class="dropdown-item" href="#"><i class="fa fa-compass fa-2x" aria-hidden="true"></i>EXPLORE</a>
+									<a class="dropdown-item" href="/datasets2tools/explore.html"><i class="fa fa-compass fa-2x" aria-hidden="true"></i>EXPLORE</a>
 								</div>
 							</div>
 						</div>
@@ -60,82 +60,19 @@
 					<div class="container">
 						<div class="row justify-content-center">
 							<div class="col-md-12">
-								<h1>What would you like to explore?</h1>
+								<h1>Metadata Tree Browser</h1>
 								<hr class="my-4">
-								<p id="object-select-text" class="lead my-4">To begin, select the type of object(s) you want to explore:</p>
+								<p id="object-select-text" class="lead my-4">The chart below allows to interactively explore metadata tags associated to the stored canned analyes.</p>
 							</div> <!-- .col-md-12 -->
 						</div> <!-- .row -->
-						<div id="object-selector" class="row justify-content-center">
-							<div class="col-md-3" data-toggle="buttons">
-								<label id="analyses" class="btn btn-primary">
-									<input type="checkbox" autocomplete="off">
-									<i class="fa fa-pie-chart fa-5x" aria-hidden="true"></i>
-									<br>
-									Analyses
-								</label>
-							</div>
-
-							<div class="col-md-3" data-toggle="buttons">
-								<label id="datasets" class="btn btn-primary" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Coming soon...">
-									<input type="checkbox" autocomplete="off">
-									<i class="fa fa-database fa-5x" aria-hidden="true"></i>
-									<br>
-									Datasets
-								</label>
-							</div>
-
-							<div class="col-md-3" data-toggle="buttons">
-								<label id="tools" class="btn btn-primary" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Coming soon...">
-									<input type="checkbox" autocomplete="off">
-									<i class="fa fa-cogs fa-5x" aria-hidden="true"></i>
-									<br>
-									Tools
-								</label>
-							</div>
-
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<hr class="my-4" width="50%">
-								<p id="keyword-input-text" class="lead my-4">Second, enter a list of keywords revelant to your search:<sup>&nbsp<i class="fa fa-question-circle fa-1x" aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="Enter multiple tags, separating each one by pressing Enter.  Tags may also contain spaces, and are case insensitive."></i></sup></p>
-							</div> <!-- .col-md-12 -->
-						</div> <!-- .row -->
-						<div class="row">
-							<div class="col-md-12">
-								<form id="keywords-form">
-									<label id="keywords-label">
-										<input name="keywords" type="tags" pattern="^#" placeholder="Add keywords..." required>
-									</label>
-								</form>
-							</div> <!-- .col-md-12 -->
-						</div> <!-- .row -->
-						<div class="row justify-content-center">
-							<div class="col-md-12">
-								<button id="search-button" type="button" class="btn btn-primary continue-button my-3">Search &nbsp<i class="fa fa-search fa-1x" aria-hidden="true"></i></button>
-							</div> <!-- .col-md-12 -->
-						</div> <!-- .continue-row -->
 					</div> <!-- .container -->
+					<div class="row">
+						<div class="col-md-12" id="d3-container">
+							<svg width="960" height="960"></svg>
+						</div> <!-- .col-md-12 -->
+					</div> <!-- .row -->
 				</div> <!-- .jumbotron -->
 			</div> <!-- #jumbotron_container -->
-			<div id="results_container" class="container-fluid">
-				<div class="container text-center">
-					<div class="row">
-						<div class="col-md-12">
-							<h1>Here are the results of your search:</h1>
-							<button id="back-button" type="button" class="btn btn-primary continue-button my-3"><i class="fa fa-caret-up fa-1x" aria-hidden="true"></i>&nbsp Back</button>
-							<hr class="my-4">
-							<p class="lead">Your can browse the results of your search below.</p>
-						</div> <!-- .col-md-12 -->
-					</div> <!-- .row -->
-				</div> <!-- .container -->
-				<div id="results_table_container" class="container text-center">
-					<div class="row">
-						<div class="col-md-12">
-							<p id="search-results" class="my-4"><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></p>
-						</div> <!-- .col-md-12 -->
-					</div> <!-- .row -->
-				</div> <!-- .container -->
-			</div> <!-- #results_container -->
 			<div id="footer" class="container-fluid explore-footer">
 				<div class="container">
 						<div class="row">
@@ -156,6 +93,8 @@
 			<script src="{{ url_for('static', filename='js/tags-input.js') }}"></script>
 			<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 			<script>[].forEach.call(document.querySelectorAll('input[type="tags"]'), tagsInput);</script>
+			<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+			<script src="{{ url_for('static', filename='js/circle.js') }}"></script>
 			<script> $(function() {$('[data-toggle="tooltip"]').tooltip()}) </script>
 		</div> <!-- #footer -->
 </html>
