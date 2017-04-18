@@ -76,5 +76,5 @@ class CannedAnalysisDatabase:
 
     def get_keyword_json(self, ignore_keywords=['do_id', 'pert_ids', 'umls_cui', 'description', 'ctrl_ids', 'creeds_id', 'smiles', 'drugbank_id', 'pubchem_cid', 'mm_gene_symbol', 'chdir_norm', 'top_genes']):
         values = pd.read_sql_query('SELECT DISTINCT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t on t.id=cam.term_fk WHERE term_name NOT IN ("'+'", "'.join(ignore_keywords)+'") GROUP BY term_name, value HAVING count > 0', self.engine, index_col='term_name')
-        tree_dict = {'name': 'Canned Analyses', 'children': [{'name': term_name.replace('_', ' ').title(), 'children': [{'name': rowData['value'], 'size': rowData['count']} for index, rowData in values.loc[term_name].iterrows()]} for term_name in values.index.unique()]}
+        tree_dict = {'name': 'Canned Analyses', 'children': [{'name': term_name.replace('_', ' ').title(), 'children': [{'name': rowData['value'] if rowData['count'] > 10 and len(rowData['value']) < 25 else '', 'size': rowData['count']} for index, rowData in values.loc[term_name].iterrows()]} for term_name in values.index.unique()]}
         return tree_dict
