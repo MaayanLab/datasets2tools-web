@@ -76,9 +76,9 @@ def test():
 def about():
 	return render_template('about.html')
 
-@app.route('/datasets2tools/test')
-def test2():
-	print pd.read_sql_query('SELECT * FROM term', engine)
+@app.route('/datasets2tools/upload.html')
+def upload():
+	return render_template('upload.html')
 
 @app.route('/datasets2tools/keyword_search')
 def keyword_search():

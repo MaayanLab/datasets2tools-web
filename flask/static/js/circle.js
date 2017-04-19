@@ -6,7 +6,7 @@ var svg = d3.select("svg"),
 
 var color = d3.scaleLinear()
     .domain([-1, 5])
-    .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+    .range(["#eceeef", "#3366cc"])
     .interpolate(d3.interpolateHcl);
 
 var pack = d3.pack()
@@ -37,6 +37,7 @@ d3.json("http://localhost:5000/datasets2tools/keyword_tree", function(error, roo
       .attr("class", "label")
       .style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
       .style("display", function(d) { return d.parent === root ? "inline" : "none"; })
+      .style("font-size", function(d) {console.log(Math.log2(d.data.size)); return d.data.size > 0 ? Math.min(Math.sqrt(d.data.size)+3, 25) : "13pt"; })
       .text(function(d) { return d.data.name; });
 
   var node = g.selectAll("circle,text");
