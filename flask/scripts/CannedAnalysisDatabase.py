@@ -75,6 +75,10 @@ class CannedAnalysisDatabase:
         return result_dataframe.to_html(escape=False, index=False, classes='tool-table').encode('ascii', 'ignore')
 
     def get_keyword_json(self, ignore_keywords=['pert_ids', 'description', 'ctrl_ids', 'creeds_id', 'smiles', 'mm_gene_symbol', 'chdir_norm', 'top_genes']):
-        values = pd.read_sql_query('SELECT DISTINCT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t on t.id=cam.term_fk WHERE term_name NOT IN ("'+'", "'.join(ignore_keywords)+'") GROUP BY term_name, value HAVING count > 10', self.engine, index_col='term_name')
+        values = pd.read_sql_query('SELECT DISTINCT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t on t.id=cam.term_fk WHERE term_name NOT IN ("'+'", "'.join(ignore_keywords)+'") GROUP BY term_name, value HAVING count > 10 ORDER BY count ASC', self.engine, index_col='term_name')
         tree_dict = {'name': 'Canned Analyses', 'children': [{'name': term_name.replace('_', ' ').title(), 'children': [{'name': rowData['value'], 'size': rowData['count']} for index, rowData in values.loc[term_name].iterrows()]} for term_name in values.index.unique()]}
         return tree_dict
+
+    def get_keyword_count(self, ignore_keywords=['pert_ids', 'description', 'ctrl_ids', 'creeds_id', 'smiles', 'mm_gene_symbol', 'chdir_norm', 'top_genes']):
+        keyword_count = pd.read_sql_query('SELECT DISTINCT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t on t.id=cam.term_fk WHERE term_name NOT IN ("'+'", "'.join(ignore_keywords)+'") GROUP BY term_name, value', self.engine, index_col='term_name')
+        return keyword_count

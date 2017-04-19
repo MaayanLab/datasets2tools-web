@@ -66,7 +66,9 @@ def search():
 
 @app.route('/datasets2tools/explore.html')
 def explore():
-	return render_template('explore.html')
+	Database = CannedAnalysisDatabase(engine)
+	keyword_count = Database.get_keyword_count()
+	return render_template('explore.html', keyword_count=keyword_count)
 
 @app.route('/datasets2tools/test.html')
 def test():

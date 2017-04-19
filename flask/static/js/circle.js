@@ -27,6 +27,7 @@ d3.json("http://localhost:5000/datasets2tools/keyword_tree", function(error, roo
   var circle = g.selectAll("circle")
     .data(nodes)
     .enter().append("circle")
+      .attr("id", function(d) { return d.data.name})
       .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
       .style("fill", function(d) { return d.children ? color(d.depth) : null; })
       .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
