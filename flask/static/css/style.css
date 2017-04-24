@@ -1,3 +1,11 @@
+/*** HTML ***/
+
+body {
+	min-width: 450px;
+}
+
+/*** Containers ***/
+
 #main-container {
 	padding: 0px;
 }
@@ -12,14 +20,16 @@
 #navbar {
 	padding-top: 0;
 	padding-bottom: 0;
+	min-height: 100px;
 }
 
 /* Logo */
 
 #navbar-logo {
 	font-size: 30pt;
-	font-family:  'Quicksand', sans-serif;
+	font-family: 'Quicksand', sans-serif;
 	color: #A0A4B0;
+	margin: 15px 0px;
 }
 
 #navbar-logo:hover {
@@ -43,4 +53,26 @@
 	color: #C2C5CC;
 	background-color: #303852;
 	transition: 0.5s;
+}
+
+/* Toggler */
+
+#toggler {
+	margin-top: 30px;
+}
+
+/*** Jumbotron ***/
+
+/* General */
+#jumbotron-wrapper {
+	background-color: #eceeef;
+}
+
+
+/* Buttons */
+
+.jumbotron-button {
+	background-color: #1D2541;
+	height: 300px;
+	width: 300px;
 }

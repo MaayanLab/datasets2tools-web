@@ -12,8 +12,8 @@
 		<div id="main-container" class="container-fluid">
 
 			<div id="navbar-wrapper">
-				<nav id="navbar" class="navbar navbar-toggleable-md navbar-light container">
-				  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+				<nav id="navbar" class="navbar navbar-toggleable-md navbar-inverse container">
+				  <button id="toggler" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
 				    <span class="navbar-toggler-icon"></span>
 				  </button>
 				  <a id="navbar-logo" class="navbar-brand" href="#">Datasets2Tools</a>
@@ -41,44 +41,38 @@
 				</nav>
 			</div> <!-- #navbar-wrapper -->
 
-			<div id="jumbotron_container">
-				<div class="jumbotron">
-					<div class="container">
-						<h1 class="my-2">Promoting the findability, accessibility and sharability of bioinformatics analyses. </h1>
-						<br>
-						<p class="lead">By introducing a new type of digital object, the canned analysis, we aim to make it easier for researchers and tool developers
-						to share and discover biological knowledge.</p>
-						<hr class="my-4">
-						<p class="lead">Here are a few suggestions on getting started.</p>
-						<div id="jumbotron_button_row" class="row justify-content-center">
+			<div id="jumbotron-wrapper">
+				<div class="jumbotron container text-center">
+					<div class="row">
+						<div class="col-md-12">
+							<h1 class="my-2">Promoting the findability, accessibility and sharability of bioinformatics analyses</h1>
+							<br>
+							<p class="lead">By introducing a new type of digital object, the canned analysis, we aim to make it easier for researchers and tool developers
+							to share and discover biological knowledge.</p>
+							<hr class="my-4">
+							<p class="lead">Here are a few suggestions on getting started.</p>
+						</div>
+					</div> <!-- .row -->
+					<div class="row justify-content-center">
+						<div class="col-md-3">
+							<a href="/datasets2tools/search.html" class="jumbotron-button">
+								<i class="fa fa-search fa-5x" aria-hidden="true"></i><br>Search
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a href="/datasets2tools/explore.html" class="jumbotron-button">
+								<i class="fa fa-compass fa-5x" aria-hidden="true"></i><br>Explore
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a href="/datasets2tools/upload.html" class="jumbotron-button">
+								<i class="fa fa-upload fa-5x" aria-hidden="true"></i><br>Upload
+							</a>
+						</div>
+					</div> <!-- .row -->
+				</div> <!-- .jumbotron .container -->
+			</div> <!-- #jumbotron-wrapper -->
 
-							<div class="col-md-3">
-								<a href="/datasets2tools/search.html" id="jumbotron_search_button" class="jumbotron-button center-block">
-									<i class="fa fa-search fa-5x" aria-hidden="true"></i>
-									<br>
-									Search
-								</a>
-							</div>
-
-							<div class="col-md-3">
-								<a href="/datasets2tools/explore.html" id="jumbotron_explore_button" class="jumbotron-button center-block align-middle">
-									<i class="fa fa-compass fa-5x" aria-hidden="true"></i>
-									<br>
-									Explore
-								</a>
-							</div>
-							<div class="col-md-3">
-								<a href="/datasets2tools/upload.html" id="jumbotron_upload_button" class="jumbotron-button center-block">
-									<i class="fa fa-upload fa-5x" aria-hidden="true"></i>
-									<br>
-									Upload
-								</a>
-							</div>
-
-						</div> <!-- #jumbotron_button_row -->
-					</div>
-				</div>
-			</div> <!-- #jumbotron_container -->
 			<div id="intro_container">
 				<div id="info_title_container" class="container-fluid">
 					<div class="container">
