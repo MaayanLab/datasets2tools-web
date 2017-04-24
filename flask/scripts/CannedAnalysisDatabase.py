@@ -5,7 +5,7 @@ class CannedAnalysisDatabase:
     
     def __init__(self, engine):
         self.engine = engine
-# 
+
     # def fetch_tables(self):
         # self.tool = pd.read_sql_query('SELECT * FROM tool', self.engine, index_col='id')
         # self.dataset = pd.read_sql_query('SELECT * FROM dataset', self.engine, index_col='id')
@@ -81,4 +81,4 @@ class CannedAnalysisDatabase:
 
     def get_keyword_count(self, ignore_keywords=['pert_ids', 'description', 'ctrl_ids', 'creeds_id', 'smiles', 'mm_gene_symbol', 'chdir_norm', 'top_genes']):
         keyword_count = pd.read_sql_query('SELECT DISTINCT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t on t.id=cam.term_fk WHERE term_name NOT IN ("'+'", "'.join(ignore_keywords)+'") GROUP BY term_name, value', self.engine, index_col='term_name')
-        return keyword_count
+        print keyword_count

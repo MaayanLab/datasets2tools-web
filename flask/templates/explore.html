@@ -57,20 +57,29 @@
 			<div id="jumbotron_container">
 				<div id="explore_jumbotron" class="jumbotron">
 					<div class="container">
-						<div class="row justify-content-center">
+						<div id="metadata-explore-text" class="row justify-content-center">
 							<div class="col-md-12">
 								<h1>Metadata Explorer</h1>
 								<hr class="my-4">
-								<p id="object-select-text" class="lead">The chart below allows to interactively explore metadata tags associated to stored analyes.<sup>&nbsp<i class="fa fa-question-circle fa-1x" aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="The larger circles represent metadata tag names; the smaller circles contained within them represent
+								<p class="lead">The chart below allows to interactively explore metadata tags associated to stored analyes.<sup>&nbsp<i class="fa fa-question-circle fa-1x" aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="The larger circles represent metadata tag names; the smaller circles contained within them represent
 								values these tags are associated to.  Only values associated to at least 10 different canned analyses are shown."></i></sup></p>
-								<p id="object-select-text" class="lead-3">Built using Mike Bostock's D3 zoomable circle packing <a href="https://bl.ocks.org/mbostock/7607535">example</a>.</p>
+								<p class="lead-3">Built using Mike Bostock's D3 zoomable circle packing <a href="https://bl.ocks.org/mbostock/7607535">example</a>.</p>
 							</div> <!-- .col-md-12 -->
 						</div> <!-- .row -->
 					</div> <!-- .container -->
 					<div class="row">
-						<div class="col-md-12" id="d3-container">
+						<div class="col-md-8 text-right" id="d3-container">
 							<svg width="960" height="960"></svg>
-						</div> <!-- .col-md-12 -->
+						</div> <!-- .col-md-10 -->
+						<div class="col-md-2 text-center">
+							<form id="metadata-explore-form">
+							  <div class="form-group">
+							    <label for="metadata-explore-input"><b>Metadata Search</b></label>
+							    <input type="text" class="form-control" id="metadata-explore-input" placeholder="Search tissues, treatments...">
+							    <button id="metadata-explore-button" type="button" class="btn btn-primary">Search<i class="fa fa-search fa-1x" aria-hidden="true"></i></button>
+							  </div>
+							</form>
+						</div>
 					</div> <!-- .row -->
 				</div> <!-- .jumbotron -->
 			</div> <!-- #jumbotron_container -->

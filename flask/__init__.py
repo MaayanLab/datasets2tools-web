@@ -106,6 +106,15 @@ def keyword_tree():
 	keyword_dict = Database.get_keyword_json()
 	return json.dumps(keyword_dict)
 
+@app.route('/datasets2tools/keyword_count', methods=['POST', 'GET'])
+def keyword_count():
+	print request.method
+	# Database = CannedAnalysisDatabase(engine)
+	# keyword_count = Database.get_keyword_count()
+	# return str(keyword_count)
+	print request.form
+	return "request.form['keyword']"
+
 @app.route('/datasets2tools/flare.json')
 def flare():
 	with open('static/flare.json', 'r') as openfile:
