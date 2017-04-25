@@ -1,162 +1,140 @@
-<!DOCTYPE html>
-<html class="height-extended">
+<!DOCTYPE html> <html>
 	<head>
 		<meta charset="UTF-8">
 		<title>Datasets2Tools</title>
-		<!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}"> -->
 		<link rel="stylesheet" type="text/css" href="https://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css">
 		<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome.css') }}">
 	</head>
-	<body class="height-extended">
-		<div id="main_container" class="container-fluid height-extended">
-			<div id="navbar_container">
-				<nav id="navbar" class="navbar bg-custom justify-content-center">
-					<div id="logo-xl">Datasets2Tools</div>
-					<div id="logo-xl" class="hidden-xl-up hidden-sm-down"></div>
-					<ul class="hidden-lg-down">
-						<div class="float-left">
-							<li><a href="/datasets2tools">HOME</a></li>
-							<li><a href="/datasets2tools/search.html">SEARCH</a></li>
-							<li><a href="/datasets2tools/explore.html"">EXPLORE</a></li>
-						</div>
-						<div class="float-right">
-							<li><a href="/datasets2tools/about.html">ABOUT</a></li>
-							<li><a href="#" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Coming Soon...">HELP</a></li>
-							<li><a href="/datasets2tools/upload.html">UPLOAD</a></li>
-						</div>
-					</ul>
-					<ul class="hidden-xl-up">
-						<div class="float-left">
-							<div class="dropdown">
-								<a class="dropdown-toggle" id="left-dropdown-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<i class="fa fa-search fa-3x" aria-hidden="true"></i>
-								</a>
-								<div class="dropdown-menu" aria-labelledby="left-dropdown-menu">
-									<a class="dropdown-item" href="/datasets2tools"><i class="fa fa-home fa-2x" aria-hidden="true"></i>HOME</a>
-									<a class="dropdown-item" href="/datasets2tools/search.html"><i class="fa fa-search fa-2x" aria-hidden="true"></i>SEARCH</a>
-									<a class="dropdown-item" href="/datasets2tools/explore.html"><i class="fa fa-compass fa-2x" aria-hidden="true"></i>EXPLORE</a>
-								</div>
-							</div>
-						</div>
-						<div class="float-right">
-							<div class="dropdown">
-								<a class="dropdown-toggle" id="right-dropdown-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<i class="fa fa-question-circle fa-3x" aria-hidden="true"></i>
-								</a>
-								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="right-dropdown-menu">
-									<a class="dropdown-item" href="/datasets2tools/upload.html"><i class="fa fa-upload fa-2x" aria-hidden="true"></i>UPLOAD</a>
-									<a class="dropdown-item" href="#"><i class="fa fa-question-circle fa-2x" aria-hidden="true"></i>HELP</a>
-									<a class="dropdown-item" href="/datasets2tools/about.html"><i class="fa fa-info-circle fa-2x" aria-hidden="true"></i>ABOUT</a>
-								</div>
-							</div>
-						</div>
-					</ul>
+
+	<body>
+		<div id="main-container" class="container-fluid">
+
+			<div id="navbar-wrapper">
+				<nav id="navbar" class="navbar navbar-toggleable-md navbar-inverse container">
+				  <button id="toggler" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+				    <span class="navbar-toggler-icon"></span>
+				  </button>
+				  <a id="navbar-logo" class="navbar-brand" href="/datasets2tools">Datasets2Tools</a>
+				  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+				    <div class="nav navbar-nav ml-auto">
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools">HOME</a>
+					    <ul class="navbar-nav">
+			    	      <li class="nav-item dropdown">
+					        <a class="nav-link dropdown-toggle navbar-link" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					          SEARCH
+					        </a>
+					        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+					          <a class="dropdown-item" href=/datasets2tools/search>BASIC SEARCH</a>
+					          <a class="dropdown-item" href="/datasets2tools/advanced_search">ADVANCED SEARCH</a>
+					        </div>
+					      </li>
+					    </ul>
+					    <ul class="navbar-nav">
+			    	      <li class="nav-item dropdown">
+					        <a class="nav-link dropdown-toggle navbar-link" href="http://example.com" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					          EXPLORE
+					        </a>
+					        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
+					          <a class="dropdown-item" href="/datasets2tools/collections">COLLECTIONS</a>
+					          <a class="dropdown-item" href="/datasets2tools/metadata_explorer">METADATA</a>
+					        </div>
+					      </li>
+					    </ul>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/upload">UPLOAD</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="#">EXTENSION</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/help">HELP</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/about">ABOUT</a>
+				    </div>
+				  </div>
 				</nav>
-			</div> <!-- #navbar_container -->
-			<div id="jumbotron_container">
-				<div id="explore_jumbotron" class="jumbotron">
-					<div class="container">
-						<div class="row justify-content-center">
-							<div class="col-md-12">
+			</div> <!-- #navbar-wrapper -->
+
+			<div id="search-jumbotron-wrapper">
+				<div class="jumbotron">
+					<div class="container text-center">
+
+						<div class="row">
+							<div class="col-12">
 								<h1>What would you like to search?</h1>
 								<hr class="my-4">
-								<p id="object-select-text" class="lead my-4">To begin, select the type of object(s) you want to search:</p>
-							</div> <!-- .col-md-12 -->
+								<p id="object-select-text" class="lead my-4">To begin, select the type of object you want to search:</p>
+							</div> <!-- .col-12 -->
 						</div> <!-- .row -->
-						<div id="object-selector" class="row justify-content-center">
-							<div class="col-md-3">
+
+						<div id="object-selection-row" class="row justify-content-center">
+							<div class="col-4 col-md-3 col-lg-2">
 								<input type="radio" id="analyses" name="radio" checked />
-									<label for="analyses" class="btn btn-primary">
-										<i class="fa fa-pie-chart fa-5x" aria-hidden="true"></i>
-										<br>
-										Analyses
-									</label>
+								<label for="analyses" class="btn btn-primary"><i class="fa fa-pie-chart fa-5x" aria-hidden="true"></i><p>Analyses</p></label>
 							</div>
-
-							<div class="col-md-3">
+							<div class="col-4 col-md-3 col-lg-2">
 								<input type="radio" id="datasets" name="radio" />
-									<label for="datasets" class="btn btn-primary">
-										<i class="fa fa-database fa-5x" aria-hidden="true"></i>
-										<br>
-										Datasets
-									</label>
+									<label for="datasets" class="btn btn-primary"><i class="fa fa-database fa-5x" aria-hidden="true"></i><p>Datasets</p></label>
 							</div>
-
-							<div class="col-md-3">
+							<div class="col-4 col-md-3 col-lg-2">
 								<input type="radio" id="tools" name="radio" />
-									<label for="tools" class="btn btn-primary">
-										<i class="fa fa-cogs fa-5x" aria-hidden="true"></i>
-										<br>
-										Tools
-									</label>
+								<label for="tools" class="btn btn-primary"><i class="fa fa-cogs fa-5x" aria-hidden="true"></i><p>Tools</p></label>
 							</div>
+						</div> <!-- #object-selection-row -->
 
-						</div> <!-- #object-selector -->
-						<div class="row">
-							<div class="col-md-12">
+						<div id="keyword-input-row" class="row">
+							<div class="col-12">
 								<hr class="my-4" width="50%">
 								<p id="keyword-input-text" class="lead my-4">Second, enter a list of keywords revelant to your search:<sup>&nbsp<i class="fa fa-question-circle fa-1x" aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="Enter multiple tags, separating each one by pressing Enter.  Tags may also contain spaces, and are case insensitive."></i></sup></p>
-							</div> <!-- .col-md-12 -->
-						</div> <!-- .row -->
-						<div class="row">
-							<div class="col-md-12">
-								<form id="keywords-form">
-									<label id="keywords-label">
+								<form>
+									<label>
 										<input name="keywords" type="tags" pattern="^#" placeholder="Add keywords..." required>
 									</label>
 								</form>
-								<p id="search-example" class="text-left"></p>
-							</div> <!-- .col-md-12 -->
-						</div> <!-- .row -->
-						<div class="row justify-content-center">
-							<div class="col-md-12">
+								<p id="search-example"></p>
 								<button id="search-button" type="button" class="btn btn-primary continue-button my-3">Search &nbsp<i class="fa fa-search fa-1x" aria-hidden="true"></i></button>
-							</div> <!-- .col-md-12 -->
-						</div> <!-- .continue-row -->
+							</div> <!-- .col-12 -->
+						</div> <!-- #keyword-input-row -->
+
 					</div> <!-- .container -->
 				</div> <!-- .jumbotron -->
-			</div> <!-- #jumbotron_container -->
-			<div id="results_container" class="container-fluid">
+			</div> <!-- #jumbotron-wrapper -->
+
+			<div id="search-results-wrapper">
 				<div class="container text-center">
 					<div class="row">
-						<div class="col-md-12">
+						<div class="col-12">
 							<h1>Here are the results of your search:</h1>
-							<button id="back-button" type="button" class="btn btn-primary continue-button my-3"><i class="fa fa-caret-up fa-1x" aria-hidden="true"></i>&nbsp Back</button>
 							<hr class="my-4">
-							<p class="lead">Your can browse the results of your search below.</p>
-						</div> <!-- .col-md-12 -->
+							<div id="search-results-description" class="lead justify-content-center text-center">
+								<span>Your can browse the results of your search below.</span>
+								<button id="back-button" type="button" class="btn btn-primary continue-button my-3"><i class="fa fa-caret-up fa-1x" aria-hidden="true"></i>&nbsp Back</button>
+							</div>
+						</div> <!-- .col-12 -->
 					</div> <!-- .row -->
-				</div> <!-- .container -->
-				<div id="results_table_container" class="container text-center">
 					<div class="row">
-						<div class="col-md-12">
-							<p id="search-results" class="my-4"><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></p>
-						</div> <!-- .col-md-12 -->
+						<div class="col-12">
+							<div id="search-results"></div>
+						</div> <!-- .col-12 -->
 					</div> <!-- .row -->
 				</div> <!-- .container -->
-			</div> <!-- #results_container -->
-			<div id="footer" class="container-fluid explore-footer">
-				<div class="container">
-						<div class="row">
-							<div class="col-md-12 text-center">
-								<!-- <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br> -->
-								<hr width="75%">
-								Developed by the <a href="http://icahn.mssm.edu/research/labs/maayan-laboratory">Ma'ayan Lab</a> at the <a href="http://icahn.mssm.edu/">Icahn School of Medicine at Mount Sinai</a>.
-							</div> <!-- .col-md-12 -->
-						</div> <!-- .row -->
-				</div> <!-- .container -->
-			</div> <!-- #footer -->
+			</div> <!-- #search-results-wrapper -->
+
 		</div> <!-- #main_container -->
-	</body>
-		<div>
-			<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+	    <footer class="footer text-center">
+		    <div class="container-fluid">
+				<hr class="my-1" width="90%">
+				<span><span class="hidden-sm-up">xs</span><span class="hidden-md-up hidden-xs-down">sm</span><span class="hidden-lg-up hidden-sm-down">md</span><span class="hidden-xl-up hidden-md-down">lg</span><span class="hidden-lg-down">xl</span></span>
+				Developed by the <a href="http://icahn.mssm.edu/research/labs/maayan-laboratory">Ma'ayan Lab</a> at the <a href="http://icahn.mssm.edu/">Icahn School of Medicine at Mount Sinai</a>.
+		    </div>
+	    </footer>
+
+		<div id="js">
+			<script src="https://code.jquery.com/jquery-3.1.1.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-			<script src="{{ url_for('static', filename='js/tags-input.js') }}"></script>
 			<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/tags-input.js') }}"></script>
 			<script>[].forEach.call(document.querySelectorAll('input[type="tags"]'), tagsInput);</script>
 			<script> $(function() {$('[data-toggle="tooltip"]').tooltip()}) </script>
-		</div> <!-- #footer -->
+		</div> <!-- #js -->
+
+	</body>
 </html>

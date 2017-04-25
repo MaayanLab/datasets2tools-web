@@ -5,16 +5,21 @@
 html {
 	position: relative;
 	min-height: 100%;
-  background-color: #F3F4F3;
-  font-size: 9pt;
+	font-size: 9pt;
+	min-width: 500px;
 }
 
 /* Body */
 
 body {
-	background-color: pink;
-	min-width: 450px;
-	margin-bottom: 50px;
+	background-color: #ECEEEF;
+	margin-bottom: 70px;
+}
+
+/* Container */
+
+.container {
+	max-width: 1000px;
 }
 
 /* Footer */
@@ -38,7 +43,6 @@ body {
 /* General */
 #navbar-wrapper {
 	background-color: #001627;
-	font-size: 10pt;
 }
 
 #navbar {
@@ -116,16 +120,496 @@ body {
 
 /*** Jumbotron ***/
 
-/* General */
 #jumbotron-wrapper {
-	background-color: #eceeef;
+	background-color: #ECEEEF;
 }
 
 /* Buttons */
 
 .jumbotron-button {
 	background-color: #1D2541;
-	height: 300px;
-	width: 300px;
+	display: block;
+	height: 125px;
+	width: 125px;
+	border-radius: 5px;
+	margin: auto;
 }
 
+.jumbotron-button:hover {
+	background-color: #303852;
+	transition: 0.3s;
+	text-decoration: none;
+}
+
+.jumbotron-button-content {
+	padding-top: 15px;
+	color: #ECEEEF;
+}
+
+.jumbotron-button-content i {
+	padding-bottom: 10px;
+}
+
+.jumbotron-button-content p {
+	font-size: 11pt;
+	font-weight: 100;
+}
+
+/***** Specific Pages *****/
+
+/*** Simple Search Bar ***/
+
+#object-selection-row label {
+	height: 125px;
+	width: 125px;
+	cursor: pointer;
+	text-align: center;
+	box-shadow: none;
+	border: none;
+	background-color: #1D2541;
+}
+
+#object-selection-row input[type="radio"] {
+	display: none;
+}
+
+#object-selection-row input[type="radio"]:checked + label {
+	background-color: #025aa5;
+}
+
+#object-selection-row .fa {
+	padding-top: 15px;
+	padding-bottom: 10px;
+}
+
+#object-selection-row p {
+	font-size: 10pt;
+}
+
+/*** Keyword Input ***/
+
+#search-jumbotron-wrapper .jumbotron {
+	padding-bottom: 20px;
+}
+
+#search-button {
+	background-color: #1D2541;
+	border: none;
+	box-shadow: none;
+	cursor: pointer;
+}
+
+#keyword-input-row label {
+	width: 85%;
+	max-width: 600px;
+	text-align: left;
+}
+
+#search-example {
+	padding-top: 3px;
+	margin-bottom: 3px;
+}
+
+#search-example a {
+	text-decoration: none;
+	color: #0275d8;
+}
+
+.form-alert {
+	position: absolute;
+	color: red;
+	left: 170px;
+	text-align: left;
+	font-size: 9pt;
+	vertical-align: middle;
+	padding: 3px 5px;
+	border: 1px solid red;
+	border-radius: 3px;
+}
+
+/*** Tags Input ***/
+
+.tags-input {
+	display:inline-block;
+	padding:5px 5px;
+	background:#FFF;
+	border:1px solid #CCC;
+	width:100%;
+	border-radius:2px;
+	box-shadow:inset 0 1px 2px rgba(0,0,0,.1);
+	cursor: text;
+}
+
+.tags-input .tag {
+	display:inline-block;
+	background:#EEE;
+	color:#444;
+	padding:2px 7px;
+	margin:3px 2px;
+	border:1px solid #CCC;
+	border-radius:2px;
+	font:inherit;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-ms-user-select:none;
+	user-select:none;
+	cursor:pointer;
+	transition:all .1s ease
+}
+
+.tags-input .tag.selected {
+	background-color:#777;
+	border-color:#777;
+	color:#EEE
+}
+
+.tags-input .tag.dupe {
+	-webkit-transform:scale3d(1.2,1.2,1.2);
+	transform:scale3d(1.2,1.2,1.2);
+	background-color:#FCC;
+	border-color:#700
+}
+
+.tags-input input {
+	-webkit-appearance:none!important;
+	-moz-appearance:none!important;
+	appearance:none!important;
+	display:inline-block!important;
+	padding:5px 0px 5px 10px;
+	margin:0!important;
+	background:0 0!important;
+	border:none!important;
+	box-shadow:none!important;
+	font:inherit!important;
+	font-size:105%!important;
+	outline:0!important;
+}
+
+.tags-input .selected~input {
+	opacity:.3
+}
+
+/*** Search Results ***/
+
+#search-results-wrapper {
+	display: none;
+	background-color: #F3F4F3;
+	padding-top: 10px;
+}
+
+#back-button {
+    border: none;
+    color: white;
+    background-color: #13293D;
+	display: table-cell;
+	vertical-align: middle;
+	margin-left: 5em;
+	outline: none;
+	box-shadow: none;
+	cursor: pointer;
+}
+
+#search-results-description {
+	display: table;
+	margin: auto;
+}
+
+#search-results-description span {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+/*** Results Table ***/
+
+.tool-table,
+.dataset-table,
+.canned-analysis-table {
+	text-align: center;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    margin-top: 15px;
+}
+
+.tool-table tbody tr:nth-child(odd),
+.dataset-table tbody tr:nth-child(odd),
+.canned-analysis-table tbody tr:nth-child(odd) {
+   background-color: #f8f8f8;
+}
+
+.tool-table tbody tr:nth-child(even),
+.dataset-table tbody tr:nth-child(even),
+.canned-analysis-table tbody tr:nth-child(even) {
+   background-color: #fcfcfc;
+}
+
+.tool-table th,
+.dataset-table th,
+.canned-analysis-table th {
+	text-align: center;
+	height: 50px;
+    background-color: #13293D;
+    color: white;
+    font-size: 17px;
+    font-weight: 300;
+    border: none;
+}
+.tool-table td,
+.dataset-table td,
+.canned-analysis-table td {
+    border-bottom: 1px dotted #b4bec6;
+}
+
+.metadata-list {
+    word-wrap: break-word;
+    max-width: 500px;
+}
+
+.tool-cell-logo-icon,
+.dataset-cell-logo-icon {
+	height: 50px;
+}
+
+.tool-cell {
+	padding: 0px 20px;
+	max-width: 250px;
+}
+
+.tool-cell-logo {
+	display: table;
+	margin: 0 auto;
+}
+
+.tool-cell-logo-icon {
+	display: table-cell;
+	vertical-align: middle;
+	margin: 5px 10px 5px 10px;
+	border: 1px solid #9fa1a5;
+	background-color: white;
+}
+
+.tool-cell-logo-title {
+	display: table-cell;
+	vertical-align: middle;
+	font-size: 11pt;
+	font-weight: 500;
+}
+
+.tool-cell-text {
+    font-weight: 300;
+    word-wrap: break-word;
+}
+
+.dataset-cell {
+	padding: 0px 20px;
+	max-width: 250px;
+}
+
+.dataset-cell-logo {
+	display: table;
+	margin: 0 auto;
+}
+
+.dataset-cell-logo-icon {
+	display: table-cell;
+	vertical-align: middle;
+	margin: 5px 10px 5px 10px;
+	border: 1px solid #9fa1a5;
+}
+
+.dataset-cell-logo-title {
+	display: table-cell;
+	vertical-align: middle;
+	font-size: 13pt;
+	font-weight: 500;
+}
+
+.dataset-cell-text {
+    font-size: 9pt;
+    font-weight: 300;
+    word-wrap: break-word;
+}
+
+.analysis-cell {
+	padding: 15px 20px;
+	max-width: 250px;
+}
+
+.analysis-cell-icon {
+	width: 150px;
+	margin: 5px 10px 5px 10px;
+	border: 1px solid #9fa1a5;
+}
+
+.analysis-cell-icon:hover {
+	opacity: 0.5;
+	transition: 0.3s;
+}
+
+.analysis-cell-text {
+    font-size: 9pt;
+    font-weight: 300;
+    word-wrap: break-word;
+}
+
+.canned-analysis-table a,
+.tool-table a,
+.dataset-table a {
+	color: #001333;
+}
+
+#results_table_container {
+	width: 1350px;
+}
+
+.metadata-cell {
+	padding: 15px 10px;
+	max-width: 500px;
+	word-wrap: break-word;
+}
+
+.metadata-cell sup {
+	font-size: 7pt;
+}
+
+.metadata-cell-tag {
+	font-weight: 700;
+}
+
+.metadata-cell-value {
+	font-weight: 100;
+}
+
+.dataset-description-cell {
+    font-weight: 300;
+    font-size: 9pt;
+	padding: 10px 15px;
+	min-width: 300px;
+}
+
+.dataset-title-cell {
+	padding: 10px 15px;
+	min-width: 250px;
+}
+
+.dataset-title-cell-accession {
+    font-size: 13pt;
+    font-weight: 700;
+    padding-bottom: px;
+}
+
+.dataset-title-cell-accession {
+    font-size: 14pt;
+    font-weight: 700;
+    padding-bottom: 5px;
+}
+
+.dataset-title-cell-text {
+    font-size: 9pt;
+    font-weight: 100;
+    margin-top: 7px;
+    padding: 0 5px;
+}
+
+.dataset-repository-cell {
+	padding: 10px 15px;
+	min-width: 150px;
+}
+
+.dataset-repository-cell-icon {
+	width: 100px;
+	margin: 5px 10px 5px 10px;
+	border: 1px solid #9fa1a5;
+}
+
+.dataset-repository-cell-text {
+	font-size: 9pt;
+	font-weight: 300;
+}
+
+.dataset-tool-analysis-count-cell {
+	min-width: 300px;
+	padding: 5px 10px;
+}
+
+.dataset-tool-analysis-count {
+	display: table;
+	padding: 3px 0;
+}
+
+.dataset-tool-analysis-count-icon {
+	display: table-cell;
+	vertical-align: middle;
+	height: 35px;
+	border: 1px solid #9fa1a5;
+	margin: 5px;
+	background-color: white;
+}
+
+.dataset-tool-analysis-count-text {
+	display: table-cell;
+	vertical-align: middle;
+	font-weight: 100;
+}
+
+.dataset-tool-analysis-count-title {
+	font-size: 9pt;
+	font-weight: 400;
+}
+
+.dataset-tool-analysis-count-analyses {
+	font-size: 12pt;
+	font-weight: 100;
+}
+
+.tool-icon-cell {
+	display: table;
+}
+
+.tool-icon-cell-logo {
+	display: table-cell;
+	vertical-align: middle;
+	height: 50px;
+	border: 1px solid #9fa1a5;
+	margin: 15px;
+	background-color: white;
+}
+
+.tool-icon-cell-text {
+	display: table-cell;
+	vertical-align: middle;
+	font-weight: 500;
+	font-size: 9pt;
+	padding-right: 30px;
+}
+
+.tool-description-cell {
+	padding: 5px 25px;
+}
+
+.tool-analysis-count-cell {
+	min-width: 100px;
+	padding: 0 50px;
+}
+
+/*** Help Table ***/
+
+#help-table-wrapper .h5 {
+	margin-top: 15px;
+	font-weight: 600;
+}
+
+#help-table-wrapper .h6 {
+	font-weight: 600;
+}
+
+#help-table-wrapper .fa {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#help-table-wrapper .fa:hover {
+	color: #303852;
+	transition: 0.5s;
+}
