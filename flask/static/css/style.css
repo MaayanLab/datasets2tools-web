@@ -1,7 +1,30 @@
 /*** HTML ***/
 
+/* HTML */
+
+html {
+	position: relative;
+	min-height: 100%;
+  background-color: #F3F4F3;
+  font-size: 9pt;
+}
+
+/* Body */
+
 body {
+	background-color: pink;
 	min-width: 450px;
+	margin-bottom: 50px;
+}
+
+/* Footer */
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 50px;
+	line-height: 40px;
 }
 
 /*** Containers ***/
@@ -15,26 +38,27 @@ body {
 /* General */
 #navbar-wrapper {
 	background-color: #001627;
+	font-size: 10pt;
 }
 
 #navbar {
 	padding-top: 0;
 	padding-bottom: 0;
-	min-height: 100px;
+	min-height: 70px;
 }
 
 /* Logo */
 
 #navbar-logo {
-	font-size: 30pt;
+	font-size: 25pt;
 	font-family: 'Quicksand', sans-serif;
 	color: #A0A4B0;
-	margin: 15px 0px;
+	margin: 10px 0;
 }
 
 #navbar-logo:hover {
 	color: #C2C5CC;
-	transition: 0.5s;
+	transition: 0.3s;
 }
 
 /* Links */
@@ -45,20 +69,49 @@ body {
 
 .navbar-link {
 	color: #A0A4B0;
-	height: 100px;
-	line-height: 100px;
+	height: 70px;
+	line-height: 70px;
 }
 
 .navbar-link:hover {
 	color: #C2C5CC;
 	background-color: #303852;
-	transition: 0.5s;
+	transition: 0.3s;
 }
 
 /* Toggler */
 
 #toggler {
-	margin-top: 30px;
+	margin-top: 20px;
+}
+
+/* Dropdown */
+
+#navbar .dropdown-menu {
+  background-color: #303852;
+	border: none;
+	border-radius: 0;
+	margin-top: 0;
+	padding: 0;
+}
+
+#navbar .dropdown-menu a {
+	color: #A0A4B0;
+	padding: 30px 20px;
+}
+
+#navbar .dropdown-menu a:hover {
+	color: #C2C5CC;
+	background-color: #303852;
+	transition: 0.3s;
+}
+
+.nav-item.dropdown.show > a {
+	background-color: #303852;
+}
+
+.nav-item.dropdown.show .dropdown-menu a {
+	background-color: #001627;
 }
 
 /*** Jumbotron ***/
@@ -68,7 +121,6 @@ body {
 	background-color: #eceeef;
 }
 
-
 /* Buttons */
 
 .jumbotron-button {
@@ -76,3 +128,4 @@ body {
 	height: 300px;
 	width: 300px;
 }
+
