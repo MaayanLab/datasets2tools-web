@@ -90,7 +90,7 @@ $(document).on("click", '.add-search-term-button', function(evt) {
 		$submitRow = $evtTarget.parents('#advanced-search-form').find('#submit-button-row'),
 		isFirstRow = $evtTarget.parents('.filter-row').find('label').length === 1,
 		fieldHtml = $('#termName').html(),
-		rowHtml = '<div class="form-group row filter-row"><div class="col-1"><select class="form-control" id="operatorType"><option>AND</option><option>OR</option></select></div><div class="col-2"><select class="form-control" id="termName">'+fieldHtml+'</select></div><div class="col-2"><select class="form-control" id="comparisonType"><option>CONTAINS</option><option>IS</option><option>NOT CONTAINS</option><option>NOT</option></select></div><div class="col-sm-6"><input class="form-control" id="value"></div><div class="col-sm-1 text-left alter-search-term-col">'+minusIconHtml+plusIconHtml+'</div></div>';
+		rowHtml = '<div class="form-group row filter-row"><div class="col-1"><select class="form-control" id="operatorType"><option>AND</option><option>OR</option></select></div><div class="col-2"><select class="form-control" id="termName">'+fieldHtml+'</select></div><div class="col-2"><select class="form-control" id="comparisonType"><option>CONTAINS</option><option>IS</option><option>NOT CONTAINS</option><option>IS NOT</option></select></div><div class="col-sm-6"><input class="form-control" id="value"></div><div class="col-sm-1 text-left alter-search-term-col">'+minusIconHtml+plusIconHtml+'</div></div>';
 
 	if (!isFirstRow) {
 		$evtTarget.parent().html(minusIconHtml);
@@ -116,29 +116,72 @@ $(document).on("click", '.remove-search-term-button', function(evt) {
 
 ////////// 5. Advanced Search Query Builder
 
-$(document).on("change", "#advanced-search-form", function(evt) {
+function updateFilters() {
+	var objectType = $('#objectType').val();
+
+	$.ajax({
+	url: 'http://localhost:5000/datasets2tools/advanced_search_terms',
+	data: {
+	  'object_type': objectType,
+	},
+
+	success: function(data) {
+		$('#termName').html('<option>'+data.split('\n').join('</option><option>')+'</option>');
+	},
+
+	error: function() {
+		$("#search-results").html('Sorry, there was an error.');
+	}
+	});
+}
+
+updateFilters();
+
+$(document).on('change', '#objectType', function(evt) {
+	updateFilters();
+})
+
+////////// 6. Advanced Search Query Builder
+
+$('#advanced-search-form').submit(function(evt) {
+	evt.preventDefault();
+})
+
+function updateQuery() {
 	var $form = $('#advanced-search-form'),
-		$formRows = $form.find('.filter-row'),
-		objectType = $form.find('#objectType').val(),
-		searchQuery = 'Object = ' + objectType,
-		$formRow, termName, comparisonType, value, operatorType;
+	$formRows = $form.find('.filter-row'),
+	objectType = $form.find('#objectType').val(),
+	searchQuery = 'object IS ' + objectType.toLowerCase(),
+	$formRow, termName, comparisonType, value, operatorType;
 
 	$formRows.each(function(i, formRow) {
-
 		$formRow = $(formRow);
 		termName = $formRow.find('#termName').val();
 		comparisonType = $formRow.find('#comparisonType').val();
-		value = $formRow.find('#value').val();
+		value = '"'+$formRow.find('#value').val()+'"';
 		operatorType = i === 0? 'AND' : $formRow.find('#operatorType').val(); // Return AND if first filter row, otherwise looks it up
-
-		if (value.length > 0) {
-			searchQuery = '(' + searchQuery + ') ' + [operatorType, termName, comparisonType, value].join(' ')
-		}
-
-		// console.log([$formRow.find('#termName').val(), $formRow.find('#comparisonType').val(), $formRow.find('#value').val()].join(' '));
+		searchQuery = '(' + searchQuery + ') ' + [operatorType, termName.replace(' ', '_').toLowerCase(), comparisonType, value].join(' ')
 	})
-
 	$('#advanced-search-query').html(searchQuery);
+}
 
+$(document).on("change", "#advanced-search-form", function(evt) {
+	updateQuery();
+})
+
+$(document).on("click", '.remove-search-term-button', function(evt) {
+	updateQuery();
+})
+
+
+////////// 7. Advanced Search Submission
+
+$(document).on("click", "#advanced-search-submit-button", function(evt) {
+	updateQuery();
+	var searchQuery = $('#advanced-search-query').text().trim();
+	if (searchQuery === 'Build an advanced search query using the options below.') {
+	} else {
+		window.location.href = window.location.href+'?query='+encodeURIComponent(searchQuery);
+	}
 })
 

@@ -62,12 +62,27 @@ def search():
 @app.route('/datasets2tools/advanced_search')
 def advanced_search():
 	Database = CannedAnalysisDatabase(engine)
-	term_names = Database.get_term_names()
-	return render_template('advanced_search.html', term_names=term_names)
+	if 'query' in request.args.keys():
+		query = request.args.get('query')
+		object_type = query.split('object IS ')[-1].split(')')[0]
+		try:
+			ids = Database.advanced_search(request.args.get('query'))
+			if object_type == 'analyses':
+				result_html = Database.make_canned_analysis_table(ids)
+			elif object_type == 'datasets':
+				result_html = Database.make_dataset_table(ids)
+			elif object_type == 'tools':
+				result_html = Database.make_tool_table(ids)
+		except:
+			result_html = 'Sorry, there was an error.'
+		return render_template('advanced_search_results.html', result_html=result_html)
+	else:
+		return render_template('advanced_search.html')
 
-@app.route('/datasets2tools/help')
-def help():
-	return render_template('help.html')
+@app.route('/datasets2tools/advanced_search_terms')
+def advanced_search_terms():
+	Database = CannedAnalysisDatabase(engine)
+	return Database.get_term_names(request.args.get('object_type'))
 
 @app.route('/datasets2tools/keyword_search')
 def keyword_search():
@@ -87,6 +102,13 @@ def keyword_search():
 		table_html = Database.make_tool_table(ids)
 		return str(table_html)
 
+@app.route('/datasets2tools/manual_upload')
+def manual_upload():
+	return render_template('manual_upload.html')
+
+@app.route('/datasets2tools/help')
+def help():
+	return render_template('help.html')
 
 
 

@@ -1,3 +1,4 @@
+import re
 import pandas as pd
 pd.set_option('max.colwidth', -1)
 
@@ -52,7 +53,7 @@ class CannedAnalysisDatabase:
             dataset_html = '<div class="dataset-title-cell"><a href="'+rowData['dataset_landing_url']+'" class="dataset-title-cell-accession">'+rowData['dataset_accession']+'</a><div class="dataset-title-cell-text">'+rowData['dataset_title']+'</div></div>'
             description_html = '<div class="dataset-description-cell">'+rowData['dataset_description']+'</div>'
             repository_html = '<div class="dataset-repository-cell"><a href="'+rowData['repository_homepage_url']+'"><img class="dataset-repository-cell-icon" src="'+rowData['repository_icon_url']+'"></a><div class="dataset-repository-cell-text">'+rowData['repository_name']+' <sup><i class="fa fa-info-circle fa-1x"  aria-hidden="true" data-toggle="tooltip" data-placement="bottom" data-html="true" data-animation="false" title="'+rowData['repository_description']+'"></i></sup></div></div>'
-            analysis_html = '<div class="dataset-tool-analysis-count-cell">'+''.join('<div class="dataset-tool-analysis-count"><a class="dataset-tool-analysis-count-tool-link" href="'+countRowData['tool_homepage_url']+'"><img class="dataset-tool-analysis-count-icon" src="'+countRowData['tool_icon_url']+'"></a><div class="dataset-tool-analysis-count-text"><a href="'+countRowData['tool_homepage_url']+'" class="dataset-tool-analysis-count-title">'+countRowData['tool_name']+'</a><sup> <i class="fa fa-info-circle fa-1x" aria-hidden="true" data-toggle="tooltip" data-placement="top" data-html="true" data-animation="false" title="'+countRowData['tool_description']+'"></i></sup>: <a href="#" class="dataset-tool-analysis-count-analysis">' + str(countRowData['count']) + ' analys'+return_letter(countRowData['count'])+'s</a></div></div>' for countIndex, countRowData in analysis_counts[analysis_counts['dataset_accession']==rowData['dataset_accession']].iterrows()) + '</div>'
+            analysis_html = '<div class="dataset-tool-analysis-count-cell">'+''.join('<div class="dataset-tool-analysis-count"><a class="dataset-tool-analysis-count-tool-link" href="'+countRowData['tool_homepage_url']+'"><img class="dataset-tool-analysis-count-icon" src="'+countRowData['tool_icon_url']+'"></a><div class="dataset-tool-analysis-count-text"><a href="'+countRowData['tool_homepage_url']+'" class="dataset-tool-analysis-count-title">'+countRowData['tool_name']+'</a><sup> <i class="fa fa-info-circle fa-1x" aria-hidden="true" data-toggle="tooltip" data-placement="top" data-html="true" data-animation="false" title="'+countRowData['tool_description']+'"></i></sup>: <a href="http://localhost:5000/datasets2tools/advanced_search?query=((object%20IS%20analyses)%20AND%20dataset_accession%20IS%20%22'+rowData['dataset_accession']+'%22)%20AND%20tool_name%20IS%20%22'+countRowData['tool_name']+'%22" class="dataset-tool-analysis-count-analysis">' + str(countRowData['count']) + ' analys'+return_letter(countRowData['count'])+'s</a></div></div>' for countIndex, countRowData in analysis_counts[analysis_counts['dataset_accession']==rowData['dataset_accession']].iterrows()) + '</div>'
             result_list.append([dataset_html, description_html, repository_html, analysis_html])
         result_dataframe = pd.DataFrame(result_list, columns=['Dataset', 'Description', 'Repository', 'Analyses']).set_index('Dataset', drop=False)#.loc[analysis_counts['dataset_accession'].unique()]
         return result_dataframe.to_html(escape=False, index=False, classes='dataset-table').encode('ascii', 'ignore')
@@ -83,7 +84,42 @@ class CannedAnalysisDatabase:
         keyword_count = pd.read_sql_query('SELECT DISTINCT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t on t.id=cam.term_fk WHERE term_name NOT IN ("'+'", "'.join(ignore_keywords)+'") GROUP BY term_name, value', self.engine, index_col='term_name')
         print keyword_count
 
-    def get_term_names(self):
-        term_names = pd.read_sql_query('SELECT term_name FROM term', self.engine)['term_name']
-        term_names = ['All Fields', 'Dataset Accession', 'Dataset Title', 'Dataset Description', 'Repository', 'Tool Name', 'Tool Description'] + [x.replace('_', ' ').title() for x in term_names]
-        return term_names
+    def get_term_names(self, object_type):
+        canned_analysis_metadata_terms = pd.read_sql_query('SELECT term_name FROM term', self.engine)['term_name'].tolist()
+        dataset_terms = ['dataset_accession', 'dataset_title', 'dataset_description', 'repository', 'repository_description']
+        tool_terms = ['tool_name', 'tool_description']
+        if object_type == 'Analyses':
+            term_list = ['All Fields']+canned_analysis_metadata_terms+dataset_terms+tool_terms
+            return '\n'.join([x.replace('_', ' ').title() for x in term_list])
+        elif object_type == 'Datasets':
+            term_list = ['All Fields']+dataset_terms
+            return '\n'.join([x.replace('_', ' ').title() for x in term_list])
+        elif object_type == 'Tools':
+            term_list = ['All Fields']+tool_terms
+            return '\n'.join([x.replace('_', ' ').title() for x in term_list])
+
+    def advanced_search(self, advanced_query):
+
+        if 'AND' not in advanced_query:
+            raise ValueError('No conditions specified.')
+
+        object_type = advanced_query.split('object IS ')[-1].split(')')[0]
+        advanced_query = '('+advanced_query.lower().replace('object is', 'SELECT id FROM').replace(' not contains ', ' NOT LIKE "%').replace(' contains ', ' LIKE "%').replace(' and ', ' AND ').replace(' or ', ' OR ').replace(' is not', ' != ').replace(' is ', ' = ')+')'
+        
+        if any([x in advanced_query for x in ['drop', 'truncate']]):
+            raise ValueError('Not allowed.')
+
+        advanced_query = re.sub(r'%"(.+?(?="\)))', r'%%\1%%', advanced_query)
+        if object_type == 'analyses':
+            advanced_query = advanced_query.replace('analyses) AND', 'canned_analysis_metadata cam LEFT JOIN term ON term.id=cam.term_fk LEFT JOIN canned_analysis ca on ca.id=cam.canned_analysis_fk LEFT JOIN dataset d on d.id=ca.dataset_fk LEFT JOIN tool on tool.id=ca.tool_fk WHERE').replace('all_fields', 'value').replace('(', '').replace(')', '').replace('SELECT id', 'SELECT DISTINCT ca.id')
+            term_names = pd.read_sql_query('SELECT * FROM term', self.engine)['term_name'].tolist()
+            for term_name in term_names:
+                advanced_query = re.sub(r'(%(term_name)s)([^"]*"[^"]*")' % locals(), r'ca.id IN (SELECT canned_analysis_fk FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE `term_name`="\1" AND `value`\2)', advanced_query)
+        elif object_type == 'datasets':
+            advanced_query = advanced_query.replace('datasets) AND', 'dataset d LEFT JOIN repository r on r.id=d.repository_fk WHERE').replace('(', '').replace(')', '').replace('all_fields', 'CONCAT_WS(" ", dataset_accession, dataset_title, dataset_description)').replace('SELECT id', 'SELECT DISTINCT d.id')
+        elif object_type == 'tools':
+            advanced_query = advanced_query.replace('tools) AND', 'tool WHERE').replace('(', '').replace(')', '').replace('all_fields', 'CONCAT_WS(" ", tool_name, tool_description)')
+        advanced_query += ' LIMIT 25'
+        return pd.read_sql_query(advanced_query, self.engine)['id'].tolist()
+
+
