@@ -59,6 +59,12 @@ def index():
 def search():
 	return render_template('search.html')
 
+@app.route('/datasets2tools/advanced_search')
+def advanced_search():
+	Database = CannedAnalysisDatabase(engine)
+	term_names = Database.get_term_names()
+	return render_template('advanced_search.html', term_names=term_names)
+
 @app.route('/datasets2tools/help')
 def help():
 	return render_template('help.html')
@@ -80,7 +86,6 @@ def keyword_search():
 		ids = Database.search_tools_by_keyword(keywords)
 		table_html = Database.make_tool_table(ids)
 		return str(table_html)
-
 
 
 

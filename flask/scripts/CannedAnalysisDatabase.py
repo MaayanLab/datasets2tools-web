@@ -82,3 +82,8 @@ class CannedAnalysisDatabase:
     def get_keyword_count(self, ignore_keywords=['pert_ids', 'description', 'ctrl_ids', 'creeds_id', 'smiles', 'mm_gene_symbol', 'chdir_norm', 'top_genes']):
         keyword_count = pd.read_sql_query('SELECT DISTINCT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t on t.id=cam.term_fk WHERE term_name NOT IN ("'+'", "'.join(ignore_keywords)+'") GROUP BY term_name, value', self.engine, index_col='term_name')
         print keyword_count
+
+    def get_term_names(self):
+        term_names = pd.read_sql_query('SELECT term_name FROM term', self.engine)['term_name']
+        term_names = ['All Fields', 'Dataset Accession', 'Dataset Title', 'Dataset Description', 'Repository', 'Tool Name', 'Tool Description'] + [x.replace('_', ' ').title() for x in term_names]
+        return term_names

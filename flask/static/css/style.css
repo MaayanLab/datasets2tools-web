@@ -593,6 +593,39 @@ body {
 	padding: 0 50px;
 }
 
+/*** Advanced Search ***/
+
+.alter-search-term-col {
+	padding-left: 0px;
+	margin: auto 0;
+	text-align: left;
+}
+
+.search-term-button {
+	cursor: pointer;
+	color: #303852;
+	padding-right: 10px;
+}
+
+#advanced-search-submit-button {
+	background-color: #1D2541;
+	border: none;
+	box-shadow: none;
+	cursor: pointer;
+	margin-top: 10px;
+}
+
+#advanced-search-query {
+	background-color: #F3F4F3;
+	border: 1px solid lightgrey;
+	margin-top: 5px;
+	margin-bottom: 20px;
+	padding: 10px 10px;
+	font-family: 'Monaco';
+	font-size: 8pt;
+}
+
+
 /*** Help Table ***/
 
 #help-table-wrapper .h5 {
