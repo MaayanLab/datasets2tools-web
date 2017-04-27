@@ -30,9 +30,9 @@ class CannedAnalysisDatabase:
         for index, rowData in canned_analyses.iterrows():
             tool_html = '<div class="tool-cell"><a class="tool-cell-logo" href="'+rowData['tool_homepage_url']+'"><img class="tool-cell-logo-icon" src="'+rowData['tool_icon_url']+'"><span class="tool-cell-logo-title">'+rowData['tool_name']+'</span></a><span class="tool-cell-text">'+rowData['tool_description']+'</span></div>'
             dataset_html = '<div class="dataset-cell"><a class="dataset-cell-logo" href="'+rowData['dataset_landing_url']+'""><img class="dataset-cell-logo-icon" src="'+rowData['repository_icon_url']+'"><span class="dataset-cell-logo-title">'+rowData['dataset_accession']+'</span></a><span class="dataset-cell-text">'+rowData['dataset_title']+' <sup><i class="fa fa-info-circle fa-1x"  aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="'+rowData['dataset_description']+'"></i></sup></span></div>'
-            analysis_hyml = '<div class="analysis-cell"><a href="'+rowData['canned_analysis_url']+'"><img class="analysis-cell-icon" src="'+rowData['tool_screenshot_url']+'"></a><div class="analysis-cell-text">'+descriptions[index]+'.</div></div>'
+            analysis_html = '<div class="analysis-cell"><a href="'+rowData['canned_analysis_url']+'"><img class="analysis-cell-icon" src="'+rowData['tool_screenshot_url']+'"></a><div class="analysis-cell-text">'+descriptions[index]+'.</div></div>'
             metadata_html = '<div class="metadata-cell">'+'<br>'.join(['<span class="metadata-cell-tag">'+metadataRowData['term_name'].replace('_', ' ').title()+'</span><sup>&nbsp<i class="fa fa-info-circle fa-1x"  aria-hidden="true" data-toggle="tooltip" data-placement="top" data-html="true" data-animation="false" title="'+metadataRowData['term_description']+'"></i></sup>: <span class="metadata-cell-value">'+metadataRowData['value']+'</span>' for metadataIndex, metadataRowData in metadata[metadata['canned_analysis_fk'] == index].iterrows()]) + '</div>'
-            result_list.append([tool_html, dataset_html, analysis_hyml, metadata_html])
+            result_list.append([tool_html, dataset_html, analysis_html, metadata_html])
         result_dataframe = pd.DataFrame(result_list, columns=['Tool', 'Dataset', 'Analysis', 'Metadata'])
         return result_dataframe.to_html(escape=False, index=False, classes='canned-analysis-table').encode('ascii', 'ignore')
 
@@ -130,8 +130,20 @@ class CannedAnalysisDatabase:
 
     def object_search(self, object_type, id):
         if object_type == 'dataset':
-            return json.dumps(pd.read_sql_query('SELECT * FROM dataset d LEFT JOIN repository r on r.id = d.repository_fk WHERE d.id = {id}'.format(**locals()), self.engine).to_dict(orient='index')[0])
+            return json.dumps(pd.read_sql_query('SELECT d.id, dataset_accession, dataset_title, dataset_description, dataset_landing_url, repository_name, repository_description, repository_homepage_url, repository_icon_url FROM dataset d LEFT JOIN repository r on r.id = d.repository_fk WHERE d.id = {id}'.format(**locals()), self.engine).to_dict(orient='index')[0])
         elif object_type == 'tool':
             return json.dumps(pd.read_sql_query('SELECT * FROM tool WHERE id = {id}'.format(**locals()), self.engine).to_dict(orient='index')[0])
         else:
             return ''
+
+    def prepare_canned_analysis_table(self, canned_analysis_json):
+        canned_analysis_dict = json.loads(canned_analysis_json)
+        result_list = []
+        tool_html = '<div class="tool-cell"><a class="tool-cell-logo" href="'+canned_analysis_dict['tool']['tool_homepage_url']+'"><img class="tool-cell-logo-icon" src="'+canned_analysis_dict['tool']['tool_icon_url']+'"><span class="tool-cell-logo-title">'+canned_analysis_dict['tool']['tool_name']+'</span></a><span class="tool-cell-text">'+canned_analysis_dict['tool']['tool_description']+'</span></div>'
+        dataset_html = '<div class="dataset-cell"><a class="dataset-cell-logo" href="'+canned_analysis_dict['dataset']['dataset_landing_url']+'""><img class="dataset-cell-logo-icon" src="'+"canned_analysis_dict['dataset']['repository_icon_url']"+'"><span class="dataset-cell-logo-title">'+canned_analysis_dict['dataset']['dataset_accession']+'</span></a><span class="dataset-cell-text">'+canned_analysis_dict['dataset']['dataset_title']+' <sup><i class="fa fa-info-circle fa-1x"  aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="'+canned_analysis_dict['dataset']['dataset_description']+'"></i></sup></span></div>'
+        analysis_html = '<div class="analysis-cell"><a href="'+canned_analysis_dict['analysis']['canned_analysis_url']+'"><img class="analysis-cell-icon" src="'+"canned_analysis_dict['tool']['tool_screenshot_url']"+'"></a><div class="analysis-cell-text">'+canned_analysis_dict['analysis']['canned_analysis_description']+'.</div></div>'
+        metadata_html = '<div class="metadata-cell">'+'<br>'.join(['<span class="metadata-cell-tag">'+term_name.replace('_', ' ').title()+'</span><sup>&nbsp<i class="fa fa-info-circle fa-1x"  aria-hidden="true" data-toggle="tooltip" data-placement="top" data-html="true" data-animation="false" title="'+"metadataRowData['term_description']"+'"></i></sup>: <span class="metadata-cell-value">'+', '.join(value)+'</span>' for term_name, value in canned_analysis_dict['analysis_metadata'].iteritems()]) + '</div>'
+        result_list.append([tool_html, dataset_html, analysis_html, metadata_html])
+        result_dataframe = pd.DataFrame(result_list, columns=['Tool', 'Dataset', 'Analysis', 'Metadata'])
+        return result_dataframe.to_html(escape=False, index=False, classes='canned-analysis-table').encode('ascii', 'ignore')
+

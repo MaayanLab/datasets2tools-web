@@ -200,7 +200,7 @@ if (window.location.pathname === '/datasets2tools/manual_upload') {
 
 function addDatasetInputs() {
 	var $newDatasetDiv = $('#new-dataset'),
-		datasetInputsHtml = '<hr width="50%"><div class="form-group row"><label class="col-3 col-form-label lesspadding">Accession</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert accession..." id="datasetAccession"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Title</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert title..." id="datasetTitle"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Description</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert description..." id="datasetDescription"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">URL</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert URL..." id="datasetUrl"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Repository</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert repository..." id="datasetRepository"></div></div>';
+		datasetInputsHtml = '<hr width="50%"><div class="form-group row"><label class="col-3 col-form-label lesspadding">Accession</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert accession..." id="dataset_accession"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Title</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert title..." id="dataset_title"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Description</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert description..." id="dataset_description"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">URL</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert URL..." id="dataset_landing_url"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Repository</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert repository..." id="repository_name"></div></div>';
 	$newDatasetDiv.html(datasetInputsHtml);
 }
 
@@ -218,11 +218,11 @@ function fillDatasetInputs() {
 		success: function(data) {
 			var datasetMetadata = JSON.parse(data);
 			$('#new-dataset').attr('data-dataset-id', selectedDatasetId);
-			$('#datasetAccession').val(datasetMetadata['dataset_accession']).prop('disabled', true);
-			$('#datasetTitle').val(datasetMetadata['dataset_title']).prop('disabled', true);
-			$('#datasetDescription').val(datasetMetadata['dataset_description']).prop('disabled', true);
-			$('#datasetUrl').val(datasetMetadata['dataset_landing_url']).prop('disabled', true);
-			$('#datasetRepository').val(datasetMetadata['repository_name']).prop('disabled', true);
+			$('#dataset_accession').val(datasetMetadata['dataset_accession']).prop('disabled', true);
+			$('#dataset_title').val(datasetMetadata['dataset_title']).prop('disabled', true);
+			$('#dataset_description').val(datasetMetadata['dataset_description']).prop('disabled', true);
+			$('#dataset_landing_url').val(datasetMetadata['dataset_landing_url']).prop('disabled', true);
+			$('#repository_name').val(datasetMetadata['repository_name']).prop('disabled', true);
 		},
 
 		error: function() {
@@ -247,7 +247,7 @@ $(document).on('click', '#new-dataset-button', function(evt){
 
 function addToolInputs() {
 	var $newToolDiv = $('#new-tool'),
-		toolInputsHtml = '<hr width="50%"><div class="row"><div id="selectedToolIcon" class="col-12 text-center"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Name</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert name..." id="toolName"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Description</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert description..." id="toolDescription"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Homepage</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert homepage URL..." id="toolHomepageUrl"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Icon</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert icon URL..." id="toolIconUrl"></div></div>';
+		toolInputsHtml = '<hr width="50%"><div class="row"><div id="selectedToolIcon" class="col-12 text-center"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Name</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert name..." id="tool_name"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Description</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert description..." id="tool_description"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Homepage</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert homepage URL..." id="tool_homepage_url"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Icon</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert icon URL..." id="tool_icon_url"></div></div>';
 	$newToolDiv.html(toolInputsHtml);
 }
 
@@ -266,10 +266,10 @@ function fillToolInputs() {
 			var toolMetadata = JSON.parse(data);
 			$('#new-tool').attr('data-tool-id', selectedToolId);
 			$('#selectedToolIcon').html('<img class="manual-upload-tool-icon" src="'+toolMetadata['tool_icon_url']+'">')
-			$('#toolName').val(toolMetadata['tool_name']).prop('disabled', true)
-			$('#toolDescription').val(toolMetadata['tool_description']).prop('disabled', true)
-			$('#toolHomepageUrl').val(toolMetadata['tool_homepage_url']).prop('disabled', true)
-			$('#toolIconUrl').val(toolMetadata['tool_icon_url']).prop('disabled', true)
+			$('#tool_name').val(toolMetadata['tool_name']).prop('disabled', true)
+			$('#tool_description').val(toolMetadata['tool_description']).prop('disabled', true)
+			$('#tool_homepage_url').val(toolMetadata['tool_homepage_url']).prop('disabled', true)
+			$('#tool_icon_url').val(toolMetadata['tool_icon_url']).prop('disabled', true)
 		},
 
 		error: function() {
@@ -356,23 +356,22 @@ function getAnalysisMetadata($metadataWrapper) {
 	return metadata
 }
 
-$(document).on('click', '#submit-analysis-button', function(evt) {
+function prepareCannedAnalysisJSON() {
+
 	var datasetId = $('#new-dataset').attr('data-dataset-id'),
-		toolId = $('#new-tool').attr('data-tool-id'),
-		objectData = {};
+	toolId = $('#new-tool').attr('data-tool-id'),
+	objectData = {};
 
 	// Dataset
+	objectData['dataset'] = getFormData($('#new-dataset'));
 	if (datasetId) {
-		objectData['dataset'] = {'id': datasetId};
-	} else {
-		objectData['dataset'] = getFormData($('#new-dataset'));
+		objectData['dataset']['id'] = datasetId;
 	}
 
 	// Tool
+	objectData['tool'] =  getFormData($('#new-tool'));
 	if (toolId) {
-		objectData['tool'] = {'id': toolId};
-	} else {
-		objectData['tool'] =  getFormData($('#new-tool'));
+		objectData['tool']['id'] = toolId;
 	}
 
 	// Analysis
@@ -384,6 +383,28 @@ $(document).on('click', '#submit-analysis-button', function(evt) {
 	// Convert to JSON
 	jsonObject = JSON.stringify(objectData);
 
-	console.log(jsonObject);
+	// Return
+	return jsonObject
+}
+
+$(document).on('click', '#submit-analysis-button', function(evt) {
+
+	var cannedAnalysisJson = prepareCannedAnalysisJSON();
+
+	$.ajax({
+		url: 'http://localhost:5000/datasets2tools/prepare_canned_analysis_table',
+		data: {
+		  'canned_analysis_json': encodeURIComponent(cannedAnalysisJson)
+		},
+
+		success: function(data) {
+			$('#results').html(data);
+		},
+
+		error: function() {
+			console.log('Sorry, there has been an error.');
+		}
+	});
+
 })
 

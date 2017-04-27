@@ -11,7 +11,7 @@
 ##############################
 ##### 1.1 Python Libraries
 ##############################
-import sys, json, os
+import sys, json, os, urllib
 import pandas as pd
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
@@ -125,6 +125,14 @@ def stored_terms():
 	Database = CannedAnalysisDatabase(engine)
 	stored_data = Database.get_stored_data()
 	return '\n'.join(stored_data['term']['term_name'])
+
+
+@app.route('/datasets2tools/prepare_canned_analysis_table')
+def prepare_canned_analysis_table():
+	Database = CannedAnalysisDatabase(engine)
+	canned_analysis_json = urllib.unquote(request.args.get('canned_analysis_json'))
+	canned_analysis_table = Database.prepare_canned_analysis_table(canned_analysis_json)
+	return canned_analysis_table
 
 
 
