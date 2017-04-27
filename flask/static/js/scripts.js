@@ -191,8 +191,8 @@ $(document).on("click", "#advanced-search-submit-button", function(evt) {
 ////////// 8. Manual Upload
 
 if (window.location.pathname === '/datasets2tools/manual_upload') {
-	$('[role="combobox"]').attr('max-height', '300px')
-	$(document).on(function() {
+		$('[role="combobox"]').attr('max-height', '300px')
+		$(document).on(function() {
 	});
 }
 
@@ -217,11 +217,12 @@ function fillDatasetInputs() {
 
 		success: function(data) {
 			var datasetMetadata = JSON.parse(data);
-			$('#datasetAccession').val(datasetMetadata['dataset_accession']).prop('disabled', true)
-			$('#datasetTitle').val(datasetMetadata['dataset_title']).prop('disabled', true)
-			$('#datasetDescription').val(datasetMetadata['dataset_description']).prop('disabled', true)
-			$('#datasetUrl').val(datasetMetadata['dataset_landing_url']).prop('disabled', true)
-			$('#datasetRepository').val(datasetMetadata['repository_name']).prop('disabled', true)
+			$('#new-dataset').attr('data-dataset-id', selectedDatasetId);
+			$('#datasetAccession').val(datasetMetadata['dataset_accession']).prop('disabled', true);
+			$('#datasetTitle').val(datasetMetadata['dataset_title']).prop('disabled', true);
+			$('#datasetDescription').val(datasetMetadata['dataset_description']).prop('disabled', true);
+			$('#datasetUrl').val(datasetMetadata['dataset_landing_url']).prop('disabled', true);
+			$('#datasetRepository').val(datasetMetadata['repository_name']).prop('disabled', true);
 		},
 
 		error: function() {
@@ -238,6 +239,8 @@ $(document).on('change', '#dataset-accession-select-col', function(evt){
 
 $(document).on('click', '#new-dataset-button', function(evt){
 	addDatasetInputs()
+	$('#new-dataset').removeAttr('data-dataset-id');
+
 })
 
 ////////// 10. Add Tool
@@ -250,17 +253,18 @@ function addToolInputs() {
 
 function fillToolInputs() {
 
-	var selectedDatasetId = $('#toolNameSelect option:contains('+$('[data-id="toolNameSelect"]').attr('title')+')').attr('value');
+	var selectedToolId = $('#toolNameSelect option:contains('+$('[data-id="toolNameSelect"]').attr('title')+')').attr('value');
 
 	$.ajax({
 		url: 'http://localhost:5000/datasets2tools/object_search',
 		data: {
 		  'object_type': 'tool',
-		  'id': selectedDatasetId
+		  'id': selectedToolId
 		},
 
 		success: function(data) {
 			var toolMetadata = JSON.parse(data);
+			$('#new-tool').attr('data-tool-id', selectedToolId);
 			$('#selectedToolIcon').html('<img class="manual-upload-tool-icon" src="'+toolMetadata['tool_icon_url']+'">')
 			$('#toolName').val(toolMetadata['tool_name']).prop('disabled', true)
 			$('#toolDescription').val(toolMetadata['tool_description']).prop('disabled', true)
@@ -281,28 +285,105 @@ $(document).on('change', '#tool-name-select-col', function(evt){
 })
 
 $(document).on('click', '#new-tool-button', function(evt){
-	addToolInputs()
+	addToolInputs();
+	$('#new-tool').removeAttr('data-tool-id');
 })
 
 ////////// 10. Add Metadata Tags
 
 if (window.location.pathname === '/datasets2tools/manual_upload') {
 
-	var $metadataRowWrapper = $('#metadata-row-wrapper'),
-		$metadataRowWrapperClone = $('#metadata-row-wrapper').clone(),
-		$selectpicker = $('#selectpicker-original'),
-		$selectpickerWrapper = $('#selectpicker-wrapper');
-
-	$('.metadata-term-selectpicker').html($selectpickerWrapper.html());
-	// $('.metadata-term-selectpicker').find('.form-control').addClass('selectpicker');
-
-	$(document).on('click', '.add-tag-button', function(evt) {
-		$metadataRowWrapper.append($metadataRowWrapperClone.html());
-		$metadataRowWrapper.children().last().find('.metadata-term-selectpicker').html($selectpickerWrapper.html());
-		// $metadataRowWrapper.children().last().find('.metadata-term-selectpicker').find('.form-control').addClass('selectpicker');
-	})
+	var $metadataRowWrapper = $('#metadata-row-wrapper')
+		rowHtml = '<div class="form-group row metadata-row"><label class="col-3 col-form-label lesspadding alter-tag-col-left"><i class="fa fa-1x fa-plus-circle alter-tag-button add-tag-button" aria-hidden="true"></i>&nbsp<i class="fa fa-1x fa-minus-circle alter-tag-button remove-tag-button" aria-hidden="true"></i></label><div class="col-4 lesspadding metadata-term-selectpicker"><input class="form-control" type="text" placeholder="Insert term..." id="metadataTerm"></div><div class="col-4 lesspadding"><input class="form-control" type="text" placeholder="Insert value..." id="metadataValue"></div></div>';
 
 }
 
+$(document).on('click', '.add-tag-button', function(evt) {
+	$(evt.target).hide();
+	$metadataRowWrapper.append(rowHtml);
+})
 
+$(document).on('click', '.remove-tag-button', function(evt) {
+	var $evtTarget = $(evt.target),
+		$parentRow = $(evt.target).parents('.metadata-row'),
+		$previousRow = $parentRow.prev(),
+		isLastRow = $parentRow.next().length === 0,
+		isSecondRow = $previousRow.find('label').text() === 'Tags';
+
+	if ((isLastRow)) {
+		$previousRow.find('.add-tag-button').show();
+	}
+	$parentRow.remove();
+})
+
+////////// 11. Submit Analysis
+
+function getFormData($formWrapper) {
+
+	var formData = {};
+
+	$formWrapper.find('.form-group input').each(function(i, elem) {
+		var $elem = $(elem),
+			id = $elem.attr('id'),
+			value = $elem.val();
+		formData[id] = value;
+	})
+
+	return formData
+}
+
+function getAnalysisMetadata($metadataWrapper) {
+
+	var metadata = {},
+		$keywordTags = $metadataWrapper.find('.tags-input .tag'),
+		$tagRows = $metadataWrapper.find('#metadata-row-wrapper .metadata-row');
+
+	if ($keywordTags.length > 0) {
+		metadata['keywords'] = [];
+		$keywordTags.each(function(i, elem) {
+			metadata['keywords'].push($(elem).text());
+		})
+	}
+
+	$tagRows.each(function(i, elem) {
+		var $elem = $(elem),
+			termName = $elem.find('#metadataTerm').val(),
+			termValue = $elem.find('#metadataValue').val();
+		if ((termName.length > 0) && (termValue.length > 0)) {
+			metadata[termName] = termValue;
+		}
+	})
+	return metadata
+}
+
+$(document).on('click', '#submit-analysis-button', function(evt) {
+	var datasetId = $('#new-dataset').attr('data-dataset-id'),
+		toolId = $('#new-tool').attr('data-tool-id'),
+		objectData = {};
+
+	// Dataset
+	if (datasetId) {
+		objectData['dataset'] = {'id': datasetId};
+	} else {
+		objectData['dataset'] = getFormData($('#new-dataset'));
+	}
+
+	// Tool
+	if (toolId) {
+		objectData['tool'] = {'id': toolId};
+	} else {
+		objectData['tool'] =  getFormData($('#new-tool'));
+	}
+
+	// Analysis
+	objectData['analysis'] = getFormData($('#analysis-data-wrapper'));
+
+	// Analysis Metadata
+	objectData['analysis_metadata'] = getAnalysisMetadata($('#analysis-metadata-wrapper'));
+
+	// Convert to JSON
+	jsonObject = JSON.stringify(objectData);
+
+	console.log(jsonObject);
+})
 

@@ -146,71 +146,74 @@
 								<h3>Analysis</h3>
 								<hr width="75%">
 
-								<div class="form-group row">
-								  <label for="example-text-input" class="col-3 col-form-label lesspadding">Title</label>
-								  <div class="col-8 lesspadding">
-								    <input class="form-control" type="text" placeholder="Insert title..." id="analysisTitle">
-								  </div>
-								</div>
-
-								<div class="form-group row">
-								  <label for="example-text-input" class="col-3 col-form-label lesspadding">Description</label>
-								  <div class="col-8 lesspadding">
-								    <input class="form-control" type="text" placeholder="Insert description..." id="analysisDescription">
-								  </div>
-								</div>
-
-								<div class="form-group row">
-								  <label for="example-text-input" class="col-3 col-form-label lesspadding">URL</label>
-								  <div class="col-8 lesspadding">
-								    <input class="form-control" type="text" placeholder="Insert URL..." id="analysisUrl">
-								  </div>
-								</div>
-
-								<div class="row" style="margin:auto;">
-									<div class="col-12">
-										<h4>Metadata</h4>
-									  <hr width="75%">
-									</div>
-								</div>
-
-								<div class="form-group row">
-								  <label id="tags-label" for="example-text-input" class="col-3 col-form-label lesspadding">Keywords</label>
-								  <div class="col-8 lesspadding">
-								    <input name="keywords" type="tags" pattern="^#" placeholder="Add keywords...">
-								  </div>
-								</div>
-
-
-								<div class="row text-center">
-									<div class="col-12">
-										AND/OR
-									</div>
-								</div>
-								
-								<div id="metadata-row-wrapper">
-									<div class="form-group row metadata-row">
-									  <label for="example-text-input" class="col-3 col-form-label lesspadding tags-label-col">Tags</label>
-									  <div class="col-4 lesspadding metadata-term-selectpicker">
+								<div id="analysis-data-wrapper">
+									<div class="form-group row">
+									  <label for="example-text-input" class="col-3 col-form-label lesspadding">Title</label>
+									  <div class="col-8 lesspadding">
+									    <input class="form-control" type="text" placeholder="Insert title..." id="analysisTitle">
 									  </div>
-									  <div class="col-4 lesspadding">
-									    <input class="form-control" type="text" placeholder="Insert value..." id="analysisDescription">
+									</div>
+
+									<div class="form-group row">
+									  <label for="example-text-input" class="col-3 col-form-label lesspadding">Description</label>
+									  <div class="col-8 lesspadding">
+									    <input class="form-control" type="text" placeholder="Insert description..." id="analysisDescription">
 									  </div>
-	  								  <div class="col-1 lesspadding alter-tag-col">
-									    <i class="fa fa-1x fa-plus-circle alter-tag-button add-tag-button" aria-hidden="true"></i>
+									</div>
+
+									<div class="form-group row">
+									  <label for="example-text-input" class="col-3 col-form-label lesspadding">URL</label>
+									  <div class="col-8 lesspadding">
+									    <input class="form-control" type="text" placeholder="Insert URL..." id="analysisUrl">
 									  </div>
 									</div>
 								</div>
 
-								<div id="selectpicker-wrapper">
-								    <select id="selectpicker-original" class="form-control" title="Add term..." id="metadataTermName" data-live-search="true">
-									    {% for index, term_name in stored_data['term']['term_name'].iteritems() %}
-										    <option value="{{index}}">{{term_name.replace('_', ' ').title()}}</option>
-									    {% endfor %}
-								    </select>
-								</div>
+								<div id="analysis-metadata-wrapper">
+									<div class="row" style="margin:auto;">
+										<div class="col-12">
+											<h4>Metadata</h4>
+										  <hr width="75%">
+										</div>
+									</div>
 
+									<div class="form-group row">
+									  <label id="tags-label" for="example-text-input" class="col-3 col-form-label lesspadding">Keywords</label>
+									  <div class="col-8 lesspadding">
+									    <input name="keywords" type="tags" pattern="^#" placeholder="Add keywords...">
+									  </div>
+									</div>
+
+
+									<div class="row text-center">
+										<div class="col-12">
+											AND/OR
+										</div>
+									</div>
+									
+									<div id="metadata-row-wrapper">
+										<div class="form-group row metadata-row">
+										  <label for="example-text-input" class="col-3 col-form-label lesspadding tags-label-col">Tags</label>
+										  <div class="col-4 lesspadding metadata-term-selectpicker">
+										    <input class="form-control" type="text" placeholder="Insert term..." id="metadataTerm">
+										  </div>
+										  <div class="col-4 lesspadding">
+										    <input class="form-control" type="text" placeholder="Insert value..." id="metadataValue">
+										  </div>
+		  								  <div class="col-1 lesspadding alter-tag-col">
+										    <i class="fa fa-1x fa-plus-circle alter-tag-button add-tag-button" aria-hidden="true"></i>
+										  </div>
+										</div>
+									</div>
+								</div>
 							</form>
+
+							<div class="row">
+								<div class="col-12 text-center">
+									<button id="submit-analysis-button" type="submit" class="btn btn-primary add-new-button"><i class="fa fa-1x fa-upload" aria-hidden="true"></i> Submit</button>
+								</div>
+							</div>
+
 						</div>
 					</div>
 

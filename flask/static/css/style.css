@@ -632,7 +632,7 @@ body {
 /*** Manual Upload ***/
 
 #form-upload-row {
-	margin-top: 25px;
+	margin-top: 5px;
 }
 
 #form-upload-row .col-lg-4 {
@@ -748,6 +748,11 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
 .alter-tag-button {
 	cursor: pointer;
 	color: #1D2541;
+}
+
+.alter-tag-col-left {
+	font-size: 11pt;
+	padding: 0px 5px 0 0 !important;
 }
 
 #selectpicker-wrapper {
