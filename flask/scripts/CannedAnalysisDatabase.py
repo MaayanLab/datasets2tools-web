@@ -1,4 +1,4 @@
-import re
+import re, json
 import pandas as pd
 pd.set_option('max.colwidth', -1)
 
@@ -122,4 +122,14 @@ class CannedAnalysisDatabase:
         advanced_query += ' LIMIT 25'
         return pd.read_sql_query(advanced_query, self.engine)['id'].tolist()
 
+    def get_stored_data(self):
+        stored_data = {x: pd.read_sql_query('SELECT * FROM %(x)s' % locals(), self.engine, index_col='id') for x in ['dataset', 'tool', 'term']}
+        return stored_data
 
+    def object_search(self, object_type, id):
+        if object_type == 'dataset':
+            return json.dumps(pd.read_sql_query('SELECT * FROM dataset d LEFT JOIN repository r on r.id = d.repository_fk WHERE d.id = {id}'.format(**locals()), self.engine).to_dict(orient='index')[0])
+        elif object_type == 'tool':
+            return json.dumps(pd.read_sql_query('SELECT * FROM tool WHERE id = {id}'.format(**locals()), self.engine).to_dict(orient='index')[0])
+        else:
+            return ''

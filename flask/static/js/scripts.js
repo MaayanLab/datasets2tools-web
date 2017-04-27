@@ -135,7 +135,10 @@ function updateFilters() {
 	});
 }
 
-updateFilters();
+if (window.location.pathname === '/datasets2tools/advanced_search') {
+	updateFilters();
+}
+
 
 $(document).on('change', '#objectType', function(evt) {
 	updateFilters();
@@ -183,5 +186,102 @@ $(document).on("click", "#advanced-search-submit-button", function(evt) {
 	} else {
 		window.location.href = window.location.href+'?query='+encodeURIComponent(searchQuery);
 	}
+})
+
+////////// 8. Manual Upload
+
+if (window.location.pathname === '/datasets2tools/manual_upload') {
+	$('[role="combobox"]').attr('max-height', '300px')
+	$(document).on(function() {
+	});
+}
+
+////////// 9. Add Dataset
+
+function addDatasetInputs() {
+	var $newDatasetDiv = $('#new-dataset'),
+		datasetInputsHtml = '<hr width="50%"><div class="form-group row"><label class="col-3 col-form-label">Accession</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert accession..." id="datasetAccession"></div></div><div class="form-group row"><label class="col-3 col-form-label">Title</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert title..." id="datasetTitle"></div></div><div class="form-group row"><label class="col-3 col-form-label">Description</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert description..." id="datasetDescription"></div></div><div class="form-group row"><label class="col-3 col-form-label">URL</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert URL..." id="datasetUrl"></div></div><div class="form-group row"><label class="col-3 col-form-label">Repository</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert repository..." id="datasetRepository"></div></div>';
+	$newDatasetDiv.html(datasetInputsHtml);
+}
+
+function fillDatasetInputs() {
+
+	var selectedDatasetId = $('#datasetAccessionSelect option:contains('+$('[data-id="datasetAccessionSelect"]').attr('title')+')').attr('value');
+
+	$.ajax({
+		url: 'http://localhost:5000/datasets2tools/object_search',
+		data: {
+		  'object_type': 'dataset',
+		  'id': selectedDatasetId
+		},
+
+		success: function(data) {
+			var datasetMetadata = JSON.parse(data);
+			$('#datasetAccession').val(datasetMetadata['dataset_accession']).prop('disabled', true)
+			$('#datasetTitle').val(datasetMetadata['dataset_title']).prop('disabled', true)
+			$('#datasetDescription').val(datasetMetadata['dataset_description']).prop('disabled', true)
+			$('#datasetUrl').val(datasetMetadata['dataset_landing_url']).prop('disabled', true)
+			$('#datasetRepository').val(datasetMetadata['repository_name']).prop('disabled', true)
+		},
+
+		error: function() {
+			console.log('data');
+		}
+	});
+
+}
+
+$(document).on('change', '#dataset-accession-select-col', function(evt){
+	addDatasetInputs();
+	fillDatasetInputs();
+})
+
+$(document).on('click', '#new-dataset-button', function(evt){
+	addDatasetInputs()
+})
+
+////////// 10. Add Tool
+
+
+function addToolInputs() {
+	var $newToolDiv = $('#new-tool'),
+		toolInputsHtml = '<hr width="50%"><div class="row"><div id="selectedToolIcon" class="col-12 text-center"></div></div><div class="form-group row"><label class="col-3 col-form-label">Name</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert name..." id="toolName"></div></div><div class="form-group row"><label class="col-3 col-form-label">Description</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert description..." id="toolDescription"></div></div><div class="form-group row"><label class="col-3 col-form-label">Homepage</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert homepage URL..." id="toolHomepageUrl"></div></div><div class="form-group row"><label class="col-3 col-form-label">Icon</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert icon URL..." id="toolIconUrl"></div></div>';
+	$newToolDiv.html(toolInputsHtml);
+}
+
+function fillToolInputs() {
+
+	var selectedDatasetId = $('#toolNameSelect option:contains('+$('[data-id="toolNameSelect"]').attr('title')+')').attr('value');
+
+	$.ajax({
+		url: 'http://localhost:5000/datasets2tools/object_search',
+		data: {
+		  'object_type': 'tool',
+		  'id': selectedDatasetId
+		},
+
+		success: function(data) {
+			var toolMetadata = JSON.parse(data);
+			$('#selectedToolIcon').html('<img class="manual-upload-tool-icon" src="'+toolMetadata['tool_icon_url']+'">')
+			$('#toolName').val(toolMetadata['tool_name']).prop('disabled', true)
+			$('#toolDescription').val(toolMetadata['tool_description']).prop('disabled', true)
+			$('#toolHomepageUrl').val(toolMetadata['tool_homepage_url']).prop('disabled', true)
+			$('#toolIconUrl').val(toolMetadata['tool_icon_url']).prop('disabled', true)
+		},
+
+		error: function() {
+			console.log('data');
+		}
+	});
+
+}
+
+$(document).on('change', '#tool-name-select-col', function(evt){
+	addToolInputs();
+	fillToolInputs();
+})
+
+$(document).on('click', '#new-tool-button', function(evt){
+	addToolInputs()
 })
 

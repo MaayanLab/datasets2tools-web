@@ -104,12 +104,18 @@ def keyword_search():
 
 @app.route('/datasets2tools/manual_upload')
 def manual_upload():
-	return render_template('manual_upload.html')
+	Database = CannedAnalysisDatabase(engine)
+	stored_data = Database.get_stored_data()
+	return render_template('manual_upload.html', stored_data=stored_data)
 
 @app.route('/datasets2tools/help')
 def help():
 	return render_template('help.html')
 
+@app.route('/datasets2tools/object_search')
+def object_search():
+	Database = CannedAnalysisDatabase(engine)
+	return Database.object_search(request.args.get('object_type'), request.args.get('id'))
 
 
 

@@ -6,6 +6,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-select.css') }}">
 	</head>
 
 	<body>
@@ -62,34 +63,159 @@
 			</div> <!-- #navbar-wrapper -->
 
 			<div id="jumbotron-wrapper">
-				<div class="jumbotron container text-center">
-					<div class="row">
+				<div class="jumbotron container">
+					<div class="row text-center">
 						<div class="col-12">
-							<h1 class="my-2">Promoting the findability, accessibility and sharability of bioinformatics analyses</h1>
-							<br>
-							<p class="lead">By introducing a new type of digital object, the canned analysis, we aim to make it easier for researchers and tool developers
-							to share and discover biological knowledge.</p>
-							<hr class="my-4">
-							<p class="lead">Here are a few suggestions on getting started.</p>
+							<h1 class="my-2">Manual Upload</h1>
+							<hr width="75%" class="my-4">
+							<p class="lead">The form below allows to manually upload analyses to the Datasets2Tools database.</p>
 						</div>
 					</div> <!-- .row -->
-					<div class="row justify-content-center my-4">
-						<div class="col-4 col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2">
-							<a href="/datasets2tools/search" class="jumbotron-button">
-								<div class="jumbotron-button-content"><i class="fa fa-search fa-5x" aria-hidden="true"></i><p>Search</p></div>
-							</a>
+
+					<div id="form-upload-row" class="row">
+
+						<div class="col-md-4">
+							<form id="upload-dataset-form">
+								<h3>Dataset</h3>
+								<hr width="75%">
+
+								<div class="form-group row">
+								  <label for="example-text-input" class="col-3 col-form-label">Dataset</label>
+								  <div id="dataset-accession-select-col" class="col-8">
+								    <select class="form-control selectpicker" title="Select dataset..." id="datasetAccessionSelect" data-live-search="true">
+									    {% for index, dataset_accession in stored_data['dataset']['dataset_accession'].iteritems() %}
+										    <option value="{{index}}">{{dataset_accession}}</option>
+									    {% endfor %}
+								    </select>
+								  </div>
+								</div>
+
+								<div class="row text-center">
+									<div class="col-12">
+										OR
+									</div>
+								</div>
+
+								<div class="row text-center">
+									<div class="col-12">
+										<button id="new-dataset-button" type="button" class="btn btn-primary add-new-button"><i class="fa fa-1x fa-plus-circle" aria-hidden="true"></i> Add New</button>
+									</div>
+								</div>
+								
+								<div id="new-dataset">
+								</div>
+
+							</form>
 						</div>
-						<div class="col-4 col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2">
-							<a href="/datasets2tools/explore" class="jumbotron-button">
-								<div class="jumbotron-button-content"><i class="fa fa-compass fa-5x" aria-hidden="true"></i><p>Explore</p></div>
-							</a>
+
+						<div class="col-md-4">
+							<form id="upload-tool-form">
+								<h3>Tool</h3>
+								<hr width="75%">
+								<div class="form-group row">
+								  <label for="example-text-input" class="col-3 col-form-label">Tool</label>
+								  <div id="tool-name-select-col" class="col-8">
+								    <select class="form-control selectpicker" title="Select tool..." id="toolNameSelect" data-live-search="true">
+									    {% for index, tool_name in stored_data['tool']['tool_name'].iteritems() %}
+										    <option value="{{index}}">{{tool_name}}</option>
+									    {% endfor %}
+								    </select>
+								  </div>
+								</div>
+
+								<div class="row text-center">
+									<div class="col-12">
+										OR
+									</div>
+								</div>
+
+								<div class="row text-center">
+									<div class="col-12">
+										<button id="new-tool-button" type="button" class="btn btn-primary add-new-button"><i class="fa fa-1x fa-plus-circle" aria-hidden="true"></i> Add New</button>
+									</div>
+								</div>
+								
+								<div id="new-tool">
+								</div>
+
+							</form>
 						</div>
-						<div class="col-4 col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2">
-							<a href="/datasets2tools/upload" class="jumbotron-button">
-								<div class="jumbotron-button-content"><i class="fa fa-upload fa-5x" aria-hidden="true"></i><p>Upload</p></div>
-							</a>
+
+						<div class="col-md-4">
+							<form id="upload-analysis-form">
+								<h3>Analysis</h3>
+								<hr width="75%">
+
+								<div class="form-group row">
+								  <label for="example-text-input" class="col-3 col-form-label">Title</label>
+								  <div class="col-8">
+								    <input class="form-control" type="text" placeholder="Insert title..." id="analysisTitle">
+								  </div>
+								</div>
+
+								<div class="form-group row">
+								  <label for="example-text-input" class="col-3 col-form-label">Description</label>
+								  <div class="col-8">
+								    <input class="form-control" type="text" placeholder="Insert description..." id="analysisDescription">
+								  </div>
+								</div>
+
+								<div class="form-group row">
+								  <label for="example-text-input" class="col-3 col-form-label">URL</label>
+								  <div class="col-8">
+								    <input class="form-control" type="text" placeholder="Insert URL..." id="analysisUrl">
+								  </div>
+								</div>
+
+								<div class="row" style="margin:auto;">
+									<div class="col-12">
+										<h4>Metadata</h4>
+									  <hr width="75%">
+									</div>
+								</div>
+
+								<div class="form-group row">
+								  <label id="tags-label" for="example-text-input" class="col-3 col-form-label">Keywords</label>
+								  <div class="col-8">
+								    <input name="keywords" type="tags" pattern="^#" placeholder="Add keywords...">
+								  </div>
+								</div>
+
+
+								<div class="row text-center">
+									<div class="col-12">
+										AND/OR
+									</div>
+								</div>
+
+								<div id="metadata-row" class="form-group row">
+								  <label for="example-text-input" class="col-3 col-form-label">Tags</label>
+								  <div class="col-4">
+								    <select class="form-control selectpicker" title="Add term..." id="metadataTermName" data-live-search="true">
+									    {% for index, term_name in stored_data['term']['term_name'].iteritems() %}
+										    <option value="{{index}}">{{term_name.replace('_', ' ').title()}}</option>
+									    {% endfor %}
+								    </select>
+								  </div>
+								  <div class="col-4">
+								    <input class="form-control" type="text" placeholder="Insert value..." id="analysisDescription">
+								  </div>
+  								  <div class="col-1 text-left">
+								    <i class="fa fa-1x fa-minus-circle" aria-hidden="true"></i>
+								  </div>
+								</div>
+
+								<div id="add-new-metadata-row" class="row">
+								  <div class="col-3 text-right">
+								    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+								  </div>
+							  </div>
+
+
+							</form>
 						</div>
-					</div> <!-- .row -->
+					</div>
+
 				</div> <!-- .jumbotron .container -->
 			</div> <!-- #jumbotron-wrapper -->
 
@@ -104,10 +230,13 @@
 	    </footer>
 
 		<div id="js">
-			<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+			<script src="https://code.jquery.com/jquery-3.1.1.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+			<script src="{{ url_for('static', filename='js/bootstrap-select.js') }}"></script>
 			<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/tags-input.js') }}"></script>
+			<script>[].forEach.call(document.querySelectorAll('input[type="tags"]'), tagsInput);</script>
 			<script> $(function() {$('[data-toggle="tooltip"]').tooltip()}) </script>
 		</div> <!-- #js -->
 
