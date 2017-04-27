@@ -635,11 +635,11 @@ body {
 	margin-top: 25px;
 }
 
-#form-upload-row .col-md-4 {
+#form-upload-row .col-lg-4 {
 	padding: 10px 3px;
 }
 
-#form-upload-row .col-md-4 form {
+#form-upload-row .col-lg-4 form {
 	border: 1px solid lightgrey;
 	border-radius: 5px;
 	padding: 10px 5px;
@@ -730,16 +730,28 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
 	cursor: auto;
 }
 
-#metadata-row {
+#metadata-row-wrapper {
 	margin-top: 10px;
 }
 
-#tags-label {
-	margin: auto 0;
+.lesspadding {
+   padding: 0 5px !important;
+   margin: auto 0;
 }
 
-#add-new-metadata-row {
-	font-size: 13pt;
+.alter-tag-col {
+	font-size: 11pt;
+	padding: 0 15px 0 0 !important;
+	text-align: center;
+}
+
+.alter-tag-button {
+	cursor: pointer;
+	color: #1D2541;
+}
+
+#selectpicker-wrapper {
+	display: none;
 }
 
 /*** Help Table ***/

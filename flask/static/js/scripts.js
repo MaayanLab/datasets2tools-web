@@ -200,7 +200,7 @@ if (window.location.pathname === '/datasets2tools/manual_upload') {
 
 function addDatasetInputs() {
 	var $newDatasetDiv = $('#new-dataset'),
-		datasetInputsHtml = '<hr width="50%"><div class="form-group row"><label class="col-3 col-form-label">Accession</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert accession..." id="datasetAccession"></div></div><div class="form-group row"><label class="col-3 col-form-label">Title</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert title..." id="datasetTitle"></div></div><div class="form-group row"><label class="col-3 col-form-label">Description</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert description..." id="datasetDescription"></div></div><div class="form-group row"><label class="col-3 col-form-label">URL</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert URL..." id="datasetUrl"></div></div><div class="form-group row"><label class="col-3 col-form-label">Repository</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert repository..." id="datasetRepository"></div></div>';
+		datasetInputsHtml = '<hr width="50%"><div class="form-group row"><label class="col-3 col-form-label lesspadding">Accession</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert accession..." id="datasetAccession"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Title</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert title..." id="datasetTitle"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Description</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert description..." id="datasetDescription"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">URL</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert URL..." id="datasetUrl"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Repository</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert repository..." id="datasetRepository"></div></div>';
 	$newDatasetDiv.html(datasetInputsHtml);
 }
 
@@ -242,10 +242,9 @@ $(document).on('click', '#new-dataset-button', function(evt){
 
 ////////// 10. Add Tool
 
-
 function addToolInputs() {
 	var $newToolDiv = $('#new-tool'),
-		toolInputsHtml = '<hr width="50%"><div class="row"><div id="selectedToolIcon" class="col-12 text-center"></div></div><div class="form-group row"><label class="col-3 col-form-label">Name</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert name..." id="toolName"></div></div><div class="form-group row"><label class="col-3 col-form-label">Description</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert description..." id="toolDescription"></div></div><div class="form-group row"><label class="col-3 col-form-label">Homepage</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert homepage URL..." id="toolHomepageUrl"></div></div><div class="form-group row"><label class="col-3 col-form-label">Icon</label><div class="col-8"><input class="form-control" type="text" placeholder="Insert icon URL..." id="toolIconUrl"></div></div>';
+		toolInputsHtml = '<hr width="50%"><div class="row"><div id="selectedToolIcon" class="col-12 text-center"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Name</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert name..." id="toolName"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Description</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert description..." id="toolDescription"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Homepage</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert homepage URL..." id="toolHomepageUrl"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Icon</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert icon URL..." id="toolIconUrl"></div></div>';
 	$newToolDiv.html(toolInputsHtml);
 }
 
@@ -284,4 +283,26 @@ $(document).on('change', '#tool-name-select-col', function(evt){
 $(document).on('click', '#new-tool-button', function(evt){
 	addToolInputs()
 })
+
+////////// 10. Add Metadata Tags
+
+if (window.location.pathname === '/datasets2tools/manual_upload') {
+
+	var $metadataRowWrapper = $('#metadata-row-wrapper'),
+		$metadataRowWrapperClone = $('#metadata-row-wrapper').clone(),
+		$selectpicker = $('#selectpicker-original'),
+		$selectpickerWrapper = $('#selectpicker-wrapper');
+
+	$('.metadata-term-selectpicker').html($selectpickerWrapper.html());
+	// $('.metadata-term-selectpicker').find('.form-control').addClass('selectpicker');
+
+	$(document).on('click', '.add-tag-button', function(evt) {
+		$metadataRowWrapper.append($metadataRowWrapperClone.html());
+		$metadataRowWrapper.children().last().find('.metadata-term-selectpicker').html($selectpickerWrapper.html());
+		// $metadataRowWrapper.children().last().find('.metadata-term-selectpicker').find('.form-control').addClass('selectpicker');
+	})
+
+}
+
+
 

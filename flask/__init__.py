@@ -67,12 +67,15 @@ def advanced_search():
 		object_type = query.split('object IS ')[-1].split(')')[0]
 		try:
 			ids = Database.advanced_search(request.args.get('query'))
-			if object_type == 'analyses':
-				result_html = Database.make_canned_analysis_table(ids)
-			elif object_type == 'datasets':
-				result_html = Database.make_dataset_table(ids)
-			elif object_type == 'tools':
-				result_html = Database.make_tool_table(ids)
+			if len(ids) > 0:
+				if object_type == 'analyses':
+					result_html = Database.make_canned_analysis_table(ids)
+				elif object_type == 'datasets':
+					result_html = Database.make_dataset_table(ids)
+				elif object_type == 'tools':
+					result_html = Database.make_tool_table(ids)
+			else:
+				result_html = 'Sorry, no search results found for specified query.'
 		except:
 			result_html = 'Sorry, there was an error.'
 		return render_template('advanced_search_results.html', result_html=result_html)
@@ -116,6 +119,12 @@ def help():
 def object_search():
 	Database = CannedAnalysisDatabase(engine)
 	return Database.object_search(request.args.get('object_type'), request.args.get('id'))
+
+@app.route('/datasets2tools/stored_terms')
+def stored_terms():
+	Database = CannedAnalysisDatabase(engine)
+	stored_data = Database.get_stored_data()
+	return '\n'.join(stored_data['term']['term_name'])
 
 
 
