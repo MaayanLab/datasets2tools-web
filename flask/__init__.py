@@ -118,7 +118,12 @@ def help():
 @app.route('/datasets2tools/object_search')
 def object_search():
 	Database = CannedAnalysisDatabase(engine)
-	return Database.object_search(request.args.get('object_type'), request.args.get('id'))
+	request_dict = dict(request.args)
+	object_type = request_dict.pop('object_type')[0]
+	column = request_dict.keys()[0]
+	value = request_dict[column][0]
+	print object_type, column, value
+	return Database.object_search(object_type, column, value)
 
 @app.route('/datasets2tools/stored_terms')
 def stored_terms():

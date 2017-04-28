@@ -125,24 +125,28 @@ class CannedAnalysisDatabase:
             return []
 
     def get_stored_data(self):
-        stored_data = {x: pd.read_sql_query('SELECT * FROM %(x)s' % locals(), self.engine, index_col='id') for x in ['dataset', 'tool', 'term']}
+        stored_data = {x: pd.read_sql_query('SELECT * FROM %(x)s' % locals(), self.engine, index_col='id') for x in ['dataset', 'tool', 'term', 'repository']}
         return stored_data
 
-    def object_search(self, object_type, id):
+    def object_search(self, object_type, column, value):
         if object_type == 'dataset':
-            return json.dumps(pd.read_sql_query('SELECT d.id, dataset_accession, dataset_title, dataset_description, dataset_landing_url, repository_name, repository_description, repository_homepage_url, repository_icon_url FROM dataset d LEFT JOIN repository r on r.id = d.repository_fk WHERE d.id = {id}'.format(**locals()), self.engine).to_dict(orient='index')[0])
+            return json.dumps(pd.read_sql_query('SELECT d.id AS id, dataset_accession, dataset_title, dataset_description, dataset_landing_url, repository_name, repository_description, repository_homepage_url, repository_icon_url FROM dataset d LEFT JOIN repository r on r.id = d.repository_fk WHERE {column} = {value}'.format(**locals()), self.engine).to_dict(orient='index')[0])
         elif object_type == 'tool':
-            return json.dumps(pd.read_sql_query('SELECT * FROM tool WHERE id = {id}'.format(**locals()), self.engine).to_dict(orient='index')[0])
+            return json.dumps(pd.read_sql_query('SELECT * FROM tool WHERE {column} = {value}'.format(**locals()), self.engine).to_dict(orient='index')[0])        
+        elif object_type == 'repository':
+            return json.dumps(pd.read_sql_query('SELECT * FROM repository WHERE {column} = {value}'.format(**locals()), self.engine).to_dict(orient='index')[0])
         else:
-            return ''
+            return 'Wrong object type specified - must be dataset, tool, repository.'
 
     def prepare_canned_analysis_table(self, canned_analysis_json):
         canned_analysis_dict = json.loads(canned_analysis_json)
+        if 'keywords' in canned_analysis_dict['analysis_metadata'].keys():
+            canned_analysis_dict['analysis_metadata']['keywords'] = ', '.join(canned_analysis_dict['analysis_metadata']['keywords'])
         result_list = []
         tool_html = '<div class="tool-cell"><a class="tool-cell-logo" href="'+canned_analysis_dict['tool']['tool_homepage_url']+'"><img class="tool-cell-logo-icon" src="'+canned_analysis_dict['tool']['tool_icon_url']+'"><span class="tool-cell-logo-title">'+canned_analysis_dict['tool']['tool_name']+'</span></a><span class="tool-cell-text">'+canned_analysis_dict['tool']['tool_description']+'</span></div>'
-        dataset_html = '<div class="dataset-cell"><a class="dataset-cell-logo" href="'+canned_analysis_dict['dataset']['dataset_landing_url']+'""><img class="dataset-cell-logo-icon" src="'+"canned_analysis_dict['dataset']['repository_icon_url']"+'"><span class="dataset-cell-logo-title">'+canned_analysis_dict['dataset']['dataset_accession']+'</span></a><span class="dataset-cell-text">'+canned_analysis_dict['dataset']['dataset_title']+' <sup><i class="fa fa-info-circle fa-1x"  aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="'+canned_analysis_dict['dataset']['dataset_description']+'"></i></sup></span></div>'
-        analysis_html = '<div class="analysis-cell"><a href="'+canned_analysis_dict['analysis']['canned_analysis_url']+'"><img class="analysis-cell-icon" src="'+"canned_analysis_dict['tool']['tool_screenshot_url']"+'"></a><div class="analysis-cell-text">'+canned_analysis_dict['analysis']['canned_analysis_description']+'.</div></div>'
-        metadata_html = '<div class="metadata-cell">'+'<br>'.join(['<span class="metadata-cell-tag">'+term_name.replace('_', ' ').title()+'</span><sup>&nbsp<i class="fa fa-info-circle fa-1x"  aria-hidden="true" data-toggle="tooltip" data-placement="top" data-html="true" data-animation="false" title="'+"metadataRowData['term_description']"+'"></i></sup>: <span class="metadata-cell-value">'+', '.join(value)+'</span>' for term_name, value in canned_analysis_dict['analysis_metadata'].iteritems()]) + '</div>'
+        dataset_html = '<div class="dataset-cell"><a class="dataset-cell-logo" href="'+canned_analysis_dict['dataset']['dataset_landing_url']+'""><img class="dataset-cell-logo-icon" src="'+"https://datamed.org/img/repositories/0003.png"+'"><span class="dataset-cell-logo-title">'+canned_analysis_dict['dataset']['dataset_accession']+'</span></a><span class="dataset-cell-text">'+canned_analysis_dict['dataset']['dataset_title']+' <sup><i class="fa fa-info-circle fa-1x"  aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="'+canned_analysis_dict['dataset']['dataset_description']+'"></i></sup></span></div>'
+        analysis_html = '<div class="analysis-cell"><a href="'+canned_analysis_dict['analysis']['canned_analysis_url']+'"><img class="analysis-cell-icon" src="'+canned_analysis_dict['analysis']['canned_analysis_snapshot_url']+'"></a><div class="analysis-cell-text">'+canned_analysis_dict['analysis']['canned_analysis_description']+'.</div></div>'
+        metadata_html = '<div class="metadata-cell">'+'<br>'.join(['<span class="metadata-cell-tag">'+term_name.replace('_', ' ').title()+'</span><sup>&nbsp<i class="fa fa-info-circle fa-1x"  aria-hidden="true" data-toggle="tooltip" data-placement="top" data-html="true" data-animation="false" title="'+"metadataRowData['term_description']"+'"></i></sup>: <span class="metadata-cell-value">'+value+'</span>' for term_name, value in canned_analysis_dict['analysis_metadata'].iteritems()]) + '</div>'
         result_list.append([tool_html, dataset_html, analysis_html, metadata_html])
         result_dataframe = pd.DataFrame(result_list, columns=['Tool', 'Dataset', 'Analysis', 'Metadata'])
         return result_dataframe.to_html(escape=False, index=False, classes='canned-analysis-table').encode('ascii', 'ignore')

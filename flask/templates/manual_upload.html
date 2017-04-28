@@ -103,6 +103,41 @@
 								</div>
 								
 								<div id="new-dataset">
+								<hr width="50%">
+									<div class="form-group row">
+										<label class="col-3 col-form-label lesspadding">Accession</label>
+										<div class="col-8 lesspadding">
+											<input class="form-control" type="text" placeholder="Insert accession..." id="dataset_accession">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-3 col-form-label lesspadding">Title</label>
+										<div class="col-8 lesspadding">
+											<input class="form-control" type="text" placeholder="Insert title..." id="dataset_title">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-3 col-form-label lesspadding">Description</label>
+										<div class="col-8 lesspadding">
+											<input class="form-control" type="text" placeholder="Insert description..." id="dataset_description">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-3 col-form-label lesspadding">URL</label>
+										<div class="col-8 lesspadding">
+											<input class="form-control" type="text" placeholder="Insert URL..." id="dataset_landing_url">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-3 col-form-label lesspadding">Repository</label>
+										<div class="col-8 lesspadding">
+										    <select class="form-control selectpicker" title="Select repository..." id="repositoryNameSelect" data-live-search="true">
+											    {% for index, repository_name in stored_data['repository']['repository_name'].iteritems() %}
+												    <option value="{{index}}">{{repository_name}}</option>
+											    {% endfor %}
+										    </select>
+										</div>
+									</div>
 								</div>
 
 							</form>
@@ -136,6 +171,35 @@
 								</div>
 								
 								<div id="new-tool">
+									<hr width="50%">
+									<div class="row">
+										<div id="selectedToolIcon" class="col-12 text-center">
+										</div>
+										</div>
+										<div class="form-group row">
+											<label class="col-3 col-form-label lesspadding">Name</label>
+											<div class="col-8 lesspadding">
+												<input class="form-control" type="text" placeholder="Insert name..." id="tool_name">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label class="col-3 col-form-label lesspadding">Description</label>
+											<div class="col-8 lesspadding">
+												<input class="form-control" type="text" placeholder="Insert description..." id="tool_description">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label class="col-3 col-form-label lesspadding">Homepage</label>
+											<div class="col-8 lesspadding">
+												<input class="form-control" type="text" placeholder="Insert homepage URL..." id="tool_homepage_url">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label class="col-3 col-form-label lesspadding">Icon</label>
+											<div class="col-8 lesspadding">
+												<input class="form-control" type="text" placeholder="Insert icon URL..." id="tool_icon_url">
+											</div>
+									</div>
 								</div>
 
 							</form>
@@ -165,6 +229,13 @@
 									  <label for="example-text-input" class="col-3 col-form-label lesspadding">URL</label>
 									  <div class="col-8 lesspadding">
 									    <input class="form-control" type="text" placeholder="Insert URL..." id="canned_analysis_url">
+									  </div>
+									</div>
+
+									<div class="form-group row">
+									  <label for="example-text-input" class="col-3 col-form-label lesspadding">Snapshot</label>
+									  <div class="col-8 lesspadding">
+									    <input class="form-control" type="text" placeholder="Insert snapshot URL..." id="canned_analysis_snapshot_url">
 									  </div>
 									</div>
 								</div>
@@ -216,9 +287,22 @@
 						</div>
 					</div>
 
-					<div class="row">
-						<div id="results" class="col-12 text-center">
-							
+					<div id="results">
+						<div class="row">
+							<div id="upload-results" class="col-12 text-center">
+								
+							</div>
+						</div>
+						<div class="row">
+							<br>
+							<br>
+							<br>
+							<div class="col-6 text-center">
+								<button id="review-submission-button" type="submit" class="btn btn-primary add-new-button"><i class="fa fa-1x fa-arrow-circle-left" aria-hidden="true"></i> Back</button>
+							</div>							
+							<div class="col-6 text-center">
+								<button id="submit-analysis-button" type="submit" class="btn btn-primary add-new-button"><i class="fa fa-1x fa-upload" aria-hidden="true"></i> Submit</button>
+							</div>
 						</div>
 					</div>
 

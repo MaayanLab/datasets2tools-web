@@ -441,7 +441,7 @@ body {
 }
 
 .analysis-cell-icon {
-	width: 150px;
+	max-width: 150px;
 	margin: 5px 10px 5px 10px;
 	border: 1px solid #9fa1a5;
 }
@@ -715,9 +715,10 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
 #new-tool,
 #new-dataset {
 	margin-top: 15px;
+	display: none;
 }
 
-.manual-upload-tool-icon {
+#manual-upload-tool-icon {
 	height: 50px;
 	margin: auto;
 	background: white;
@@ -726,6 +727,7 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
 	margin-bottom: 10px;
 }
 
+.btn:disabled,
 #form-upload-row .form-control:disabled {
 	cursor: auto;
 }
@@ -758,6 +760,12 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
 #selectpicker-wrapper {
 	display: none;
 }
+
+#results {
+	display: none;
+}
+
+
 
 /*** Help Table ***/
 

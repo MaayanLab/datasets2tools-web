@@ -199,9 +199,14 @@ if (window.location.pathname === '/datasets2tools/manual_upload') {
 ////////// 9. Add Dataset
 
 function addDatasetInputs() {
-	var $newDatasetDiv = $('#new-dataset'),
-		datasetInputsHtml = '<hr width="50%"><div class="form-group row"><label class="col-3 col-form-label lesspadding">Accession</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert accession..." id="dataset_accession"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Title</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert title..." id="dataset_title"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Description</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert description..." id="dataset_description"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">URL</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert URL..." id="dataset_landing_url"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Repository</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert repository..." id="repository_name"></div></div>';
-	$newDatasetDiv.html(datasetInputsHtml);
+	// Show
+	$('#new-dataset').show();
+
+	// Reset
+	$('#new-dataset select').val('').selectpicker('refresh');
+	$('[data-id="repositoryNameSelect"]').prop('disabled', false).css('background-color', 'white').attr('title', 'Select repository...');
+	$('[data-id="repositoryNameSelect"] .filter-option').css('color', '');
+	$('#new-dataset .form-control').prop('disabled', false).val('');
 }
 
 function fillDatasetInputs() {
@@ -212,7 +217,7 @@ function fillDatasetInputs() {
 		url: 'http://localhost:5000/datasets2tools/object_search',
 		data: {
 		  'object_type': 'dataset',
-		  'id': selectedDatasetId
+		  'd.id': selectedDatasetId
 		},
 
 		success: function(data) {
@@ -222,7 +227,10 @@ function fillDatasetInputs() {
 			$('#dataset_title').val(datasetMetadata['dataset_title']).prop('disabled', true);
 			$('#dataset_description').val(datasetMetadata['dataset_description']).prop('disabled', true);
 			$('#dataset_landing_url').val(datasetMetadata['dataset_landing_url']).prop('disabled', true);
-			$('#repository_name').val(datasetMetadata['repository_name']).prop('disabled', true);
+			$('[data-id="repositoryNameSelect"] .filter-option').text(datasetMetadata['repository_name']).css('color', 'black');
+			$('[data-id="repositoryNameSelect"]').prop('disabled', true).css('background-color', 'transparent').attr('title', '');
+			$('[data-id="repositoryNameSelect"]').parent().css('background-color', 'transparent');
+			// $('[data-id="repositoryNameSelect"]').val(datasetMetadata['repository_name']).prop('disabled', true);
 		},
 
 		error: function() {
@@ -240,15 +248,18 @@ $(document).on('change', '#dataset-accession-select-col', function(evt){
 $(document).on('click', '#new-dataset-button', function(evt){
 	addDatasetInputs()
 	$('#new-dataset').removeAttr('data-dataset-id');
-
+	$('#dataset-accession-select-col select').val('').selectpicker('refresh');
 })
 
 ////////// 10. Add Tool
 
 function addToolInputs() {
-	var $newToolDiv = $('#new-tool'),
-		toolInputsHtml = '<hr width="50%"><div class="row"><div id="selectedToolIcon" class="col-12 text-center"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Name</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert name..." id="tool_name"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Description</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert description..." id="tool_description"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Homepage</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert homepage URL..." id="tool_homepage_url"></div></div><div class="form-group row"><label class="col-3 col-form-label lesspadding">Icon</label><div class="col-8 lesspadding"><input class="form-control" type="text" placeholder="Insert icon URL..." id="tool_icon_url"></div></div>';
-	$newToolDiv.html(toolInputsHtml);
+	// Show
+	$('#new-tool').show();
+
+	// Reset
+	$('#new-tool .form-control').prop('disabled', false).val('');
+	$('#manual-upload-tool-icon').hide();
 }
 
 function fillToolInputs() {
@@ -265,7 +276,7 @@ function fillToolInputs() {
 		success: function(data) {
 			var toolMetadata = JSON.parse(data);
 			$('#new-tool').attr('data-tool-id', selectedToolId);
-			$('#selectedToolIcon').html('<img class="manual-upload-tool-icon" src="'+toolMetadata['tool_icon_url']+'">')
+			$('#selectedToolIcon').html('<img id="manual-upload-tool-icon" src="'+toolMetadata['tool_icon_url']+'">')
 			$('#tool_name').val(toolMetadata['tool_name']).prop('disabled', true)
 			$('#tool_description').val(toolMetadata['tool_description']).prop('disabled', true)
 			$('#tool_homepage_url').val(toolMetadata['tool_homepage_url']).prop('disabled', true)
@@ -286,6 +297,7 @@ $(document).on('change', '#tool-name-select-col', function(evt){
 
 $(document).on('click', '#new-tool-button', function(evt){
 	addToolInputs();
+	$('#upload-tool-form select').val('').selectpicker('refresh');
 	$('#new-tool').removeAttr('data-tool-id');
 })
 
@@ -398,13 +410,20 @@ $(document).on('click', '#submit-analysis-button', function(evt) {
 		},
 
 		success: function(data) {
-			$('#results').html(data);
+			$('#upload-results').html(data);
+			$('#results').show(easing='swing');
+			$('#form-upload-row').hide();
+			$(function() {$('[data-toggle="tooltip"]').tooltip()})
 		},
 
 		error: function() {
 			console.log('Sorry, there has been an error.');
 		}
 	});
+})
 
+$(document).on('click', '#review-submission-button', function(evt) {
+	$('#results').hide();
+	$('#form-upload-row').show(easing='linear');
 })
 
