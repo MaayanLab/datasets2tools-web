@@ -296,7 +296,6 @@ body {
 /*** Search Results ***/
 
 #search-results-wrapper {
-	display: none;
 	background-color: #F3F4F3;
 	padding-top: 10px;
 }
@@ -629,6 +628,18 @@ body {
 	font-size: 8pt;
 }
 
+.additional-row {
+	display: none;
+}
+
+.filter-row.active {
+	display: flex;
+}
+
+.first-row > .col-1 {
+	margin: auto;
+}
+
 /*** Manual Upload ***/
 
 #form-upload-row {
@@ -764,7 +775,6 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
 #results {
 	display: none;
 }
-
 
 
 /*** Help Table ***/

@@ -3,23 +3,432 @@ import pandas as pd
 pd.set_option('max.colwidth', -1)
 
 class CannedAnalysisDatabase:
+
+#######################################################
+########## 1. Initialize ##############################
+#######################################################
     
     def __init__(self, engine):
         self.engine = engine
 
-    # def fetch_tables(self):
-        # self.tool = pd.read_sql_query('SELECT * FROM tool', self.engine, index_col='id')
-        # self.dataset = pd.read_sql_query('SELECT * FROM dataset', self.engine, index_col='id')
-        # self.repository = pd.read_sql_query('SELECT * FROM repository', self.engine, index_col='id')
-        # self.term = pd.read_sql_query('SELECT * FROM term', self.engine, index_col='id')
-        # self.canned_analysis = pd.read_sql_query('SELECT * FROM canned_analysis', self.engine, index_col='id')
-        # self.canned_analysis_metadata = pd.read_sql_query('SELECT * FROM canned_analysis_metadata', self.engine, index_col='id')
-        
-    def search_analyses_by_keyword(self, keywords):
-        # matching_search_results = pd.read_sql_query('SELECT DISTINCT canned_analysis_fk FROM canned_analysis_metadata WHERE canned_analysis_fk IN (SELECT canned_analysis_fk FROM canned_analysis_metadata WHERE value = "' + '") AND canned_analysis_fk IN (SELECT canned_analysis_fk FROM canned_analysis_metadata WHERE value = "'.join(keywords)+'")', self.engine)
-        similar_search_results = pd.read_sql_query('SELECT DISTINCT canned_analysis_fk FROM canned_analysis_metadata WHERE canned_analysis_fk IN (SELECT canned_analysis_fk FROM canned_analysis_metadata WHERE value LIKE "%%' + '%%") AND canned_analysis_fk IN (SELECT canned_analysis_fk FROM canned_analysis_metadata WHERE value LIKE "%%'.join(keywords)+'%%")', self.engine)
-        ids = similar_search_results['canned_analysis_fk'].tolist()
+#######################################################
+########## 2. Search ##################################
+#######################################################
+
+##############################
+##### 2.1 Keyword Search
+##############################
+
+    def keyword_search(self, object_type, keywords_list, size):
+        try:
+            if object_type == 'analysis':
+                query = 'SELECT id FROM canned_analysis WHERE id IN ('
+                query_terms = []
+                for keyword in keywords_list:
+                    query_terms.append('SELECT DISTINCT canned_analysis_fk AS id FROM canned_analysis_metadata WHERE value LIKE "%%{keyword}%%" UNION SELECT id FROM canned_analysis WHERE CONCAT(canned_analysis_title, " ", canned_analysis_description) LIKE "%%{keyword}%%"'.format(**locals()))
+                query += ') AND id IN ('.join(query_terms) + ')'
+            elif object_type == 'dataset':
+                query = 'SELECT id FROM dataset WHERE id IN (SELECT id FROM dataset WHERE CONCAT(dataset_accession, " ", dataset_title, " ", dataset_description) LIKE "%%' + '%%") AND id IN (SELECT id FROM dataset WHERE CONCAT(dataset_accession, " ", dataset_title, " ", dataset_description) LIKE "%%'.join(keywords_list)+'%%")'
+            elif object_type == 'tool':
+                query = 'SELECT id FROM tool WHERE id IN (SELECT id FROM tool WHERE CONCAT(tool_name, " ", tool_description) LIKE "%%' + '%%") AND id IN (SELECT id FROM tool WHERE CONCAT(tool_name, " ", tool_description) LIKE "%%'.join(keywords_list)+'%%")'
+            else:
+                raise ValueError('Wrong object_type specified.  Must be analysis, dataset or tool.')
+            if keywords_list == ['None']:
+                raise ValueError('No keywords specified.  Please insert a comma-separated string of keywords for the search.')
+            query += 'LIMIT {size}'.format(**locals())
+            search_results = pd.read_sql_query(query, self.engine)
+            ids = search_results['id'].tolist()
+        except:
+            ids = None
         return ids
+
+##############################
+##### 2.2 Advanced Search
+##############################
+
+    def advanced_search(self, query, object_type):
+
+        try:
+
+            # no query
+            if query == 'None':
+                raise ValueError('Query not specified.  Please use the query builder to construct a query.')
+
+            # object type db query handling
+            if object_type == 'analysis':
+                db_query = 'SELECT DISTINCT ca.id AS id FROM canned_analysis ca LEFT JOIN canned_analysis_metadata cam ON ca.id=cam.canned_analysis_fk LEFT JOIN dataset d on d.id=ca.dataset_fk LEFT JOIN tool t ON t.id=ca.tool_fk WHERE '
+            elif object_type == 'dataset':
+                db_query = 'SELECT d.id AS id FROM dataset d LEFT JOIN repository r ON r.id=d.repository_fk WHERE '
+            elif object_type == 'tool':
+                db_query = 'SELECT id FROM tool WHERE '
+            else:
+                raise ValueError('Wrong object_type specified.  Must be analysis, dataset or tool.')
+
+            # operators and separators
+            operators = " NOT CONTAINS | CONTAINS | IS NOT | IS "
+            separators = "AND|OR "
+
+            # metadata terms
+            metadata_term_names = pd.read_sql_query('SELECT * FROM term', self.engine)['term_name'].tolist() 
+
+            # query terms
+            for query_term in query.replace('(', '').split(') '):
+                # split
+                variable, value = re.split(operators, query_term.replace('AND ', '').replace('OR ', '').replace('"', '').replace(')', ''))
+                operator = re.search(operators, query_term).group(0).replace('CONTAINS', 'LIKE').replace('IS NOT', '!=').replace('IS', '=')
+                separator = re.search(separators, query_term).group(0) if re.search(separators, query_term) else ''
+                value = '%%{value}%%'.format(**locals()) if 'LIKE' in operator else value
+                # build
+                if variable in metadata_term_names and object_type == 'analysis':
+                    db_query += ' {separator} ca.id IN (SELECT DISTINCT canned_analysis_fk AS id FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE `term_name` = "{variable}" AND `value`{operator}"{value}")'.format(**locals())
+                elif variable == 'all_fields':
+                    if object_type == 'analysis':
+                        db_query += ' {separator} ca.id IN (SELECT DISTINCT canned_analysis_fk AS id FROM canned_analysis_metadata WHERE `value`{operator}"{value}" UNION SELECT id FROM canned_analysis WHERE CONCAT(canned_analysis_title, " ", canned_analysis_description){operator}"{value}")'.format(**locals())
+                    if object_type == 'dataset':
+                        db_query += ' {separator} (SELECT id FROM dataset WHERE CONCAT(dataset_accession, " ", dataset_title, " ", dataset_description){operator}"{value}")'.format(**locals())
+                    if object_type == 'tool':
+                        db_query += ' {separator} (SELECT id FROM tool WHERE CONCAT(tool_name, " ", tool_description){operator}"{value}")'.format(**locals())
+                else:
+                    db_query += ' {separator} `{variable}`{operator}"{value}"'.format(**locals())
+
+            # size
+            db_query += ' LIMIT 25'
+
+            # db query
+            print db_query
+            search_results = pd.read_sql_query(db_query, self.engine)
+            ids = search_results['id'].tolist() if len(search_results.index) > 0 else []
+        except:
+            ids = None
+        return ids
+
+##############################
+##### 2.3 Analysis API
+##############################
+
+    def analysis_api(self, query_dict, size=25):
+        try:
+            sql_query = 'SELECT DISTINCT canned_analysis_fk AS id FROM canned_analysis ca LEFT JOIN canned_analysis_metadata cam ON ca.id=cam.canned_analysis_fk LEFT JOIN term ON term.id=cam.term_fk LEFT JOIN dataset d ON d.id=ca.dataset_fk LEFT JOIN tool ON tool.id=ca.tool_fk LEFT JOIN repository r on r.id=d.repository_fk'
+            term_names = pd.read_sql_query('SELECT * FROM term', self.engine)['term_name'].tolist()
+            query_terms = []
+            if 'size' in query_dict.keys():
+                size = query_dict.pop('size')
+            for key, value in query_dict.iteritems():
+                if key in term_names:
+                    query_terms.append('(`term_name` = "{key}" AND `value` = "{value}")'.format(**locals()))
+                else:
+                    query_terms.append('`{key}` = "{value}"'.format(**locals()))
+            if len(query_terms) > 0:
+                sql_query += ' WHERE ' + ' AND '.join(query_terms)
+            sql_query += ' LIMIT {size}'.format(**locals())
+            ids = pd.read_sql_query(sql_query, self.engine)['id'].tolist()
+        except:
+            ids = None
+        return ids
+
+##############################
+##### 2.4 Dataset API
+##############################
+
+    def dataset_api(self, query_dict, size=25):
+        try:
+            sql_query = 'SELECT DISTINCT d.id FROM dataset d LEFT JOIN repository r on r.id=d.repository_fk'
+            query_terms = []
+            if 'size' in query_dict.keys():
+                size = query_dict.pop('size')
+            for key, value in query_dict.iteritems():
+                query_terms.append('`{key}` = "{value}"'.format(**locals()))
+            if len(query_terms) > 0:
+                sql_query += ' WHERE ' + ' AND '.join(query_terms)
+            sql_query += ' LIMIT {size}'.format(**locals())
+            ids = pd.read_sql_query(sql_query, self.engine)['id'].tolist()
+        except:
+            ids = None
+        return ids
+
+##############################
+##### 2.5 Tool API
+##############################
+
+    def tool_api(self, query_dict, size=25):
+        try:
+            sql_query = 'SELECT DISTINCT id FROM tool t'
+            query_terms = []
+            if 'size' in query_dict.keys():
+                size = query_dict.pop('size')
+            for key, value in query_dict.iteritems():
+                query_terms.append('`{key}` = "{value}"'.format(**locals()))
+            if len(query_terms) > 0:
+                sql_query += ' WHERE ' + ' AND '.join(query_terms)
+            sql_query += ' LIMIT {size}'.format(**locals())
+            ids = pd.read_sql_query(sql_query, self.engine)['id'].tolist()
+        except:
+            ids = None
+        return ids
+
+#######################################################
+########## 3. JSON Summary ############################
+#######################################################
+
+##############################
+##### 3.1 Analysis
+##############################
+
+    def analysis_summary(self, id):
+        analysis_data = pd.read_sql_query('SELECT canned_analysis_accession, canned_analysis_title, canned_analysis_description, canned_analysis_url, canned_analysis_preview_url, dataset_accession, dataset_title, dataset_description, dataset_landing_url, tool_name, tool_description, tool_homepage_url FROM canned_analysis ca LEFT JOIN dataset d on d.id=ca.dataset_fk LEFT JOIN tool t ON t.id=ca.tool_fk LEFT JOIN repository r on r.id=d.repository_fk WHERE ca.id = {id}'.format(**locals()), self.engine)
+        analysis_metadata = pd.read_sql_query('SELECT term_name, value FROM canned_analysis_metadata cam LEFT JOIN term t on t.id=cam.term_fk WHERE canned_analysis_fk = {id}'.format(**locals()), self.engine, index_col='term_name')
+        analysis_summary_dict = analysis_data.to_dict(orient='index')[0]
+        analysis_summary_dict['metadata'] = {index: rowData['value'] for index, rowData in analysis_metadata.iterrows()}
+        return analysis_summary_dict
+
+##############################
+##### 3.2 Dataset
+##############################
+
+    def dataset_summary(self, id):
+        dataset_data = pd.read_sql_query('SELECT * FROM dataset d LEFT JOIN repository r on r.id=d.repository_fk WHERE d.id = {id}'.format(**locals()), self.engine)
+        dataset_analysis_data = pd.read_sql_query('SELECT tool_name, count(*) AS count FROM canned_analysis ca LEFT JOIN dataset d ON d.id=ca.dataset_fk LEFT JOIN tool t ON t.id=ca.tool_fk WHERE d.id = {id} GROUP BY tool_name ORDER BY count DESC'.format(**locals()), self.engine, index_col='tool_name')
+        dataset_summary_dict = dataset_data.to_dict(orient='index')[0]
+        dataset_summary_dict['canned_analysis_count'] = dataset_analysis_data.to_dict()['count']
+        return dataset_summary_dict
+
+##############################
+##### 3.3 Tool
+##############################
+
+    def tool_summary(self, id):
+        tool_data = pd.read_sql_query('SELECT * FROM tool WHERE id = {id}'.format(**locals()), self.engine)
+        tool_summary_dict = tool_data.to_dict(orient='index')[0]
+        tool_summary_dict['canned_analyses'] = pd.read_sql_query('SELECT count(*) AS count FROM canned_analysis ca LEFT JOIN tool t ON t.id=ca.tool_fk WHERE t.id = {id}'.format(**locals()), self.engine)['count'][0]
+        tool_summary_dict['datasets_analyzed'] = pd.read_sql_query('SELECT count(DISTINCT dataset_fk) AS count FROM canned_analysis ca LEFT JOIN tool t ON t.id=ca.tool_fk WHERE t.id = {id}'.format(**locals()), self.engine)['count'][0]
+        return tool_summary_dict
+
+#######################################################
+########## 4. Table Display ###########################
+#######################################################
+
+##############################
+##### 3.1 Analysis
+##############################
+
+    def analysis_table(self, analysis_summary_list):
+        result_list = ['<hr width="100%">']
+        for analysis_summary_dict in analysis_summary_list:
+            print type(analysis_summary_list)
+            print 'klsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsd'
+            print analysis_summary_dict
+            result_list.append('''
+                <div class="row">
+                    <div class="col-9">
+                        <p class="canned-analysis-title">
+                            <a href="{canned_analysis_url}">
+                                {canned_analysis_title}
+                            </a>
+                        </p>
+                        <p class="canned-analysis-description">
+                            {canned_analysis_description}
+                        </p>
+                        <p class="canned-analysis-annotation">
+                            <span>Dataset: <a href="{dataset_landing_url}">{dataset_accession}</a></span>
+                            <span>Analyzed by: <a href="{tool_homepage_url}">{tool_name}</a></span>
+                            <span>Metadata: <a href="{dataset_landing_url}">i</a></span>
+                        </p>
+                        <p class="canned-analysis-accession">
+                            <span>Accession: <a href="{canned_analysis_url}">{canned_analysis_accession}</a></span>
+                        </p>
+                    </div>
+                    <div class="col-3">
+                        <a href="{canned_analysis_url}">
+                            <img src="{canned_analysis_preview_url}">
+                        </a>
+                    </div>
+                    <hr width="100%">
+                </div>
+            
+            '''.format(**analysis_summary_dict))
+        return ''.join(result_list)
+
+
+##############################
+##### 3.2 Dataset
+##############################
+
+    def dataset_table(self, dataset_summary_list):
+        result_list = ['<hr width="100%">']
+        for dataset_summary_dict in dataset_summary_list:
+            result_list.append('''
+                <div class="row">
+                    <div class="col-10">
+                        <p class="dataset-title">
+                            <a href="{dataset_landing_url}">
+                                {dataset_title}
+                            </a>
+                        </p>
+                        <p class="dataset-description">
+                            {dataset_description}
+                        </p>
+                        <p class="dataset-analyses">
+                            <span>Analyzed by: </span>
+                        </p>
+                        <p class="dataset-repository">
+                            <span>Accession: <a href="{dataset_landing_url}">{dataset_accession}</a></span>
+                            <span>Repository: <a href="{repository_homepage_url}">{repository_name}</a></span>
+                        </p>
+                    </div>
+                    <div class="col-2">
+                        <a href="{repository_homepage_url}">
+                            <img src="{repository_icon_url}">
+                        </a>
+                    </div>
+                    <hr width="100%">
+                </div>
+            
+            '''.format(**dataset_summary_dict)
+               .replace('Analyzed by: ', 'Analyzed by: '+', '.join('{key} (<a href="http://localhost:5000/datasets2tools/advanced_search?query=((object%20IS%20analyses)%20AND%20dataset_accession%20IS%20%22ACC%22)%20AND%20tool_name%20IS%20%22{key}%22">{value} analyses</a>)'.format(**locals()) for key, value in dataset_summary_dict['canned_analysis_count'].iteritems()))
+               .replace('%22ACC%22', '%22{dataset_accession}%22'.format(**dataset_summary_dict)))
+            
+        return ''.join(result_list)
+
+##############################
+##### 3.3 Tool
+##############################
+
+    def tool_table(self, tool_summary_list):
+        result_list = ['<hr width="100%">']
+        for tool_summary_dict in tool_summary_list:
+            result_list.append('''
+                <div class="row">
+                    <div class="col-10">
+                        <p class="tool-name">
+                            <a href="{tool_homepage_url}">
+                                {tool_name}
+                            </a>
+                        </p>
+                        <p class="tool-description">
+                            {tool_description}
+                        </p>
+                        <p class="tool-analyses">
+                            <span>Analyzed {datasets_analyzed} datasets, generating {canned_analyses} analyses </span>
+                        </p>
+                    </div>
+                    <div class="col-2">
+                        <a href="{tool_homepage_url}">
+                            <img src="{tool_icon_url}">
+                        </a>
+                    </div>
+                    <hr width="100%">
+                </div>
+            
+            '''.format(**tool_summary_dict))
+
+        return ''.join(result_list)
+
+#######################################################
+########## 4. Card Display ############################
+#######################################################
+
+##############################
+##### 3.1 Analysis
+##############################
+
+##############################
+##### 3.2 Dataset
+##############################
+
+##############################
+##### 3.3 Tool
+##############################
+
+
+#######################################################
+########## 5. Display Wrapepr #########################
+#######################################################
+
+##############################
+##### 1. Annotate
+##############################
+
+    def get_annotations(self, ids, object_type, output='list'):
+        if ids == []:
+            return 'Sorry, no search results found'
+        elif ids == 'None':
+            return 'Sorry, there has been an error.'
+        else:
+            if object_type == 'analysis':
+                summary_list = [self.analysis_summary(analysis_id) for analysis_id in ids]
+            elif object_type == 'dataset':
+                summary_list = [self.dataset_summary(dataset_id) for dataset_id in ids]
+            elif object_type == 'tool':
+                summary_list = [self.tool_summary(tool_id) for tool_id in ids]
+            else:
+                raise ValueError('Wrong object type specified.  Must be analysis, dataset or tool.')
+            if output == 'list':
+                return summary_list
+            elif output == 'json':
+                summary_json = json.dumps({'results': summary_list})
+                return summary_json
+
+##############################
+##### 2. Make Table
+##############################
+
+    def table_from_summary_list(self, summary_list, object_type):
+        if object_type == 'analysis':
+            table_html = self.analysis_table(summary_list)
+        elif object_type == 'dataset':
+            table_html = self.dataset_table(summary_list)
+        elif object_type == 'tool':
+            table_html = self.tool_table(summary_list)
+        else:
+            raise ValueError('Wrong object type specified.  Must be analysis, dataset or tool.')
+        return table_html
+
+##############################
+##### 3. Wrapper
+##############################
+
+    def table_from_ids(self, ids, object_type):
+        if ids == []:
+            return 'Sorry, no search results found'
+        elif ids == None:
+            return 'Sorry, there has been an error.'
+        else:
+            summary_list = self.get_annotations(ids, object_type)
+            table_html = self.table_from_summary_list(summary_list, object_type)
+            return table_html
+
+#######################################################
+########## 5. Miscellaneous ###########################
+#######################################################
+
+##############################
+##### 3.1 Advanced Search Dropdown terms
+##############################
+
+    def get_available_search_terms(self):
+        canned_analysis_metadata_terms = pd.read_sql_query('SELECT term_name FROM term', self.engine)['term_name'].tolist()
+        dataset_terms = ['dataset_accession', 'dataset_title', 'dataset_description', 'repository', 'repository_description']
+        tool_terms = ['tool_name', 'tool_description']
+        available_search_terms = {
+            'analysis': [x.replace('_', ' ').title() for x in ['All Fields']+canned_analysis_metadata_terms+dataset_terms+tool_terms],
+            'dataset': [x.replace('_', ' ').title() for x in ['All Fields']+dataset_terms],
+            'tool': [x.replace('_', ' ').title() for x in ['All Fields']+tool_terms]
+        }
+        return available_search_terms
+
+##############################
+##### 3.2 Dataset
+##############################
+
+##############################
+##### 3.3 Tool
+##############################
+
+
+
+#######################################################
+########## 2. Keyword Search ##########################
+#######################################################
 
     def make_canned_analysis_table(self, ids, limit=25):
         ids = ids[:limit]
@@ -36,11 +445,6 @@ class CannedAnalysisDatabase:
         result_dataframe = pd.DataFrame(result_list, columns=['Tool', 'Dataset', 'Analysis', 'Metadata'])
         return result_dataframe.to_html(escape=False, index=False, classes='canned-analysis-table').encode('ascii', 'ignore')
 
-    def search_datasets_by_keyword(self, keywords):
-        similar_search_results = pd.read_sql_query('SELECT id FROM dataset WHERE id IN (SELECT id FROM dataset WHERE CONCAT(dataset_accession, " ", dataset_title, " ", dataset_description) LIKE "%%' + '%%") AND id IN (SELECT id FROM dataset WHERE CONCAT(dataset_accession, " ", dataset_title, " ", dataset_description) LIKE "%%'.join(keywords)+'%%")', self.engine)
-        ids = similar_search_results['id'].tolist()
-        return ids
-
     def make_dataset_table(self, ids, limit=25):
         ids = ids[:limit]
         analysis_counts = pd.read_sql_query('SELECT dataset_accession, tool_name, tool_icon_url, tool_description, tool_homepage_url, count(dataset_accession) AS count FROM canned_analysis ca LEFT JOIN dataset d on d.id=ca.dataset_fk LEFT JOIN tool t on t.id = ca.tool_fk WHERE d.id in ('+', '.join([str(x) for x in ids])+') GROUP BY dataset_accession, tool_name ORDER BY dataset_accession ASC, count DESC', self.engine)
@@ -56,11 +460,6 @@ class CannedAnalysisDatabase:
             result_list.append([dataset_html, description_html, repository_html, analysis_html])
         result_dataframe = pd.DataFrame(result_list, columns=['Dataset', 'Description', 'Repository', 'Analyses']).set_index('Dataset', drop=False)#.loc[analysis_counts['dataset_accession'].unique()]
         return result_dataframe.to_html(escape=False, index=False, classes='dataset-table').encode('ascii', 'ignore')
-
-    def search_tools_by_keyword(self, keywords):
-        similar_search_results = pd.read_sql_query('SELECT id FROM tool WHERE id IN (SELECT id FROM tool WHERE CONCAT(tool_name, " ", tool_description) LIKE "%%' + '%%") AND id IN (SELECT id FROM tool WHERE CONCAT(tool_name, " ", tool_description) LIKE "%%'.join(keywords)+'%%")', self.engine)
-        ids = similar_search_results['id'].tolist()
-        return ids
 
     def make_tool_table(self, ids, limit=25):
         ids = ids[:limit]
@@ -87,42 +486,14 @@ class CannedAnalysisDatabase:
         dataset_terms = ['dataset_accession', 'dataset_title', 'dataset_description', 'repository', 'repository_description']
         tool_terms = ['tool_name', 'tool_description']
         if object_type == 'Analyses':
-            term_list = ['All Fields']+canned_analysis_metadata_terms+dataset_terms+tool_terms
-            return '\n'.join([x.replace('_', ' ').title() for x in term_list])
+            available_search_terms = ['All Fields']+canned_analysis_metadata_terms+dataset_terms+tool_terms
+            return '\n'.join([x.replace('_', ' ').title() for x in available_search_terms])
         elif object_type == 'Datasets':
-            term_list = ['All Fields']+dataset_terms
-            return '\n'.join([x.replace('_', ' ').title() for x in term_list])
+            available_search_terms = ['All Fields']+dataset_terms
+            return '\n'.join([x.replace('_', ' ').title() for x in available_search_terms])
         elif object_type == 'Tools':
-            term_list = ['All Fields']+tool_terms
-            return '\n'.join([x.replace('_', ' ').title() for x in term_list])
-
-    def advanced_search(self, advanced_query):
-
-        if 'AND' not in advanced_query:
-            raise ValueError('No conditions specified.')
-
-        object_type = advanced_query.split('object IS ')[-1].split(')')[0]
-        advanced_query = '('+advanced_query.lower().replace('object is', 'SELECT id FROM').replace(' not contains ', ' NOT LIKE "%').replace(' contains ', ' LIKE "%').replace(' and ', ' AND ').replace(' or ', ' OR ').replace(' is not', ' != ').replace(' is ', ' = ')+')'
-        
-        if any([x in advanced_query for x in ['drop', 'truncate']]):
-            raise ValueError('Not allowed.')
-
-        advanced_query = re.sub(r'%"(.+?(?="\)))', r'%%\1%%', advanced_query)
-        if object_type == 'analyses':
-            advanced_query = advanced_query.replace('analyses) AND', 'canned_analysis_metadata cam LEFT JOIN term ON term.id=cam.term_fk LEFT JOIN canned_analysis ca on ca.id=cam.canned_analysis_fk LEFT JOIN dataset d on d.id=ca.dataset_fk LEFT JOIN tool on tool.id=ca.tool_fk WHERE').replace('all_fields', 'value').replace('(', '').replace(')', '').replace('SELECT id', 'SELECT DISTINCT ca.id')
-            term_names = pd.read_sql_query('SELECT * FROM term', self.engine)['term_name'].tolist()
-            for term_name in term_names:
-                advanced_query = re.sub(r'(%(term_name)s)([^"]*"[^"]*")' % locals(), r'ca.id IN (SELECT canned_analysis_fk FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE `term_name`="\1" AND `value`\2)', advanced_query)
-        elif object_type == 'datasets':
-            advanced_query = advanced_query.replace('datasets) AND', 'dataset d LEFT JOIN repository r on r.id=d.repository_fk WHERE').replace('(', '').replace(')', '').replace('all_fields', 'CONCAT_WS(" ", dataset_accession, dataset_title, dataset_description)').replace('SELECT id', 'SELECT DISTINCT d.id')
-        elif object_type == 'tools':
-            advanced_query = advanced_query.replace('tools) AND', 'tool WHERE').replace('(', '').replace(')', '').replace('all_fields', 'CONCAT_WS(" ", tool_name, tool_description)')
-        advanced_query += ' LIMIT 25'
-        search_results = pd.read_sql_query(advanced_query, self.engine)
-        if len(search_results.index) > 0:
-            return search_results['id'].tolist()
-        else:
-            return []
+            available_search_terms = ['All Fields']+tool_terms
+            return '\n'.join([x.replace('_', ' ').title() for x in available_search_terms])
 
     def get_stored_data(self):
         stored_data = {x: pd.read_sql_query('SELECT * FROM %(x)s' % locals(), self.engine, index_col='id') for x in ['dataset', 'tool', 'term', 'repository']}

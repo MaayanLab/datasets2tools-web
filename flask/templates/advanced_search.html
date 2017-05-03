@@ -6,6 +6,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-select.css') }}">
 	</head>
 
 	<body>
@@ -42,17 +43,8 @@
 					        </div>
 					      </li>
 					    </ul>					    
-					    <ul class="navbar-nav">
-			    	      <li class="nav-item dropdown">
-					        <a class="nav-link dropdown-toggle navbar-link" href="http://example.com" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					          UPLOAD
-					        </a>
-					        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
-					          <a class="dropdown-item" href="/datasets2tools/manual_upload">MANUAL UPLOAD</a>
-					          <a class="dropdown-item" href="/datasets2tools/table_upload">TABLE UPLOAD</a>
-					        </div>
-					      </li>
-					    </ul>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/upload">UPLOAD</a>
+
 					    <a class="nav-item nav-link pull-xs-right navbar-link" href="#">EXTENSION</a>
 					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/help">HELP</a>
 					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/about">ABOUT</a>
@@ -84,18 +76,29 @@
 						      <label for="objectType" class="col-1 col-form-label text-right">Object</label>
 						      <div class="col-3">
 						            <select class="form-control" id="objectType">
-								      <option>Analyses</option>
-								      <option>Datasets</option>
-								      <option>Tools</option>
+								      <option value="analysis">Analyses</option>
+								      <option value="dataset">Datasets</option>
+								      <option value="tool">Tools</option>
 								    </select>
 						      </div>
 						    </div>
+						    
+						    {% for i in range(number_of_rows) %}
 
-						    <div class="form-group row filter-row">
-						      <label for="termName" class="col-1 col-form-label text-right">Filters</label>
+						    <div class="form-group row filter-row{{' additional-row' if i > 0 else ' first-row active'}}">
+						      <div class="col-1 text-right">
+							      {{'Filters' if i == 0 else '<select class="form-control" id="separatorType"><option>AND</option><option>OR</option></select>'|safe}}
+						      </div>
 						      <div class="col-2">
-							      <select class="form-control" id="termName">
-							      </select>
+								    {% for object_type in available_search_terms.keys() %}
+								    <div class="selectpicker-term selectpicker-{{object_type}}">
+									    <select class="form-control selectpicker" title="Select term..." data-live-search="true">
+										    {% for analysis_term in available_search_terms[object_type] %}
+											    <option value="{{analysis_term.replace(' ', '_').lower()}}" {{' selected' if analysis_term=='All Fields' else ''}}>{{analysis_term}}</option>
+										    {% endfor %}
+									    </select>
+								    </div>
+								    {% endfor %}
 						      </div>
 						      <div class="col-2">
 						            <select class="form-control" id="comparisonType">
@@ -109,9 +112,12 @@
 						        <input class="form-control" id="value">
 						      </div>
 						      <div class="col-sm-1 text-left alter-search-term-col">
-							      <i class="fa fa-2x fa-plus-circle search-term-button add-search-term-button" aria-hidden="true"></i>
+							      {{'<i class="fa fa-2x fa-plus-circle search-term-button add-search-term-button" aria-hidden="true"></i>'|safe if i == 0 else ''}}
+							      {{'<i class="fa fa-2x fa-minus-circle search-term-button remove-search-term-button" aria-hidden="true"></i>'|safe if i > 0 else ''}}
 						      </div>
 						    </div>
+
+						    {% endfor %}
 
 						    <div id="submit-button-row" class="form-group row">
 						      <div class="col-sm-2">
@@ -138,6 +144,7 @@
 			<script src="https://code.jquery.com/jquery-3.1.1.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+			<script src="{{ url_for('static', filename='js/bootstrap-select.js') }}"></script>
 			<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 			<script src="{{ url_for('static', filename='js/tags-input.js') }}"></script>
 			<script>[].forEach.call(document.querySelectorAll('input[type="tags"]'), tagsInput);</script>

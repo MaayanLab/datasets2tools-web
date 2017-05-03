@@ -34,7 +34,7 @@ with open('../../datasets2tools-database/f1-mysql.dir/conn.json') as openfile:
 os.environ['DB_USER'] = connectionDict['username']
 os.environ['DB_PASS'] = connectionDict['password']
 os.environ['DB_HOST'] = connectionDict['host']
-os.environ['DB_NAME'] = 'datasets2tools2'
+os.environ['DB_NAME'] = 'datasets2tools'
 
 # Initialize database
 uriString = 'mysql://' + os.environ['DB_USER'] + ':' + os.environ['DB_PASS'] + '@' + os.environ['DB_HOST'] + '/' + os.environ['DB_NAME']
@@ -43,77 +43,179 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 engine = SQLAlchemy(app).engine
 
 #######################################################
-########## 2. Setup Web Page ##########################
+########## 2. Platform ################################
 #######################################################
 
 ##############################
-##### 2.1 Homepage
+##### 1. Templates
 ##############################
 
-### 2.1.1 Main
+#########################
+### 1. Homepage
+#########################
+
 @app.route('/datasets2tools')
 def index():
 	return render_template('index.html')
 
+#########################
+### 2. Keyword Search
+#########################
+
 @app.route('/datasets2tools/search')
 def search():
-	return render_template('search.html')
+	# query
+	if all([x in request.args.keys() for x in ['object_type', 'keywords']]):
+
+		# setup
+		Database = CannedAnalysisDatabase(engine)
+
+		# get args
+		object_type = request.args.get('object_type', 'None', type=str)
+		keywords_list = request.args.get('keywords', 'None', type=str).split(',')
+		size = request.args.get('size', 10, type=int)
+
+		# get results
+		ids = Database.keyword_search(object_type, keywords_list, size)
+		table_html = Database.table_from_ids(ids, object_type)
+	else:
+		table_html = ''
+
+	return render_template('search.html', table_html=table_html)
+
+#########################
+### 3. Advanced Search
+#########################
 
 @app.route('/datasets2tools/advanced_search')
 def advanced_search():
+	# setup
 	Database = CannedAnalysisDatabase(engine)
-	if 'query' in request.args.keys():
+
+	# query
+	if all([x in request.args.keys() for x in ['object_type', 'query']]):
+
+		# get args
 		query = request.args.get('query')
-		object_type = query.split('object IS ')[-1].split(')')[0]
-		try:
-			ids = Database.advanced_search(request.args.get('query'))
-			if len(ids) > 0:
-				if object_type == 'analyses':
-					result_html = Database.make_canned_analysis_table(ids)
-				elif object_type == 'datasets':
-					result_html = Database.make_dataset_table(ids)
-				elif object_type == 'tools':
-					result_html = Database.make_tool_table(ids)
-			else:
-				result_html = 'Sorry, no search results found for specified query.'
-		except:
-			result_html = 'Sorry, there was an error.'
-		return render_template('advanced_search_results.html', result_html=result_html)
+		object_type = request.args.get('object_type')
+
+		# get table
+		ids = Database.advanced_search(query, object_type)
+		print 'OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO'
+		table_html = Database.table_from_ids(ids, object_type)
+		return render_template('advanced_search_results.html', table_html=table_html)
 	else:
-		return render_template('advanced_search.html')
+		# get search terms
+		available_search_terms = Database.get_available_search_terms()
+
+		# default
+		return render_template('advanced_search.html', available_search_terms=available_search_terms, number_of_rows=10)
+
+#########################
+### 4. Upload
+#########################
+
+@app.route('/datasets2tools/upload')
+def upload():
+	Database = CannedAnalysisDatabase(engine)
+	stored_data = Database.get_stored_data()
+	return render_template('upload.html', stored_data=stored_data)
+
+#########################
+### 5. Help
+#########################
+
+@app.route('/datasets2tools/help')
+def help():
+	return render_template('help.html')
+
+##############################
+##### 2. Search APIs
+##############################
+
+#########################
+### 1. Keyword Search
+#########################
+
+@app.route('/datasets2tools/api/keyword_search')
+def keyword_search_api():
+	# setup
+	Database = CannedAnalysisDatabase(engine)
+
+	# get args
+	object_type = request.args.get('object_type', 'None', type=str)
+	keywords_list = request.args.get('keywords', 'None', type=str).split(',')
+	size = request.args.get('size', 10, type=int)
+
+	# get results
+	ids = Database.keyword_search(object_type, keywords_list, size)
+	summary_json = Database.get_annotations(ids, object_type, output='json')
+	return summary_json
+
+#########################
+### 2. Advanced Search
+#########################
+
+@app.route('/datasets2tools/api/advanced_search')
+def advanced_search_api():
+	#setup 
+	Database = CannedAnalysisDatabase(engine)
+
+	# get args
+	object_type = request.args.get('object_type', 'None', type=str)
+	query = request.args.get('query', 'None', type=str)
+
+	# get results
+	ids = Database.advanced_search(query, object_type)
+	summary_json = Database.get_annotations(ids, object_type, output='json')
+	return summary_json
+
+#########################
+### 3. Object APIs
+#########################
+
+@app.route('/datasets2tools/api/analysis')
+def analysis_api():
+	Database = CannedAnalysisDatabase(engine)
+	ids = Database.analysis_api(request.args.to_dict())
+	summary_json = Database.get_annotations(ids, 'analysis', output='json')
+	return summary_json
+
+@app.route('/datasets2tools/api/dataset')
+def dataset_api():
+	Database = CannedAnalysisDatabase(engine)
+	ids = Database.dataset_api(request.args)
+	summary_json = Database.get_annotations(ids, 'dataset', output='json')
+	return summary_json
+
+@app.route('/datasets2tools/api/tool')
+def tool_api():
+	Database = CannedAnalysisDatabase(engine)
+	ids = Database.tool_api(request.args)
+	summary_json = Database.get_annotations(ids, 'tool', output='json')
+	return summary_json
+
+##############################
+##### 3. Miscellaneous
+##############################
+
+#########################
+### 1. Search Terms
+#########################
+
+# Gets list of terms which are to be used in the advanced search form,
+# appearing in the selection menu.
 
 @app.route('/datasets2tools/advanced_search_terms')
 def advanced_search_terms():
 	Database = CannedAnalysisDatabase(engine)
 	return Database.get_term_names(request.args.get('object_type'))
 
-@app.route('/datasets2tools/keyword_search')
-def keyword_search():
-	Database = CannedAnalysisDatabase(engine)
-	obj = request.args.get('obj', 'None', type=str)
-	keywords = request.args.get('keywords', 'None', type=str).split(',')
-	if obj == 'analyses':
-		ids = Database.search_analyses_by_keyword(keywords)
-		table_html = Database.make_canned_analysis_table(ids)
-		return str(table_html)
-	elif obj == 'datasets':
-		ids = Database.search_datasets_by_keyword(keywords)
-		table_html = Database.make_dataset_table(ids)
-		return str(table_html)
-	elif obj == 'tools':
-		ids = Database.search_tools_by_keyword(keywords)
-		table_html = Database.make_tool_table(ids)
-		return str(table_html)
+#########################
+### 2. Object Search
+#########################
 
-@app.route('/datasets2tools/manual_upload')
-def manual_upload():
-	Database = CannedAnalysisDatabase(engine)
-	stored_data = Database.get_stored_data()
-	return render_template('manual_upload.html', stored_data=stored_data)
-
-@app.route('/datasets2tools/help')
-def help():
-	return render_template('help.html')
+# No idea whatsoever.
 
 @app.route('/datasets2tools/object_search')
 def object_search():
@@ -125,12 +227,23 @@ def object_search():
 	print object_type, column, value
 	return Database.object_search(object_type, column, value)
 
+#########################
+### 3. Stored Terms
+#########################
+
+# No idea whatsoever.
+
 @app.route('/datasets2tools/stored_terms')
 def stored_terms():
 	Database = CannedAnalysisDatabase(engine)
 	stored_data = Database.get_stored_data()
 	return '\n'.join(stored_data['term']['term_name'])
 
+#########################
+### 4. Prepare CA Table
+#########################
+
+# No idea whatsoever.
 
 @app.route('/datasets2tools/prepare_canned_analysis_table')
 def prepare_canned_analysis_table():
@@ -138,7 +251,6 @@ def prepare_canned_analysis_table():
 	canned_analysis_json = urllib.unquote(request.args.get('canned_analysis_json'))
 	canned_analysis_table = Database.prepare_canned_analysis_table(canned_analysis_json)
 	return canned_analysis_table
-
 
 
 #######################################################
