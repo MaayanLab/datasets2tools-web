@@ -114,13 +114,21 @@ class CannedAnalysisDatabase:
             if 'size' in query_dict.keys():
                 size = query_dict.pop('size')
             for key, value in query_dict.iteritems():
-                if key in term_names:
+                if 'id' in key:
+                    query_terms.append('{key} = {value}'.format(**locals()))
+                elif key in term_names:
                     query_terms.append('(`term_name` = "{key}" AND `value` = "{value}")'.format(**locals()))
                 else:
                     query_terms.append('`{key}` = "{value}"'.format(**locals()))
             if len(query_terms) > 0:
                 sql_query += ' WHERE ' + ' AND '.join(query_terms)
             sql_query += ' LIMIT {size}'.format(**locals())
+            print sql_query
+            print sql_query
+            print sql_query
+            print sql_query
+            print sql_query
+            print sql_query
             ids = pd.read_sql_query(sql_query, self.engine)['id'].tolist()
         except:
             ids = None
@@ -137,7 +145,10 @@ class CannedAnalysisDatabase:
             if 'size' in query_dict.keys():
                 size = query_dict.pop('size')
             for key, value in query_dict.iteritems():
-                query_terms.append('`{key}` = "{value}"'.format(**locals()))
+                if 'id' in key:
+                    query_terms.append('{key} = {value}'.format(**locals()))
+                else:
+                    query_terms.append('`{key}` = "{value}"'.format(**locals()))
             if len(query_terms) > 0:
                 sql_query += ' WHERE ' + ' AND '.join(query_terms)
             sql_query += ' LIMIT {size}'.format(**locals())
@@ -157,7 +168,10 @@ class CannedAnalysisDatabase:
             if 'size' in query_dict.keys():
                 size = query_dict.pop('size')
             for key, value in query_dict.iteritems():
-                query_terms.append('`{key}` = "{value}"'.format(**locals()))
+                if 'id' in key:
+                    query_terms.append('{key} = {value}'.format(**locals()))
+                else:
+                    query_terms.append('`{key}` = "{value}"'.format(**locals()))
             if len(query_terms) > 0:
                 sql_query += ' WHERE ' + ' AND '.join(query_terms)
             sql_query += ' LIMIT {size}'.format(**locals())
@@ -341,7 +355,7 @@ class CannedAnalysisDatabase:
 
 
 #######################################################
-########## 5. Display Wrapepr #########################
+########## 5. Display Wrapper #########################
 #######################################################
 
 ##############################
@@ -351,7 +365,7 @@ class CannedAnalysisDatabase:
     def get_annotations(self, ids, object_type, output='list'):
         if ids == []:
             return 'Sorry, no search results found'
-        elif ids == 'None':
+        elif ids == 'None' or ids == None:
             return 'Sorry, there has been an error.'
         else:
             if object_type == 'analysis':

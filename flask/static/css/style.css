@@ -646,6 +646,11 @@ body {
 	margin-top: 5px;
 }
 
+#form-upload-row .col-8,
+#form-upload-row .col-6 {
+	margin: auto;
+}
+
 #form-upload-row .col-lg-4 {
 	padding: 10px 3px;
 }
@@ -665,6 +670,8 @@ body {
 	text-align: right;
 }
 
+#add-another-dataset-button,
+#submit-new-dataset-button,
 .add-new-button {
 	background-color: #1D2541;
 	box-shadow: none;
@@ -681,6 +688,149 @@ body {
 .add-new-button .fa {
 	padding-right: 5px;
 }
+
+
+#tool-selection-mode label,
+#dataset-selection-mode label,
+#has-tool-selection label,
+#dataset-number-selection label {
+	cursor: pointer;
+	text-align: center;
+	box-shadow: none;
+	background-color: #1D2541;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+#upload-tool-form .fa,
+#upload-dataset-form .fa {
+	margin-right: 7px;
+}
+
+#tool-selection-mode input[type="radio"],
+#dataset-selection-mode input[type="radio"],
+#has-tool-selection input[type="radio"],
+#dataset-number-selection input[type="radio"] {
+	display: none;
+}
+
+#tool-selection-mode input[type="radio"]:checked + label,
+#dataset-selection-mode input[type="radio"]:checked + label,
+#has-tool-selection input[type="radio"]:checked + label,
+#dataset-number-selection input[type="radio"]:checked + label {
+	background-color: #025aa5;
+}
+
+label[for="select-tool"],
+label[for="select-dataset"],
+label[for="has-tool"],
+label[for="one-dataset"] {
+	margin-left: 10px;
+	margin-right: -2px;
+	border-radius: 5px 0px 0px 5px;
+	border: none;
+}
+
+label[for="add-tool"],
+label[for="add-dataset"],
+label[for="not-has-tool"],
+label[for="multi-dataset"] {
+	margin-left: -2px;
+	border-radius: 0px 5px 5px 0px;
+	border: none;
+}
+
+#select-dataset {
+}
+
+#add-another-dataset-button {
+	display: none;
+}
+
+/**/
+
+#dataset-row {
+	border: 1px solid lightgrey;
+	border-radius: 5px;
+	padding: 20px 10px;
+	margin-top: 15px;
+	background-color: #F3F4F3;
+}
+
+.dataset-col {
+	border: 1px solid lightgrey;
+	border-radius: 5px;
+	padding: 10px 5px;
+}
+
+#upload-tool-form .inactive,
+#upload-dataset-form .inactive {
+	display: none;
+}
+
+#selected-dataset-col {
+	margin: auto;
+}
+
+.added-dataset {
+	padding: 7px 5px;
+	border: 1px solid lightgrey;
+	border-radius: 3px;
+	margin-bottom: 5px;
+}
+
+.added-dataset-accession {
+	margin: 0;
+	font-weight: 500;
+}
+
+.added-dataset-title {
+	margin: 0;
+	font-weight: 100;
+	font-size: 8pt;
+	font-style: italic;
+}
+
+.added-dataset .col-2 a {
+	font-size: 8pt;
+	margin: 0;
+}
+
+.tooltip-inner {
+	max-width: 300px;
+}
+
+/*
+
+#object-selection-row label {
+	height: 125px;
+	width: 125px;
+	cursor: pointer;
+	text-align: center;
+	box-shadow: none;
+	border: none;
+	background-color: #1D2541;
+}
+
+#object-selection-row input[type="radio"] {
+	display: none;
+}
+
+#object-selection-row input[type="radio"]:checked + label {
+	background-color: #025aa5;
+}
+
+#object-selection-row .fa {
+	padding-top: 15px;
+	padding-bottom: 10px;
+}
+
+#object-selection-row p {
+	font-size: 10pt;
+}
+
+
+
 
 /*
 Make bootstrap-select work with bootstrap 4 see:
@@ -723,8 +873,7 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
   display: inline !important;
 }
 
-#new-tool,
-#new-dataset {
+#new-tool {
 	margin-top: 15px;
 	display: none;
 }

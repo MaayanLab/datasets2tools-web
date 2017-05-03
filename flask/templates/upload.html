@@ -65,68 +65,82 @@
 
 					<div id="form-upload-row" class="row">
 
-						<div class="col-lg-4">
+						<div id="dataset-col" class="col-lg-4">
 							<form id="upload-dataset-form">
-								<h3>Dataset</h3>
+								<h3>Datasets</h3>
 								<hr width="75%">
 
-								<div class="form-group row">
-								  <label for="example-text-input" class="col-3 col-form-label">Dataset</label>
-								  <div id="dataset-accession-select-col" class="col-8 lesspadding">
-								    <select class="form-control selectpicker" title="Select dataset..." id="datasetAccessionSelect" data-live-search="true">
-									    {% for index, dataset_accession in stored_data['dataset']['dataset_accession'].iteritems() %}
-										    <option value="{{index}}">{{dataset_accession}}</option>
-									    {% endfor %}
-								    </select>
-								  </div>
-								</div>
-
-								<div class="row text-center">
-									<div class="col-12">
-										OR
+								<div id="selected-dataset-row" class="row">
+									<div id="selected-dataset-col" class="col-11">
+									</div>
+									<div class="col-12 text-center">
+										<button id="add-another-dataset-button" type="button" class="btn btn-primary"><i class="fa fa-1x fa-plus-circle" aria-hidden="true"></i> Add Another</button>
 									</div>
 								</div>
 
-								<div class="row text-center">
-									<div class="col-12">
-										<button id="new-dataset-button" type="button" class="btn btn-primary add-new-button"><i class="fa fa-1x fa-plus-circle" aria-hidden="true"></i> Add New</button>
-									</div>
-								</div>
-								
-								<div id="new-dataset">
-								<hr width="50%">
+								<div id="add-dataset-wrapper">
 									<div class="form-group row">
-										<label class="col-3 col-form-label lesspadding">Accession</label>
-										<div class="col-8 lesspadding">
-											<input class="form-control" type="text" placeholder="Insert accession..." id="dataset_accession">
+										<div class="col-12 text-center">
+											<div id="dataset-selection-mode">
+												<input type="radio" id="select-dataset" name="radio" checked />
+												<label for="select-dataset" class="btn btn-primary change-dataset-input"><i class="fa fa-1x fa-search" aria-hidden="true"></i>Search</label>
+												<input type="radio" id="add-dataset" name="radio" />
+												<label for="add-dataset" class="btn btn-primary change-dataset-input"><i class="fa fa-1x fa-plus-circle" aria-hidden="true"></i>Add New</label>
+											</div>
+											<hr width="50%">
 										</div>
 									</div>
-									<div class="form-group row">
-										<label class="col-3 col-form-label lesspadding">Title</label>
-										<div class="col-8 lesspadding">
-											<input class="form-control" type="text" placeholder="Insert title..." id="dataset_title">
+
+									<div id="select-dataset-row" class="form-group row dataset-input">
+									  <label for="example-text-input" class="col-3 col-form-label">Dataset</label>
+									  <div id="dataset-accession-select-col" class="col-8 lesspadding">
+									    <select class="form-control selectpicker" title="Select dataset..." id="datasetAccessionSelect" data-live-search="true">
+										    {% for index, dataset_accession in stored_data['dataset']['dataset_accession'].iteritems() %}
+											    <option value="{{index}}">{{dataset_accession}}</option>
+										    {% endfor %}
+									    </select>
+									  </div>
+									</div>
+
+									<div id="add-new-dataset" class="dataset-input inactive">
+										<div class="form-group row">
+											<label class="col-3 col-form-label lesspadding">Accession</label>
+											<div class="col-8 lesspadding">
+												<input class="form-control" type="text" placeholder="Insert accession..." id="dataset_accession">
+											</div>
 										</div>
+										<div class="form-group row">
+											<label class="col-3 col-form-label lesspadding">Title</label>
+											<div class="col-8 lesspadding">
+												<input class="form-control" type="text" placeholder="Insert title..." id="dataset_title">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label class="col-3 col-form-label lesspadding">Description</label>
+											<div class="col-8 lesspadding">
+												<input class="form-control" type="text" placeholder="Insert description..." id="dataset_description">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label class="col-3 col-form-label lesspadding">URL</label>
+											<div class="col-8 lesspadding">
+												<input class="form-control" type="text" placeholder="Insert URL..." id="dataset_landing_url">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label class="col-3 col-form-label lesspadding">Repository</label>
+											<div class="col-8 lesspadding">
+											    <select class="form-control selectpicker" title="Select repository..." id="repositoryNameSelect" data-live-search="true">
+												    {% for index, repository_name in stored_data['repository']['repository_name'].iteritems() %}
+													    <option value="{{index}}">{{repository_name}}</option>
+												    {% endfor %}
+											    </select>
+											</div>
+										</div>									
 									</div>
 									<div class="form-group row">
-										<label class="col-3 col-form-label lesspadding">Description</label>
-										<div class="col-8 lesspadding">
-											<input class="form-control" type="text" placeholder="Insert description..." id="dataset_description">
-										</div>
-									</div>
-									<div class="form-group row">
-										<label class="col-3 col-form-label lesspadding">URL</label>
-										<div class="col-8 lesspadding">
-											<input class="form-control" type="text" placeholder="Insert URL..." id="dataset_landing_url">
-										</div>
-									</div>
-									<div class="form-group row">
-										<label class="col-3 col-form-label lesspadding">Repository</label>
-										<div class="col-8 lesspadding">
-										    <select class="form-control selectpicker" title="Select repository..." id="repositoryNameSelect" data-live-search="true">
-											    {% for index, repository_name in stored_data['repository']['repository_name'].iteritems() %}
-												    <option value="{{index}}">{{repository_name}}</option>
-											    {% endfor %}
-										    </select>
+										<div class="col-12 text-center">
+											<button id="submit-new-dataset-button" type="button" class="btn btn-primary">Add</button>
 										</div>
 									</div>
 								</div>
@@ -134,11 +148,25 @@
 							</form>
 						</div>
 
-						<div class="col-lg-4">
+						<div id="tool-col" class="col-lg-4">
 							<form id="upload-tool-form">
 								<h3>Tool</h3>
 								<hr width="75%">
-								<div class="form-group row">
+								<div id="add-tool-wrapper">
+									<div class="form-group row">
+										<div class="col-12 text-center">
+											<div id="tool-selection-mode">
+												<input type="radio" id="select-tool" name="radio" checked />
+												<label for="select-tool" class="btn btn-primary change-tool-input"><i class="fa fa-1x fa-search" aria-hidden="true"></i>Search</label>
+												<input type="radio" id="add-tool" name="radio" />
+												<label for="add-tool" class="btn btn-primary change-tool-input"><i class="fa fa-1x fa-plus-circle" aria-hidden="true"></i>Add New</label>
+											</div>
+											<hr width="50%">
+										</div>
+									</div>
+								</div>
+
+								<div id="select-tool-row" class="form-group row">
 								  <label for="example-text-input" class="col-3 col-form-label">Tool</label>
 								  <div id="tool-name-select-col" class="col-8 lesspadding">
 								    <select class="form-control selectpicker" title="Select tool..." id="toolNameSelect" data-live-search="true">
@@ -149,20 +177,7 @@
 								  </div>
 								</div>
 
-								<div class="row text-center">
-									<div class="col-12">
-										OR
-									</div>
-								</div>
-
-								<div class="row text-center">
-									<div class="col-12">
-										<button id="new-tool-button" type="button" class="btn btn-primary add-new-button"><i class="fa fa-1x fa-plus-circle" aria-hidden="true"></i> Add New</button>
-									</div>
-								</div>
-								
-								<div id="new-tool">
-									<hr width="50%">
+								<div id="add-new-tool" class="inactive">
 									<div class="row">
 										<div id="selectedToolIcon" class="col-12 text-center">
 										</div>
@@ -192,109 +207,16 @@
 											</div>
 									</div>
 								</div>
+								<div class="form-group row">
+									<div class="col-12 text-center">
+										<button id="submit-new-dataset-button" type="button" class="btn btn-primary">Add</button>
+									</div>
+								</div>
 
 							</form>
 						</div>
 
-						<div class="col-lg-4">
-							<form id="upload-analysis-form">
-								<h3>Analysis</h3>
-								<hr width="75%">
 
-								<div id="analysis-data-wrapper">
-									<div class="form-group row">
-									  <label for="example-text-input" class="col-3 col-form-label lesspadding">Title</label>
-									  <div class="col-8 lesspadding">
-									    <input class="form-control" type="text" placeholder="Insert title..." id="canned_analysis_title">
-									  </div>
-									</div>
-
-									<div class="form-group row">
-									  <label for="example-text-input" class="col-3 col-form-label lesspadding">Description</label>
-									  <div class="col-8 lesspadding">
-									    <input class="form-control" type="text" placeholder="Insert description..." id="canned_analysis_description">
-									  </div>
-									</div>
-
-									<div class="form-group row">
-									  <label for="example-text-input" class="col-3 col-form-label lesspadding">URL</label>
-									  <div class="col-8 lesspadding">
-									    <input class="form-control" type="text" placeholder="Insert URL..." id="canned_analysis_url">
-									  </div>
-									</div>
-
-									<div class="form-group row">
-									  <label for="example-text-input" class="col-3 col-form-label lesspadding">Snapshot</label>
-									  <div class="col-8 lesspadding">
-									    <input class="form-control" type="text" placeholder="Insert snapshot URL..." id="canned_analysis_snapshot_url">
-									  </div>
-									</div>
-								</div>
-
-								<div id="analysis-metadata-wrapper">
-									<div class="row" style="margin:auto;">
-										<div class="col-12">
-											<h4>Metadata</h4>
-										  <hr width="75%">
-										</div>
-									</div>
-
-									<div class="form-group row">
-									  <label id="tags-label" for="example-text-input" class="col-3 col-form-label lesspadding">Keywords</label>
-									  <div class="col-8 lesspadding">
-									    <input name="keywords" type="tags" pattern="^#" placeholder="Add keywords...">
-									  </div>
-									</div>
-
-
-									<div class="row text-center">
-										<div class="col-12">
-											AND/OR
-										</div>
-									</div>
-									
-									<div id="metadata-row-wrapper">
-										<div class="form-group row metadata-row">
-										  <label for="example-text-input" class="col-3 col-form-label lesspadding tags-label-col">Tags</label>
-										  <div class="col-4 lesspadding metadata-term-selectpicker">
-										    <input class="form-control" type="text" placeholder="Insert term..." id="metadataTerm">
-										  </div>
-										  <div class="col-4 lesspadding">
-										    <input class="form-control" type="text" placeholder="Insert value..." id="metadataValue">
-										  </div>
-		  								  <div class="col-1 lesspadding alter-tag-col">
-										    <i class="fa fa-1x fa-plus-circle alter-tag-button add-tag-button" aria-hidden="true"></i>
-										  </div>
-										</div>
-									</div>
-								</div>
-							</form>
-
-							<div class="row">
-								<div class="col-12 text-center">
-									<button id="submit-analysis-button" type="submit" class="btn btn-primary add-new-button"><i class="fa fa-1x fa-arrow-circle-right" aria-hidden="true"></i> Continue</button>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div id="results">
-						<div class="row">
-							<div id="upload-results" class="col-12 text-center">
-								
-							</div>
-						</div>
-						<div class="row">
-							<br>
-							<br>
-							<br>
-							<div class="col-6 text-center">
-								<button id="review-submission-button" type="submit" class="btn btn-primary add-new-button"><i class="fa fa-1x fa-arrow-circle-left" aria-hidden="true"></i> Back</button>
-							</div>							
-							<div class="col-6 text-center">
-								<button id="submit-analysis-button" type="submit" class="btn btn-primary add-new-button"><i class="fa fa-1x fa-upload" aria-hidden="true"></i> Submit</button>
-							</div>
-						</div>
 					</div>
 
 				</div> <!-- .jumbotron .container -->
