@@ -262,6 +262,76 @@ var advancedSearch = {
 
 var uploadForm = {
 
+	// change input method
+	changeInputMethod: function() {
+
+		$('.change-method label').click(function(evt) {
+			var $evtTarget = $(evt.target), // get event target
+				method = $evtTarget.hasClass('fa') ? $evtTarget.parent().attr('class').split(' ')[2] : $evtTarget.attr('class').split(' ')[2]; // get method
+
+			$evtTarget.parents('.col-lg-4').find('.add-object-row.'+method).removeClass('hidden');
+			$evtTarget.parents('.col-lg-4').find('.add-object-row:not(.'+method+')').addClass('hidden');
+		})
+
+	},
+
+	// add object
+	addObject: function(analysisObject) {
+
+		$('.add-object-button-row button').click(function(evt) {
+			var $activeAddRow = $(evt.target).parents('.add-object-button-row').parent().find('.add-object-row:not(.hidden)'), // get active row
+				objectType = $activeAddRow.attr('id').split('-')[1], objectData;
+			if (objectType === 'dataset') {
+
+				if ($activeAddRow.hasClass('select-method')) {
+					objectData = $activeAddRow.find('option:selected').attr('value');
+				} else if ($activeAddRow.hasClass('insert-method')) {
+					objectData = {};
+					$activeAddRow.find('input:not([role="textbox"])').each(function(i, elem) {
+						objectData[$(elem).attr('id')] = $(elem).val();
+					})
+					objectData['repository_fk'] = $activeAddRow.find('option:selected').attr('value');
+				}
+
+				if (analysisObject[objectType].indexOf(objectData) === -1 && objectData != "" && Object.values(objectData).indexOf('') === -1 && analysisObject['dataset'].map(function(x) {return x['dataset_accession']}).indexOf(objectData['dataset_accession']) === -1) {
+					analysisObject[objectType].push(objectData);
+				}
+
+			} else if (objectType === 'tool') {
+
+				if ($activeAddRow.hasClass('select-method')) {
+					objectData = $activeAddRow.find('option:selected').attr('value');
+				} else if ($activeAddRow.hasClass('insert-method')) {
+					objectData = {};
+					$activeAddRow.find('input:not([role="textbox"])').each(function(i, elem) {
+						objectData[$(elem).attr('id')] = $(elem).val();
+					})
+				}
+
+				if (objectData != "" && Object.values(objectData).indexOf('') === -1) {
+					analysisObject[objectType] = objectData;
+				}
+
+			}
+			console.log(analysisObject);
+		})
+		return analysisObject;
+	},
+
+	// main
+	main: function() {
+		if (window.location.pathname === '/datasets2tools/upload') {
+			var self = this,
+				analysisObject = {'dataset': [], 'tool': '', 'analysis': {}};
+			self.changeInputMethod();
+			analysisObject = self.addObject(analysisObject);
+		}
+	}
+
+};
+
+var uploadForm2 = {
+
 	// change dataset input
 	changeDatasetInput: function() {
 

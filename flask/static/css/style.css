@@ -642,6 +642,11 @@ body {
 
 /*** Manual Upload ***/
 
+.hidden {
+	display: none;
+}
+
+/*
 #form-upload-row {
 	margin-top: 5px;
 }
@@ -748,7 +753,7 @@ label[for="multi-dataset"] {
 }
 
 /**/
-
+/*
 #dataset-row {
 	border: 1px solid lightgrey;
 	border-radius: 5px;
@@ -799,7 +804,7 @@ label[for="multi-dataset"] {
 .tooltip-inner {
 	max-width: 300px;
 }
-
+*/
 /*
 
 #object-selection-row label {
@@ -872,7 +877,7 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
 .bootstrap-select.btn-group .dropdown-toggle .filter-option {
   display: inline !important;
 }
-
+/*
 #new-tool {
 	margin-top: 15px;
 	display: none;
@@ -924,7 +929,7 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
 #results {
 	display: none;
 }
-
+*/
 
 /*** Help Table ***/
 
