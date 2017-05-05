@@ -228,9 +228,6 @@ class CannedAnalysisDatabase:
     def analysis_table(self, analysis_summary_list):
         result_list = ['<hr width="100%">']
         for analysis_summary_dict in analysis_summary_list:
-            print type(analysis_summary_list)
-            print 'klsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsdklsjdnfksjdnfkjsdnfkjsd'
-            print analysis_summary_dict
             result_list.append('''
                 <div class="row">
                     <div class="col-9">
@@ -416,7 +413,43 @@ class CannedAnalysisDatabase:
 #######################################################
 
 ##############################
-##### 3.1 Advanced Search Dropdown terms
+##### 1. Analysis Preview
+##############################
+
+    def get_analysis_preview(self, analysis_json):
+        analysis_dict = json.loads(analysis_json)
+        analysis_dict['dataset'] = [self.dataset_summary(x) if type(x) != dict else x for x in analysis_dict['dataset']]
+        analysis_dict['tool'] = self.tool_summary(analysis_dict['tool']) if type(analysis_dict['tool']) != dict else analysis_dict['tool']
+        preview = '''
+                <div class="row">
+                    <div class="col-9">
+                        <p class="canned-analysis-title">
+                            <a href="{canned_analysis_url}">
+                                {canned_analysis_title}
+                            </a>
+                        </p>
+                        <p class="canned-analysis-description">
+                            {canned_analysis_description}
+                        </p> '''.format(**analysis_dict['analysis']) + '''
+                        <p class="canned-analysis-annotation">
+                            <span>Datasets: ''' + ', '.join(['<a href="{dataset_landing_url}">{dataset_accession}</a>'.format(**x) for x in analysis_dict['dataset']]) + '''</span>
+                            <span>Analyzed by: <a href="{tool_homepage_url}">{tool_name}</a></span> '''.format(**analysis_dict['tool'])  + '''
+                            <span>Metadata: <a href="#">i</a></span>
+                        </p>
+                    </div>
+                    <div class="col-3">
+                        <a href="{canned_analysis_url}">
+                            <img class="analysis-preview-image" src="{canned_analysis_preview_url}">
+                        </a>
+                    </div>
+                    <hr width="100%">
+                </div>
+            
+            '''.format(**analysis_dict['analysis'])
+        return preview
+
+##############################
+##### 2. Advanced Search Dropdown terms
 ##############################
 
     def get_available_search_terms(self):

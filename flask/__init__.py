@@ -200,7 +200,18 @@ def tool_api():
 ##############################
 
 #########################
-### 1. Search Terms
+### 1. Analysis Preview
+#########################
+
+@app.route('/datasets2tools/api/get_analysis_preview')
+def analysis_preview_api():
+	Database = CannedAnalysisDatabase(engine)
+	analysis_preview = Database.get_analysis_preview(request.args.get('data'))
+	return analysis_preview
+
+
+#########################
+### 2. Search Terms
 #########################
 
 # Gets list of terms which are to be used in the advanced search form,
@@ -212,7 +223,7 @@ def advanced_search_terms():
 	return Database.get_term_names(request.args.get('object_type'))
 
 #########################
-### 2. Object Search
+### 3. Object Search
 #########################
 
 # No idea whatsoever.
@@ -228,7 +239,7 @@ def object_search():
 	return Database.object_search(object_type, column, value)
 
 #########################
-### 3. Stored Terms
+### 4. Stored Terms
 #########################
 
 # No idea whatsoever.
@@ -240,7 +251,7 @@ def stored_terms():
 	return '\n'.join(stored_data['term']['term_name'])
 
 #########################
-### 4. Prepare CA Table
+### 5. Prepare CA Table
 #########################
 
 # No idea whatsoever.

@@ -654,6 +654,11 @@ body {
 	border-radius: 3px;
 }
 
+.analysis-preview-image {
+	max-width: 300px;
+	max-height: 200px;
+}
+
 /*
 #form-upload-row {
 	margin-top: 5px;
