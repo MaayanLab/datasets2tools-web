@@ -420,29 +420,30 @@ class CannedAnalysisDatabase:
         analysis_dict = json.loads(analysis_json)
         analysis_dict['dataset'] = [self.dataset_summary(x) if type(x) != dict else x for x in analysis_dict['dataset']]
         analysis_dict['tool'] = self.tool_summary(analysis_dict['tool']) if type(analysis_dict['tool']) != dict else analysis_dict['tool']
+        analysis_dict['analysis']['metadata'].pop('', None)
+        metadata = '<br>'.join([key+': '+', '.join(value) if type(value) == list else key+': '+value for key, value in analysis_dict['analysis']['metadata'].iteritems()]) if len(analysis_dict['analysis']['metadata'].keys()) > 0 else 'No metadata supplied.'
         preview = '''
                 <div class="row">
-                    <div class="col-9">
-                        <p class="canned-analysis-title">
+                    <div class="col-8 canned-analysis-col">
+                        <div class="canned-analysis-title">
                             <a href="{canned_analysis_url}">
                                 {canned_analysis_title}
                             </a>
-                        </p>
-                        <p class="canned-analysis-description">
+                        </div>
+                        <div class="canned-analysis-description">
                             {canned_analysis_description}
-                        </p> '''.format(**analysis_dict['analysis']) + '''
-                        <p class="canned-analysis-annotation">
-                            <span>Datasets: ''' + ', '.join(['<a href="{dataset_landing_url}">{dataset_accession}</a>'.format(**x) for x in analysis_dict['dataset']]) + '''</span>
-                            <span>Analyzed by: <a href="{tool_homepage_url}">{tool_name}</a></span> '''.format(**analysis_dict['tool'])  + '''
-                            <span>Metadata: <a href="#">i</a></span>
-                        </p>
+                        </div> '''.format(**analysis_dict['analysis']) + '''
+                        <div class="canned-analysis-annotation">
+                            <div><span class="annotation-label">Datasets:</span> ''' + ', '.join(['<a href="{dataset_landing_url}">{dataset_accession}</a>'.format(**x) for x in analysis_dict['dataset']]) + '''</div>
+                            <div><span class="annotation-label">Analyzed by:</span> <a href="{tool_homepage_url}">{tool_name}</a></div> '''.format(**analysis_dict['tool'])  + '''
+                            <div><span class="annotation-label">Metadata:</span> <i class="fa fa-info-circle fa-1x" aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="'''+metadata+'''"></i></div>
+                        </div>
                     </div>
-                    <div class="col-3">
+                    <div class="col-4">
                         <a href="{canned_analysis_url}">
                             <img class="analysis-preview-image" src="{canned_analysis_preview_url}">
                         </a>
                     </div>
-                    <hr width="100%">
                 </div>
             
             '''.format(**analysis_dict['analysis'])

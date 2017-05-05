@@ -159,6 +159,26 @@ body {
 	font-weight: 100;
 }
 
+.btn-blue {
+	cursor: pointer;
+	color: white;
+	text-align: center;
+	box-shadow: none;
+	background-color: #1D2541;
+	margin-top: auto;
+	margin-bottom: auto;
+	outline: none;
+	border: none;
+}
+
+input[type="radio"] {
+	display: none;
+}
+
+input[type="radio"]:checked + .btn-blue {
+	background-color: #025aa5;
+}
+
 /***** Specific Pages *****/
 
 /*** Simple Search Bar ***/
@@ -646,18 +666,124 @@ body {
 	display: none;
 }
 
-.added-tool-icon {
-	max-height: 50px;
-	max-width: 200px;
-	padding: 1px;
-	border: 1px solid lightgrey;
-	border-radius: 3px;
-}
-
 .analysis-preview-image {
 	max-width: 300px;
 	max-height: 200px;
 }
+
+.change-method .select-method {
+	border-radius: 5px 0px 0px 5px;
+	margin-right: -2px;
+}
+
+
+.change-method .insert-method {
+	border-radius: 0px 5px 5px 0px;
+	margin-left: -2px;
+}
+
+.change-method .fa {
+	margin: auto 7px auto 0px;
+}
+
+.add-object-button-row {
+	margin-top: 15px;
+}
+
+.added-element-row {
+	padding: 5px 10px;
+}
+
+.added-object {
+	border: 1px solid lightgrey;
+	padding: 5px 10px;
+}
+
+.added-object .col {
+	padding: 0px;
+}
+.added-dataset {
+	margin-bottom: 3px;
+}
+
+.added-dataset-accession {
+	font-weight: 500;
+	font-size: 9pt;
+}
+
+.added-dataset-title {
+	font-size: 9pt;
+}
+
+.added-tool-icon {
+	max-height: 50px;
+	max-width: 200px;
+	border: 1px solid lightgrey;
+	border-radius: 3px;
+	margin-right: 5px;
+	margin-bottom: 3px;
+}
+
+.added-tool-name {
+	font-weight: 500;
+	font-size: 10pt;
+}
+
+.canned-analysis-title {
+	font-size: 12pt;
+	font-weight: 600;
+	margin-bottom: 10px;
+}
+
+.canned-analysis-description {
+	font-size: 11pt;
+	margin-bottom: 10px;
+}
+
+.canned-analysis-annotation {
+	font-size: 11pt;
+}
+
+.canned-analysis-annotation div {
+	margin-bottom: 5px;
+}
+
+.annotation-label {
+	font-weight: 500;
+}
+
+.analysis-preview-image {
+	max-width: 100%;
+	max-height: 100%;
+	border: 1px solid lightgrey;
+}
+
+.canned-analysis-col {
+	margin: auto;
+}
+
+#metadata-row-wrapper {
+	margin-top: 11px;
+}
+
+
+/*
+.btn {
+	cursor: pointer;
+	text-align: center;
+	box-shadow: none;
+	background-color: #1D2541;
+	margin-top: auto;
+	margin-bottom: auto;
+	outline: none;
+	border: none;
+}*/
+/*
+input[type="radio"] {
+	display: none;
+}
+*/
+
 
 /*
 #form-upload-row {

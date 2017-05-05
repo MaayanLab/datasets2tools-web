@@ -301,19 +301,19 @@ var uploadForm = {
 			}
 
 			objectPreviewHtml =`
-	 		<div class="row" id="`+datasetIdentifier+`">
-				<div class="col-10 text-left">
-				 <p><a href="`+objectSummary['dataset_landing_url']+`">`+objectSummary['dataset_accession']+`</a></p>
-				 <p>`+objectSummary['dataset_title']+`&nbsp<sup><i class="fa fa-info-circle fa-1x" aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="`+objectSummary['dataset_description']+`"></i></sup></p>
+	 		<div class="row added-object added-dataset" id="`+datasetIdentifier+`">
+				<div class="col col-10 text-left">
+				 <div class="added-dataset-accession"><a href="`+objectSummary['dataset_landing_url']+`">`+objectSummary['dataset_accession']+`</a></div>
+				 <div class="added-dataset-title">`+objectSummary['dataset_title']+`&nbsp<sup><i class="fa fa-info-circle fa-1x" aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="`+objectSummary['dataset_description']+`"></i></sup></div>
 				</div>
-				<div class="col-2 text-right">
+				<div class="col col-2 text-right">
 					<a class="remove-added-dataset" href="#">Remove</a>
 				</div>
 			</div>
 			`.replace('\n', '');;
 
 			$addedObjectCol.append(objectPreviewHtml);
-			$('[data-toggle="tooltip"]').tooltip()
+			$('[data-toggle="tooltip"]').tooltip();
 
 		} else if (objectType === 'tool') {
 
@@ -333,13 +333,13 @@ var uploadForm = {
 			}
 
 			objectPreviewHtml =`
-	 		<div class="row">
-				<div class="col-12 text-left">
-				<p>
+	 		<div class="row added-object added-tool">
+				<div class="col col-12 text-left">
+				<div>
 	 				<img class="added-tool-icon" src="`+objectSummary['tool_icon_url']+`">
-					 <a href="`+objectSummary['tool_homepage_url']+`">`+objectSummary['tool_name']+`</a>
-				</p>
-				<p>`+objectSummary['tool_description']+`</p>
+					 <a class="added-tool-name" href="`+objectSummary['tool_homepage_url']+`">`+objectSummary['tool_name']+`</a>
+				</div>
+				<div class="added-tool-description">`+objectSummary['tool_description']+`</div>
 				</div>
 			</div>
 			`.replace('\n', '');
@@ -400,7 +400,7 @@ var uploadForm = {
 			var $addedDatasetCol = $('#added-dataset-col'),
 				removedDatasetIdentifier = $(evt.target).parent().parent().attr('id');
 			analysisObject['dataset'] = analysisObject['dataset'].filter(function(x){ return(typeof x === 'object' ? x['dataset_accession'] != removedDatasetIdentifier : x != removedDatasetIdentifier) });
-			if ($addedDatasetCol.html().trim() === '') {
+			if ($addedDatasetCol.find('.added-dataset').length === 1) {
 				$addedDatasetCol.parent().addClass('hidden');
 			}
 			removedDatasetIdentifier = $(evt.target).parent().parent().remove();
@@ -413,13 +413,16 @@ var uploadForm = {
 	previewAnalysis: function(analysisObject) {
 
 		$('#preview-analysis-button-row button').click(function(evt) {
-			analysisObject['analysis'] = {'metadata': {'keywords': []}};
+			analysisObject['analysis'] = {'metadata': {}};
 
 			$('#input-analysis-row').find('input').each(function(i, elem) {
 				analysisObject['analysis'][$(elem).attr('id')] = $(elem).val();
 			})
 
-			$('.tags-input').find('.tag').each(function(i, elem){ analysisObject['analysis']['metadata']['keywords'].push($(elem).attr('data-tag')); });
+			if ($('.tags-input').find('.tag').length > 0) {
+				analysisObject['analysis']['metadata']['keywords'] = [];
+				$('.tags-input').find('.tag').each(function(i, elem){ analysisObject['analysis']['metadata']['keywords'].push($(elem).attr('data-tag')); });
+			}
 
 			$('#metadata-row-wrapper').find('.row').each(function(i, elem){ analysisObject['analysis']['metadata'][$(elem).find('.metadata-term').val()] = $(elem).find('.metadata-value').val() });
 
@@ -433,6 +436,7 @@ var uploadForm = {
 						$('#preview-analysis-row').find('.col-12').html(data);
 						$('#add-analysis-wrapper').addClass('hidden');
 						$('#preview-analysis-wrapper').removeClass('hidden');
+						$('[data-toggle="tooltip"]').tooltip();
 					}
 				})
 			}
@@ -450,6 +454,13 @@ var uploadForm = {
 		})
 	},
 
+	// submit analysis
+	submitAnalysis: function(analysisObject) {
+		$('#submit-analysis-button').click(function(evt) {
+			alert('Submit function to be added soon.')
+		}) 
+	},
+
 	// main
 	main: function() {
 		if (window.location.pathname === '/datasets2tools/upload') {
@@ -460,6 +471,7 @@ var uploadForm = {
 			analysisObject = self.removeDataset(analysisObject);
 			analysisObject = self.previewAnalysis(analysisObject);
 			analysisObject = self.reviewAnalysis(analysisObject);
+			self.submitAnalysis(analysisObject);
 		}
 	}
 
@@ -467,155 +479,6 @@ var uploadForm = {
 
 
 
-
-var uploadForm2 = {
-
-	// change dataset input
-	changeDatasetInput: function() {
-
-		// get divs
-		var $newDatasetDiv = $('#add-new-dataset'),
-			$selectDatasetDiv = $('#select-dataset-row');
-
-		$(document).on('click', '#select-dataset', function(evt) {
-			$newDatasetDiv.addClass('inactive');
-			$selectDatasetDiv.removeClass('inactive');
-		})
-
-		$(document).on('click', '#add-dataset', function(evt) {
-			$newDatasetDiv.removeClass('inactive');
-			$selectDatasetDiv.addClass('inactive');
-		})
-	},
-
-	// get object annotation
-	getDatasetAnnotation: function($activeDatasetInput) {
-		var isSelectMode = $activeDatasetInput.attr('id') === 'select-dataset-row', // get true if select mode
-			datasetSummary; // get summary
-		if (isSelectMode) {
-			var datasetId = $activeDatasetInput.find('option:selected').attr('value'); // get dataset id
-			if (datasetId != '') { // process if dataset is selected
-				var datasetSummaryJson = $.ajax({ // get annotation from id
-
-					async: false,
-
-					url: 'http://localhost:5000/datasets2tools/api/dataset',
-
-					data: {
-					  'd.id':datasetId,
-					},
-
-					success: function(data) {
-						return data;
-					}
-
-				}).responseText;
-
-				datasetSummary = JSON.parse(datasetSummaryJson)['results'][0]; // convert to object
-			}
-		} else {
-
-			var $elem, // define element
-				isSelectpicker;
-
-			datasetSummary = {} // define empty object
-
-			$activeDatasetInput.find('.form-group input').each(function(i, elem) { // loop through form
-				$elem = $(elem);
-				isSelectpicker = $elem.attr('aria-label') === 'Search';
-				console.log(isSelectpicker);
-				if (!isSelectpicker) {
-					datasetSummary[$elem.attr('id')] = $elem.val();
-				} else {
-					datasetSummary['repository_fk'] = $elem.parents('.bootstrap-select').find('option:selected').attr('value');
-				}
-			});
-		}
-
-		return datasetSummary;
-	},
-
-	// make dataset card
-	makeDatasetCard: function(datasetInfo) {
-		var row = `
-		<div class="row added-dataset added-dataset-info" data-variable="dataset_fk" data-value="`+datasetInfo['id']+`">
-			<div class="col-10 text-left lesspadding">
-			 <p class="added-dataset-accession added-dataset-info" data-variable="dataset_accession" data-value="`+datasetInfo['dataset_accession']+`"><a class="added-dataset-info" data-variable="dataset_landing_url" data-value="`+datasetInfo['dataset_landing_url']+`" href="`+datasetInfo['dataset_landing_url']+`">`+datasetInfo['dataset_accession']+`</a></p>
-			 <p class="added-dataset-title added-dataset-info" data-variable="dataset_title" data-value="`+datasetInfo['dataset_title']+`">`+datasetInfo['dataset_title']+`&nbsp<sup><i class="fa fa-info-circle fa-1x" aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="`+datasetInfo['dataset_description']+`"></i></sup></p>
-			 <div class="added-dataset-info" data-variable="repository_fk" data-value="`+datasetInfo['repository_fk']+`"></div>
-			</div>
-			<div class="col-2 text-right lesspadding">
-				<a class="remove-added-dataset" href="#">Remove</a>
-			</div>
-		</div>
-		`.replace('\n', '');
-
-		return row;
-	},
-
-	// add dataset
-	addDataset: function() {
-		var self = this,
-			$selectedDatasetsCol = $('#selected-dataset-col'), // get dataset box
-			$addDatasetWrapper = $('#add-dataset-wrapper'), // get add wrapper
-			$activeDatasetInput, datasetInfo; // other variables
-
-		$(document).on('click', '#submit-new-dataset-button', function(evt) { // listener for click of submit button
-
-			$activeDatasetInput = $('#upload-dataset-form .dataset-input:not(.inactive)'); // get active input
-
-			datasetAnnotation = self.getDatasetAnnotation($activeDatasetInput); // dataset annotation object
-
-			if (datasetAnnotation === undefined || Object.values(datasetAnnotation).indexOf('') != -1) {
-			} else {
-				$selectedDatasetsCol.append(self.makeDatasetCard(datasetAnnotation)); // add card html
-				$(function() {$('[data-toggle="tooltip"]').tooltip()})
-				// $addDatasetWrapper.hide(); // hide adding options
-			}
-
-		})
-	},
-
-	// remove dataset
-	removeDataset: function() {
-
-		$(document).on('click', '.remove-added-dataset', function(evt) {
-			$(evt.target).parents('.added-dataset').remove();
-		})
-	},
-
-	// change tool input
-	changeToolInput: function() {
-
-		// get divs
-		var $newToolDiv = $('#add-new-tool'),
-			$selectToolDiv = $('#select-tool-row');
-
-		$(document).on('click', '#select-tool', function(evt) {
-			$newToolDiv.addClass('inactive');
-			$selectToolDiv.removeClass('inactive');
-		})
-
-		$(document).on('click', '#add-tool', function(evt) {
-			$newToolDiv.removeClass('inactive');
-			$selectToolDiv.addClass('inactive');
-		})
-	},
-
-	// add tool
-
-	// main
-	main: function() {
-		if (window.location.pathname === '/datasets2tools/upload') {
-			var self = this;
-			self.changeDatasetInput();
-			self.addDataset();
-			self.removeDataset();
-			self.changeToolInput();
-		}
-	}
-
-};
 
 ///////////////////////////////////
 ////////// 3. Call ////////////////
