@@ -646,6 +646,14 @@ body {
 	display: none;
 }
 
+.added-tool-icon {
+	max-height: 50px;
+	max-width: 200px;
+	padding: 1px;
+	border: 1px solid lightgrey;
+	border-radius: 3px;
+}
+
 /*
 #form-upload-row {
 	margin-top: 5px;

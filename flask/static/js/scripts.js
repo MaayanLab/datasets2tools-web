@@ -276,12 +276,76 @@ var uploadForm = {
 
 	// add object preview
 	addObjectPreview: function(objectData, objectType) {
-		var $addedObjectRow = $('#added-'+objectType+'-row');
+		var $addedObjectRow = $('#added-'+objectType+'-row'),
+			$addedObjectCol = $('#added-'+objectType+'-col'),
+			objectSummary, objectPreviewHtml;
 		$addedObjectRow.removeClass('hidden');
 		if (objectType === 'dataset') {
-			$addedObjectRow.html('asd');
+			var datasetIdentifier;
+
+			if (typeof objectData === 'string') {
+				datasetIdentifier = objectData;
+				objectSummary = JSON.parse($.ajax({ // get annotation from id
+					async: false,
+					url: 'http://localhost:5000/datasets2tools/api/dataset',
+					data: {
+					  'd.id':objectData,
+					},
+					success: function(data) {
+						return data;
+					}
+				}).responseText)['results'][0];
+			} else if (typeof objectData === 'object') {
+				datasetIdentifier = objectData['dataset_accession'];
+				objectSummary = objectData;
+			}
+
+			objectPreviewHtml =`
+	 		<div class="row" id="`+datasetIdentifier+`">
+				<div class="col-10 text-left">
+				 <p><a href="`+objectSummary['dataset_landing_url']+`">`+objectSummary['dataset_accession']+`</a></p>
+				 <p>`+objectSummary['dataset_title']+`&nbsp<sup><i class="fa fa-info-circle fa-1x" aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="`+objectSummary['dataset_description']+`"></i></sup></p>
+				</div>
+				<div class="col-2 text-right">
+					<a class="remove-added-dataset" href="#">Remove</a>
+				</div>
+			</div>
+			`.replace('\n', '');;
+
+			$addedObjectCol.append(objectPreviewHtml);
+			$('[data-toggle="tooltip"]').tooltip()
+
 		} else if (objectType === 'tool') {
-			$addedObjectRow.html('asd');
+
+			if (typeof objectData === 'string') {
+				objectSummary = JSON.parse($.ajax({ // get annotation from id
+					async: false,
+					url: 'http://localhost:5000/datasets2tools/api/tool',
+					data: {
+					  'id':objectData,
+					},
+					success: function(data) {
+						return data;
+					}
+				}).responseText)['results'][0];
+			} else if (typeof objectData === 'object') {
+				objectSummary = objectData;
+			}
+
+			objectPreviewHtml =`
+	 		<div class="row">
+				<div class="col-12 text-left">
+				<p>
+	 				<img class="added-tool-icon" src="`+objectSummary['tool_icon_url']+`">
+					 <a href="`+objectSummary['tool_homepage_url']+`">`+objectSummary['tool_name']+`</a>
+				</p>
+				<p>`+objectSummary['tool_description']+`</p>
+				</div>
+			</div>
+			`.replace('\n', '');
+
+			$addedObjectCol.html(objectPreviewHtml);
+			$('[data-toggle="tooltip"]').tooltip()
 		}
 	},
 
@@ -303,9 +367,9 @@ var uploadForm = {
 					objectData['repository_fk'] = $activeAddRow.find('option:selected').attr('value');
 				}
 
-				if (analysisObject[objectType].indexOf(objectData) === -1 && objectData != "" && Object.values(objectData).indexOf('') === -1 && analysisObject['dataset'].map(function(x) {return x['dataset_accession']}).indexOf(objectData['dataset_accession']) === -1) {
+				if (analysisObject[objectType].indexOf(objectData) === -1 && objectData != "" && Object.values(objectData).indexOf('') === -1 && analysisObject['dataset'].map(function(x) {return x['dataset_accession']}).indexOf(objectData['dataset_accession']) < 1) {
 					analysisObject[objectType].push(objectData);
-					self.addObjectPreview(analysisObject, objectType);
+					self.addObjectPreview(objectData, objectType);
 				}
 
 			} else if (objectType === 'tool') {
@@ -321,12 +385,12 @@ var uploadForm = {
 
 				if (objectData != "" && Object.values(objectData).indexOf('') === -1) {
 					analysisObject[objectType] = objectData;
-					self.addObjectPreview(analysisObject, objectType);
+					self.addObjectPreview(objectData, objectType);
 				}
 
 			}
 		})
-
+		
 		return analysisObject;
 	},
 
@@ -347,7 +411,21 @@ var uploadForm = {
 			if (analysisObject['dataset'] != [] && analysisObject['tool'] != '' && Object.values(analysisObject['analysis']).indexOf('') === -1) {
 				console.log(analysisObject);
 			}
+		})
 
+		return analysisObject;
+	},
+
+	// remove dataset
+	removeDataset: function(analysisObject) {
+		$(document).on('click', '.remove-added-dataset', function(evt) {
+			var $addedDatasetCol = $('#added-dataset-col'),
+				removedDatasetIdentifier = $(evt.target).parent().parent().attr('id');
+			analysisObject['dataset'] = analysisObject['dataset'].filter(function(x){ return(typeof x === 'object' ? x['dataset_accession'] != removedDatasetIdentifier : x != removedDatasetIdentifier) });
+			if ($addedDatasetCol.html().trim() === '') {
+				$addedDatasetCol.parent().addClass('hidden');
+			}
+			removedDatasetIdentifier = $(evt.target).parent().parent().remove();
 		})
 
 		return analysisObject;
@@ -361,6 +439,7 @@ var uploadForm = {
 			self.changeInputMethod();
 			analysisObject = self.addObject(analysisObject);
 			analysisObject = self.previewAnalysis(analysisObject);
+			analysisObject = self.removeDataset(analysisObject);
 		}
 	}
 
