@@ -52,25 +52,16 @@
 			</div> <!-- #navbar-wrapper -->
 
 			<div id="jumbotron-wrapper">
-				<div class="jumbotron">
-					<div class="container text-center">
-
-						<div class="row">
-							<div class="col-12">
-								<h1>Search Results</h1>
-								<hr width="75%" class="my-4">
-								<p id="object-select-text" class="lead my-4">The table below allows to explore the search results for the selected query.</p>
-							</div> <!-- .col-12 -->
-						</div> <!-- .row -->
-
-						<div class="row">
-							<div id="#advanced-search-results" class="col-12">
-								{{ table_html|safe }}
-							</div>
+				<div class="jumbotron container text-center">
+					<div class="row">
+						<div class="col-12">
+							<h1 class="my-2">Metadata Explorer</h1>
+							<hr class="my-4">
+							<p class="lead">This page is under development.  It will contain an interactive visualization of the metadata terms and annotations within the database, allowing users to explore available analyses, datasets and tools.</p>
+							<hr class="my-4">
 						</div>
-
-					</div> <!-- .container -->
-				</div> <!-- .jumbotron -->
+					</div> <!-- .row -->
+				</div> <!-- .jumbotron .container -->
 			</div> <!-- #jumbotron-wrapper -->
 
 		</div> <!-- #main_container -->
@@ -84,12 +75,10 @@
 	    </footer>
 
 		<div id="js">
-			<script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+			<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 			<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
-			<script src="{{ url_for('static', filename='js/tags-input.js') }}"></script>
-			<script>[].forEach.call(document.querySelectorAll('input[type="tags"]'), tagsInput);</script>
 			<script> $(function() {$('[data-toggle="tooltip"]').tooltip()}) </script>
 		</div> <!-- #js -->
 

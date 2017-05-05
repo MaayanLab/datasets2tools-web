@@ -129,6 +129,22 @@ def upload():
 def help():
 	return render_template('help.html')
 
+#########################
+### 6. Collections
+#########################
+
+@app.route('/datasets2tools/collections')
+def collections():
+	return render_template('collections.html')
+
+#########################
+### 7. Metadata Explorer
+#########################
+
+@app.route('/datasets2tools/metadata')
+def metadata():
+	return render_template('metadata.html')
+
 ##############################
 ##### 2. Search APIs
 ##############################

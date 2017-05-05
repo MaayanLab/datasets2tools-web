@@ -342,6 +342,58 @@ input[type="radio"]:checked + .btn-blue {
 	vertical-align: middle;
 }
 
+.tool-name,
+.dataset-title,
+.canned-analysis-title {
+	font-size: 12pt;
+	font-weight: 600;
+}
+
+.tool-description,
+.dataset-description,
+.canned-analysis-description {
+	font-size: 11pt;
+	margin: 10px 0px;
+}
+
+.tool-annotation,
+.dataset-annotation,
+.canned-analysis-annotation {
+	font-size: 11pt;
+}
+
+.tool-annotation,
+.dataset-annotation,
+.canned-analysis-annotation div{
+	margin-bottom: 5px;
+}
+
+.annotation-label {
+	font-weight: 500;
+}
+
+.dataset-repository-image,
+.analysis-preview-image {
+	max-width: 300px;
+	max-height: 200px;
+	border: 1px solid lightgrey;
+}
+
+.tool-icon {
+	max-width: 100px;
+	max-height: 100px;
+	border: 1px solid lightgrey;
+	padding: 1px;
+}
+
+.tool-col,
+.tool-icon-col,
+.dataset-repository-col,
+.canned-analysis-preview-col,
+.canned-analysis-col {
+	margin: auto;
+}
+
 /*** Results Table ***/
 
 .tool-table,
@@ -666,9 +718,8 @@ input[type="radio"]:checked + .btn-blue {
 	display: none;
 }
 
-.analysis-preview-image {
-	max-width: 300px;
-	max-height: 200px;
+#add-analysis-wrapper {
+	margin-top: 20px;
 }
 
 .change-method .select-method {
@@ -697,6 +748,7 @@ input[type="radio"]:checked + .btn-blue {
 .added-object {
 	border: 1px solid lightgrey;
 	padding: 5px 10px;
+	border-radius: 3px;
 }
 
 .added-object .col {
@@ -727,39 +779,6 @@ input[type="radio"]:checked + .btn-blue {
 .added-tool-name {
 	font-weight: 500;
 	font-size: 10pt;
-}
-
-.canned-analysis-title {
-	font-size: 12pt;
-	font-weight: 600;
-	margin-bottom: 10px;
-}
-
-.canned-analysis-description {
-	font-size: 11pt;
-	margin-bottom: 10px;
-}
-
-.canned-analysis-annotation {
-	font-size: 11pt;
-}
-
-.canned-analysis-annotation div {
-	margin-bottom: 5px;
-}
-
-.annotation-label {
-	font-weight: 500;
-}
-
-.analysis-preview-image {
-	max-width: 100%;
-	max-height: 100%;
-	border: 1px solid lightgrey;
-}
-
-.canned-analysis-col {
-	margin: auto;
 }
 
 #metadata-row-wrapper {
@@ -1072,21 +1091,25 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
 
 /*** Help Table ***/
 
-#help-table-wrapper .h5 {
-	margin-top: 15px;
+.help-jumbotron .h5 {
+	margin-top: 50px;
 	font-weight: 600;
 }
 
-#help-table-wrapper .h6 {
+.help-jumbotron .h6 {
 	font-weight: 600;
 }
 
-#help-table-wrapper .fa {
+.help-jumbotron .fa {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
 
-#help-table-wrapper .fa:hover {
+.help-jumbotron .fa:hover {
 	color: #303852;
 	transition: 0.5s;
+}
+
+.help-jumbotron hr {
+	margin-bottom: 15px
 }

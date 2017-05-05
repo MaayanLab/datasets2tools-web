@@ -161,8 +161,8 @@ var advancedSearch = {
 
 	// change selections
 	changeSelections: function(object_type) {
-		$('.selectpicker-term.selectpicker-'+object_type).show();
-		$('.selectpicker-term:not(.selectpicker-'+object_type+')').hide();
+		$('.selectpicker-term.selectpicker-'+object_type).removeClass('hidden');
+		$('.selectpicker-term:not(.selectpicker-'+object_type+')').addClass('hidden');
 	},
 
 	// manage selections
@@ -221,9 +221,9 @@ var advancedSearch = {
 			$activeRows.each(function(i, elem) {
 				$activeRow = $(elem);
 				separatorType = $activeRow.find('#separatorType').length === 0 ? '' : $activeRow.find('#separatorType').val(); // get operator type, set '' if not specified
-				termName = $activeRow.find('.selectpicker-term button').attr('title').replace(' ', '_').toLowerCase(); // get term name
+				termName = $activeRow.find('.selectpicker-term:not(.hidden) option:selected').attr('value'); // get term name
 				comparisonType = $activeRow.find('#comparisonType').val(); // get comparison type
-				value = '"'+$activeRow.find('#value').val()+'"'; // get comparison type
+				value = '"'+$activeRow.find('#value').val()+'"'; // get value
 
 				query = '(' + query + [separatorType, termName, comparisonType, value].join(' ') + ') ' // build query
 			})

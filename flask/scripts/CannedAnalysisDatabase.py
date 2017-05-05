@@ -228,29 +228,30 @@ class CannedAnalysisDatabase:
     def analysis_table(self, analysis_summary_list):
         result_list = ['<hr width="100%">']
         for analysis_summary_dict in analysis_summary_list:
+            print analysis_summary_dict
+            analysis_summary_dict['datasets'] = '<a href="{dataset_landing_url}">{dataset_accession}</a>'.format(**analysis_summary_dict)
+            analysis_summary_dict['metadata'] = '<br>'.join([': '.join([key, value]) for key, value in analysis_summary_dict['metadata'].iteritems()]) if len(analysis_summary_dict['metadata'].keys()) > 0 else 'No metadata supplied.'
             result_list.append('''
                 <div class="row">
-                    <div class="col-9">
-                        <p class="canned-analysis-title">
+                    <div class="col-9 text-left canned-analysis-col">
+                        <div class="canned-analysis-title">
                             <a href="{canned_analysis_url}">
                                 {canned_analysis_title}
                             </a>
-                        </p>
-                        <p class="canned-analysis-description">
+                        </div>
+                        <div class="canned-analysis-description">
                             {canned_analysis_description}
-                        </p>
-                        <p class="canned-analysis-annotation">
-                            <span>Dataset: <a href="{dataset_landing_url}">{dataset_accession}</a></span>
-                            <span>Analyzed by: <a href="{tool_homepage_url}">{tool_name}</a></span>
-                            <span>Metadata: <a href="{dataset_landing_url}">i</a></span>
-                        </p>
-                        <p class="canned-analysis-accession">
-                            <span>Accession: <a href="{canned_analysis_url}">{canned_analysis_accession}</a></span>
-                        </p>
+                        </div>
+                        <div class="canned-analysis-annotation">
+                            <div><span class="annotation-label">Datasets:</span> {datasets}</div>
+                            <div><span class="annotation-label">Analyzed by:</span> <a href="{tool_homepage_url}">{tool_name}</a></div>
+                            <div><span class="annotation-label">Metadata:</span> <i class="fa fa-info-circle fa-1x" aria-hidden="true" data-toggle="tooltip" data-placement="right" data-html="true" title="{metadata}"></i></div>
+                            <div><span class="annotation-label">Accession:</span> {canned_analysis_accession}</div>
+                        </div>
                     </div>
-                    <div class="col-3">
+                    <div class="col-3 canned-analysis-preview-col">
                         <a href="{canned_analysis_url}">
-                            <img src="{canned_analysis_preview_url}">
+                            <img class="analysis-preview-image" src="{canned_analysis_preview_url}">
                         </a>
                     </div>
                     <hr width="100%">
@@ -269,34 +270,32 @@ class CannedAnalysisDatabase:
         for dataset_summary_dict in dataset_summary_list:
             result_list.append('''
                 <div class="row">
-                    <div class="col-10">
-                        <p class="dataset-title">
+                    <div class="col-10 text-left">
+                        <div class="dataset-title">
                             <a href="{dataset_landing_url}">
                                 {dataset_title}
                             </a>
-                        </p>
-                        <p class="dataset-description">
+                        </div>
+                        <div class="dataset-description">
                             {dataset_description}
-                        </p>
-                        <p class="dataset-analyses">
-                            <span>Analyzed by: </span>
-                        </p>
-                        <p class="dataset-repository">
-                            <span>Accession: <a href="{dataset_landing_url}">{dataset_accession}</a></span>
-                            <span>Repository: <a href="{repository_homepage_url}">{repository_name}</a></span>
-                        </p>
+                        </div>
+                        <div class="dataset-annotation">
+                            <div><span class="annotation-label">Analyzed by:</span></div>
+                            <div><span class="annotation-label">Accession:</span> <a href="{dataset_landing_url}">{dataset_accession}</a></div>
+                            <div><span class="annotation-label">Repository:</span> <a href="{repository_homepage_url}">{repository_name}</a></div>
+                        </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col-2 dataset-repository-col">
                         <a href="{repository_homepage_url}">
-                            <img src="{repository_icon_url}">
+                            <img class="dataset-repository-image" src="{repository_icon_url}">
                         </a>
                     </div>
                     <hr width="100%">
                 </div>
             
             '''.format(**dataset_summary_dict)
-               .replace('Analyzed by: ', 'Analyzed by: '+', '.join('{key} (<a href="http://localhost:5000/datasets2tools/advanced_search?query=((object%20IS%20analyses)%20AND%20dataset_accession%20IS%20%22ACC%22)%20AND%20tool_name%20IS%20%22{key}%22">{value} analyses</a>)'.format(**locals()) for key, value in dataset_summary_dict['canned_analysis_count'].iteritems()))
-               .replace('%22ACC%22', '%22{dataset_accession}%22'.format(**dataset_summary_dict)))
+               .replace('Analyzed by:</span>', 'Analyzed by:</span> '+', '.join('''{key} (<a href='http://localhost:5000/datasets2tools/advanced_search?object_type=analysis&query=((dataset_accession%20IS%20%22ACC%22)%20AND%20tool_name%20IS%20%22{key}%22)'>{value} analyses</a>)'''.format(**locals()) for key, value in dataset_summary_dict['canned_analysis_count'].iteritems()))
+               .replace('%22ACC%22', '"%22{dataset_accession}%22"'.format(**dataset_summary_dict)))
             
         return ''.join(result_list)
 
@@ -309,22 +308,22 @@ class CannedAnalysisDatabase:
         for tool_summary_dict in tool_summary_list:
             result_list.append('''
                 <div class="row">
-                    <div class="col-10">
-                        <p class="tool-name">
+                    <div class="col-10 text-left tool-col">
+                        <div class="tool-name">
                             <a href="{tool_homepage_url}">
                                 {tool_name}
                             </a>
-                        </p>
-                        <p class="tool-description">
+                        </div>
+                        <div class="tool-description">
                             {tool_description}
-                        </p>
-                        <p class="tool-analyses">
-                            <span>Analyzed {datasets_analyzed} datasets, generating {canned_analyses} analyses </span>
-                        </p>
+                        </div>
+                        <div class="tool-annotation">
+                            Analyzed <span class="annotation-label">{datasets_analyzed} datasets</span>, generating <span class="annotation-label">{canned_analyses} analyses</span>
+                        </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col-2 tool-icon-col">
                         <a href="{tool_homepage_url}">
-                            <img src="{tool_icon_url}">
+                            <img class="tool-icon" src="{tool_icon_url}">
                         </a>
                     </div>
                     <hr width="100%">
