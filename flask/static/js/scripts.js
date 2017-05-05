@@ -272,12 +272,22 @@ var uploadForm = {
 			$evtTarget.parents('.col-lg-4').find('.add-object-row.'+method).removeClass('hidden');
 			$evtTarget.parents('.col-lg-4').find('.add-object-row:not(.'+method+')').addClass('hidden');
 		})
+	},
 
+	// add object preview
+	addObjectPreview: function(objectData, objectType) {
+		var $addedObjectRow = $('#added-'+objectType+'-row');
+		$addedObjectRow.removeClass('hidden');
+		if (objectType === 'dataset') {
+			$addedObjectRow.html('asd');
+		} else if (objectType === 'tool') {
+			$addedObjectRow.html('asd');
+		}
 	},
 
 	// add object
 	addObject: function(analysisObject) {
-
+		var self = this;
 		$('.add-object-button-row button').click(function(evt) {
 			var $activeAddRow = $(evt.target).parents('.add-object-button-row').parent().find('.add-object-row:not(.hidden)'), // get active row
 				objectType = $activeAddRow.attr('id').split('-')[1], objectData;
@@ -295,6 +305,7 @@ var uploadForm = {
 
 				if (analysisObject[objectType].indexOf(objectData) === -1 && objectData != "" && Object.values(objectData).indexOf('') === -1 && analysisObject['dataset'].map(function(x) {return x['dataset_accession']}).indexOf(objectData['dataset_accession']) === -1) {
 					analysisObject[objectType].push(objectData);
+					self.addObjectPreview(analysisObject, objectType);
 				}
 
 			} else if (objectType === 'tool') {
@@ -310,11 +321,35 @@ var uploadForm = {
 
 				if (objectData != "" && Object.values(objectData).indexOf('') === -1) {
 					analysisObject[objectType] = objectData;
+					self.addObjectPreview(analysisObject, objectType);
 				}
 
 			}
-			console.log(analysisObject);
 		})
+
+		return analysisObject;
+	},
+
+	// preview analysis
+	previewAnalysis: function(analysisObject) {
+
+		$('#preview-analysis-button-row button').click(function(evt) {
+			var analysisData = {'metadata': {'keywords': []}};
+
+			$('#input-analysis-row').find('input').each(function(i, elem) {
+				analysisData[$(elem).attr('id')] = $(elem).val();
+			})
+
+			$('.tags-input').find('.tag').each(function(i, elem){ analysisData['metadata']['keywords'].push($(elem).attr('data-tag')); });
+
+			$('#metadata-row-wrapper').find('.row').each(function(i, elem){ analysisData['metadata'][$(elem).find('.metadata-term').val()] = $(elem).find('.metadata-value').val() });
+
+			if (analysisObject['dataset'] != [] && analysisObject['tool'] != '' && Object.values(analysisObject['analysis']).indexOf('') === -1) {
+				console.log(analysisObject);
+			}
+
+		})
+
 		return analysisObject;
 	},
 
@@ -325,6 +360,7 @@ var uploadForm = {
 				analysisObject = {'dataset': [], 'tool': '', 'analysis': {}};
 			self.changeInputMethod();
 			analysisObject = self.addObject(analysisObject);
+			analysisObject = self.previewAnalysis(analysisObject);
 		}
 	}
 
