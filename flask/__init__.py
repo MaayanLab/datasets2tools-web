@@ -19,14 +19,21 @@ from flask_sqlalchemy import SQLAlchemy
 ##############################
 ##### 1.2 Custom Libraries
 ##############################
-sys.path.append('scripts')
+if os.path.exists('/datasets2tools/flask/scripts'):
+	sys.path.append('/datasets2tools/flask/scripts')
+else:
+	sys.path.append('scripts')
 from CannedAnalysisDatabase import CannedAnalysisDatabase
 
 ##############################
 ##### 1.3 Setup App
 ##############################
 # Initialize Flask App
-app = Flask(__name__)
+if os.path.exists('/datasets2tools/flask/static'):
+	app = Flask(__name__, static_url_path='/datasets2tools/flask/static')
+else:
+	app = Flask(__name__)
+
 
 # Read data
 connection_file = '../../datasets2tools-database/f1-mysql.dir/conn.json'

@@ -287,7 +287,7 @@ var uploadForm = {
 				datasetIdentifier = objectData;
 				objectSummary = JSON.parse($.ajax({ // get annotation from id
 					async: false,
-					url: 'http://localhost:5000/datasets2tools/api/dataset',
+					url: 'http://amp.pharm.mssm.edu/datasets2tools/api/dataset',
 					data: {
 					  'd.id':objectData,
 					},
@@ -320,7 +320,7 @@ var uploadForm = {
 			if (typeof objectData === 'string') {
 				objectSummary = JSON.parse($.ajax({ // get annotation from id
 					async: false,
-					url: 'http://localhost:5000/datasets2tools/api/tool',
+					url: 'http://amp.pharm.mssm.edu/datasets2tools/api/tool',
 					data: {
 					  'id':objectData,
 					},
@@ -428,7 +428,7 @@ var uploadForm = {
 
 			if (analysisObject['dataset'] != [] && analysisObject['tool'] != '' && Object.values(analysisObject['analysis']).indexOf('') === -1) {
 				$.ajax({ // get preview html from api
-					url: 'http://localhost:5000/datasets2tools/api/get_analysis_preview',
+					url: 'http://amp.pharm.mssm.edu/datasets2tools/api/get_analysis_preview',
 					data: {
 					  'data': JSON.stringify(analysisObject),
 					},
