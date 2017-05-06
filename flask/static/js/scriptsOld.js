@@ -33,7 +33,7 @@ $('#search-button').click(function(evt) {
 	} else {
 
 	$.ajax({
-	url: 'http://localhost:5000/datasets2tools/keyword_search',
+	url: 'http://amp.pharm.mssm.edu/datasets2tools/datasets2tools/keyword_search',
 	data: {
 	  'obj': objects,
 	  'keywords': keywords.join(','),
@@ -111,7 +111,7 @@ function updateFilters() {
 	var objectType = $('#objectType').val();
 
 	$.ajax({
-	url: 'http://localhost:5000/datasets2tools/advanced_search_terms',
+	url: 'http://amp.pharm.mssm.edu/datasets2tools/datasets2tools/advanced_search_terms',
 	data: {
 	  'object_type': objectType,
 	},
@@ -205,7 +205,7 @@ function fillDatasetInputs() {
 	var selectedDatasetId = $('#datasetAccessionSelect option:contains('+$('[data-id="datasetAccessionSelect"]').attr('title')+')').attr('value');
 
 	$.ajax({
-		url: 'http://localhost:5000/datasets2tools/object_search',
+		url: 'http://amp.pharm.mssm.edu/datasets2tools/datasets2tools/object_search',
 		data: {
 		  'object_type': 'dataset',
 		  'd.id': selectedDatasetId
@@ -258,7 +258,7 @@ function fillToolInputs() {
 	var selectedToolId = $('#toolNameSelect option:contains('+$('[data-id="toolNameSelect"]').attr('title')+')').attr('value');
 
 	$.ajax({
-		url: 'http://localhost:5000/datasets2tools/object_search',
+		url: 'http://amp.pharm.mssm.edu/datasets2tools/datasets2tools/object_search',
 		data: {
 		  'object_type': 'tool',
 		  'id': selectedToolId
@@ -395,7 +395,7 @@ $(document).on('click', '#submit-analysis-button', function(evt) {
 	var cannedAnalysisJson = prepareCannedAnalysisJSON();
 
 	$.ajax({
-		url: 'http://localhost:5000/datasets2tools/prepare_canned_analysis_table',
+		url: 'http://amp.pharm.mssm.edu/datasets2tools/datasets2tools/prepare_canned_analysis_table',
 		data: {
 		  'canned_analysis_json': encodeURIComponent(cannedAnalysisJson)
 		},
