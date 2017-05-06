@@ -29,12 +29,14 @@ from CannedAnalysisDatabase import CannedAnalysisDatabase
 app = Flask(__name__)
 
 # Read data
-with open('../../datasets2tools-database/f1-mysql.dir/conn.json') as openfile:
-	connectionDict = json.loads(openfile.read())['phpmyadmin']
-os.environ['DB_USER'] = connectionDict['username']
-os.environ['DB_PASS'] = connectionDict['password']
-os.environ['DB_HOST'] = connectionDict['host']
-os.environ['DB_NAME'] = 'datasets2tools'
+connection_file = '../../datasets2tools-database/f1-mysql.dir/conn.json'
+if os.path.exists(connection_file):
+	with open(connection_file) as openfile:
+		connectionDict = json.loads(openfile.read())['phpmyadmin']
+	os.environ['DB_USER'] = connectionDict['username']
+	os.environ['DB_PASS'] = connectionDict['password']
+	os.environ['DB_HOST'] = connectionDict['host']
+	os.environ['DB_NAME'] = 'datasets2tools'
 
 # Initialize database
 uriString = 'mysql://' + os.environ['DB_USER'] + ':' + os.environ['DB_PASS'] + '@' + os.environ['DB_HOST'] + '/' + os.environ['DB_NAME']
