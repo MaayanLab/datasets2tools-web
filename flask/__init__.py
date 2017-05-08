@@ -220,6 +220,17 @@ def tool_api():
 	summary_json = Database.get_annotations(ids, 'tool', output='json')
 	return summary_json
 
+#########################
+### 4. Extension APIs
+#########################
+
+@app.route('/datasets2tools/api/chrome_extension')
+def chrome_extension_api():
+	Database = CannedAnalysisDatabase(engine)
+	interface_json = Database.chrome_extension_api(request.args.to_dict())
+	return interface_json
+
+
 ##############################
 ##### 3. Miscellaneous
 ##############################

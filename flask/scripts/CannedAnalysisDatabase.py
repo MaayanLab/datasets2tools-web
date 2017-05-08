@@ -1,5 +1,6 @@
-import re, json
+import re, json, cgi
 import pandas as pd
+import numpy as np
 pd.set_option('max.colwidth', -1)
 
 class CannedAnalysisDatabase:
@@ -123,12 +124,6 @@ class CannedAnalysisDatabase:
             if len(query_terms) > 0:
                 sql_query += ' WHERE ' + ' AND '.join(query_terms)
             sql_query += ' LIMIT {size}'.format(**locals())
-            print sql_query
-            print sql_query
-            print sql_query
-            print sql_query
-            print sql_query
-            print sql_query
             ids = pd.read_sql_query(sql_query, self.engine)['id'].tolist()
         except:
             ids = None
@@ -189,7 +184,7 @@ class CannedAnalysisDatabase:
 ##############################
 
     def analysis_summary(self, id):
-        analysis_data = pd.read_sql_query('SELECT canned_analysis_accession, canned_analysis_title, canned_analysis_description, canned_analysis_url, canned_analysis_preview_url, dataset_accession, dataset_title, dataset_description, dataset_landing_url, tool_name, tool_description, tool_homepage_url FROM canned_analysis ca LEFT JOIN dataset d on d.id=ca.dataset_fk LEFT JOIN tool t ON t.id=ca.tool_fk LEFT JOIN repository r on r.id=d.repository_fk WHERE ca.id = {id}'.format(**locals()), self.engine)
+        analysis_data = pd.read_sql_query('SELECT canned_analysis_accession, canned_analysis_title, canned_analysis_description, canned_analysis_url, canned_analysis_preview_url, dataset_accession, dataset_title, dataset_description, dataset_landing_url, tool_name, tool_description, tool_homepage_url, tool_icon_url FROM canned_analysis ca LEFT JOIN dataset d on d.id=ca.dataset_fk LEFT JOIN tool t ON t.id=ca.tool_fk LEFT JOIN repository r on r.id=d.repository_fk WHERE ca.id = {id}'.format(**locals()), self.engine)
         analysis_metadata = pd.read_sql_query('SELECT term_name, value FROM canned_analysis_metadata cam LEFT JOIN term t on t.id=cam.term_fk WHERE canned_analysis_fk = {id}'.format(**locals()), self.engine, index_col='term_name')
         analysis_summary_dict = analysis_data.to_dict(orient='index')[0]
         analysis_summary_dict['metadata'] = {index: rowData['value'] for index, rowData in analysis_metadata.iterrows()}
@@ -408,7 +403,91 @@ class CannedAnalysisDatabase:
             return table_html
 
 #######################################################
-########## 5. Miscellaneous ###########################
+########## 5. Chrome Extension ########################
+#######################################################
+
+##############################
+##### 1. Toolbar
+##############################
+
+    def make_extension_toolbar(self, analysis_summary_dataframe, dataset_accession):
+        tool_annotation_list = analysis_summary_dataframe.groupby(["tool_name", "tool_icon_url", "tool_description"]).size().rename("count").sort_values(ascending=False).to_frame().reset_index().to_dict(orient="index").values()
+        toolbar_html = "<div class='d2t-wrapper' id='{dataset_accession}'><div class='d2t-toolbar'>".format(**locals()) + "".join(["<div class='tool-icon-wrapper'><img class='tool-icon-img' src='{tool_icon_url}' data-tool-name='{tool_name}'><div class='tool-icon-tooltip'><p class='tool-icon-tooltip-name'>{tool_name}</p><p class='tool-icon-tooltip-count'>{count}</p><p class='tool-icon-tooltip-description'>{tool_description}</p></div></div>".format(**tool_annotation_dict) for tool_annotation_dict in tool_annotation_list]) + "</div></div>"
+        return toolbar_html
+
+##############################
+##### 2. Tool Table
+##############################
+
+    def make_extension_tool_table(self, analysis_summary_dataframe, dataset_accession):
+        tool_annotation_list = analysis_summary_dataframe.groupby(["tool_name", "tool_icon_url", "tool_description", "tool_homepage_url"]).size().rename("count").sort_values(ascending=False).to_frame().reset_index().to_dict(orient="index").values()
+        tool_table_html = "<div class='d2t-wrapper' id='{dataset_accession}'><table class='d2t-tool-table'><tr><th></th><th></th><th></th></tr>" + "".join(["<tr><td class='tool-name-cell'><a href='{tool_homepage_url}'><img class='tool-icon-img' src='{tool_icon_url}'><div class='tool-name'>{tool_name}</div></a></td><td class='tool-description-cell'>{tool_description}</td><td><img class='tool-table-plus-img' src=''></td></tr>".format(**tool_annotation_dict) for tool_annotation_dict in tool_annotation_list]) + "</table></div>"
+        return tool_table_html
+
+
+##############################
+##### 3. Canned Analysis Table
+##############################
+
+    def make_extension_canned_analysis_table_dict(self, analysis_summary_dataframe, page_size=5):
+        chunks = lambda lst, sz: [lst[i:i+sz] for i in range(0, len(lst), sz)]
+        analysis_dict = {x:analysis_summary_dataframe.set_index("tool_name").loc[x].set_index("canned_analysis_accession").to_dict(orient="index") for x in analysis_summary_dataframe["tool_name"].unique()}
+        row_dict = {tool_name:["<tr><td class='canned-analysis-url-cell'><a href='{canned_analysis_url}'><img class='canned-analysis-icon-img' src='{tool_icon_url}'></a></td class='canned-analysis-title-cell'>{canned_analysis_title}<td></td><td class='canned-analysis-metadata-cell'>Metadata</td><td class='share-canned-analysis-cell'>Share</td></tr>".format(**canned_analysis) for canned_analysis in canned_analysis_dict.values()] for tool_name, canned_analysis_dict in analysis_dict.iteritems()}
+        table_dict = {tool_name: ["<table class='d2t-canned-analysis-table'><tr><th>Link</th><th>Title</th><th>Metadata</th><th>Share</th></tr>"+"".join(x)+"</table>" for x in chunks(row_list, page_size)] for tool_name, row_list in row_dict.iteritems()}
+        table_dict = {tool_name: [e + "<div class='arrow-wrapper'><img class='left-arrow' src='' data-active='"+str(i>0).lower()+"' data-target-page='"+str(i-1)+"'><img class='right-arrow' src='' data-active='"+str(i+1<len(table_list)).lower()+"' data-target-page='"+str(i+1)+"'></div>" for i, e in enumerate(table_list)] for tool_name, table_list in table_dict.iteritems()}
+        return table_dict
+
+##############################
+##### 4. Search Page
+##############################
+
+    def search_page_api(self, dataset_accession_list):
+        interface_dict = {x:{} for x in dataset_accession_list}
+        for dataset_accession in dataset_accession_list:
+            try:
+                analysis_summary_dataframe = pd.DataFrame(self.get_annotations(self.analysis_api(query_dict={'dataset_accession': dataset_accession}), 'analysis'))
+                interface_dict[dataset_accession]['toolbar'] = self.make_extension_toolbar(analysis_summary_dataframe, dataset_accession)
+                interface_dict[dataset_accession]['canned_analysis_tables'] = self.make_extension_canned_analysis_table_dict(analysis_summary_dataframe)
+            except:
+                del interface_dict[dataset_accession]
+        return interface_dict
+
+##############################
+##### 5. Landing Page
+##############################
+
+    def landing_page_api(self, dataset_accession):
+        interface_dict = {dataset_accession: {}}
+        try:
+            analysis_summary_dataframe = pd.DataFrame(self.get_annotations(self.analysis_api(query_dict={'dataset_accession': dataset_accession}), 'analysis'))
+            interface_dict[dataset_accession]['tool_table'] = self.make_extension_tool_table(analysis_summary_dataframe, dataset_accession)
+            interface_dict[dataset_accession]['canned_analysis_tables'] = self.make_extension_canned_analysis_table_dict(analysis_summary_dataframe)
+        except:
+            del interface_dict[dataset_accession]
+
+        return interface_dict
+
+##############################
+##### 6. API Wrapper
+##############################
+
+    def chrome_extension_api(self, query_dict):
+        # try:
+        page_type = query_dict['page_type']
+        dataset_accessions = query_dict['dataset_accessions'].split(',')
+        if page_type == 'search':
+            interface_dict = self.search_page_api(dataset_accessions)
+        elif page_type == 'landing':
+            interface_dict = self.landing_page_api(dataset_accessions[0])
+        else:
+            raise ValueError('Wrong page_type specified - must be either "search" or "landing".')
+        # except:
+            # interface_dict = {}
+        interface_json = json.dumps(interface_dict)
+        return interface_json
+
+#######################################################
+########## 6. Miscellaneous ###########################
 #######################################################
 
 ##############################
