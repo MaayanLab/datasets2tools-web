@@ -4,8 +4,101 @@
 		<title>Datasets2Tools</title>
 		<link rel="stylesheet" type="text/css" href="https://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css">
 		<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome.css') }}">
 	</head>
 
-<i class="fa fa-chrome fa-5x" aria-hidden="true" style="margin:100px;font-size:500pt;"></i>
+	<body>
+		<div id="main-container" class="container-fluid">
+
+			<div id="navbar-wrapper">
+				<nav id="navbar" class="navbar navbar-toggleable-md navbar-inverse container">
+				  <button id="toggler" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+				    <span class="navbar-toggler-icon"></span>
+				  </button>
+				  <a id="navbar-logo" class="navbar-brand" href="/datasets2tools">Datasets2Tools</a>
+				  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+				    <div class="nav navbar-nav ml-auto">
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools">HOME</a>
+					    <ul class="navbar-nav">
+			    	      <li class="nav-item dropdown">
+					        <a class="nav-link dropdown-toggle navbar-link" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					          SEARCH
+					        </a>
+					        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+					          <a class="dropdown-item" href=/datasets2tools/search>BASIC SEARCH</a>
+					          <a class="dropdown-item" href="/datasets2tools/advanced_search">ADVANCED SEARCH</a>
+					        </div>
+					      </li>
+					    </ul>
+					    <ul class="navbar-nav">
+			    	      <li class="nav-item dropdown">
+					        <a class="nav-link dropdown-toggle navbar-link" href="http://example.com" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					          EXPLORE
+					        </a>
+					        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
+					          <a class="dropdown-item" href="/datasets2tools/collections">COLLECTIONS</a>
+					          <a class="dropdown-item" href="/datasets2tools/metadata">METADATA</a>
+					        </div>
+					      </li>
+					    </ul>					    
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/upload">CONTRIBUTE</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="#">EXTENSION</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/help">HELP</a>
+				    </div>
+				  </div>
+				</nav>
+			</div> <!-- #navbar-wrapper -->
+
+			<div id="jumbotron-wrapper">
+				<div class="jumbotron container text-center">
+					<div class="row">
+						<div class="col-12">
+							<h1 class="my-2">Promoting the findability, accessibility and sharability of bioinformatics analyses</h1>
+							<br>
+							<p class="lead">By introducing a new type of digital object, the canned analysis, we aim to make it easier for researchers and tool developers
+							to share and discover biological knowledge.</p>
+							<hr class="my-4">
+							<p class="lead">Here are a few suggestions on getting started.</p>
+						</div>
+					</div> <!-- .row -->
+					<div class="row justify-content-center my-4">
+						<div class="col-4 col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2">
+							<a href="/datasets2tools/search" class="jumbotron-button">
+								<div class="jumbotron-button-content"><i class="fa fa-search fa-5x" aria-hidden="true"></i><p>Search</p></div>
+							</a>
+						</div>
+						<div class="col-4 col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2">
+							<a href="/datasets2tools/upload" class="jumbotron-button">
+								<div class="jumbotron-button-content"><i class="fa fa-upload fa-5x" aria-hidden="true"></i><p>Contribute</p></div>
+							</a>
+						</div>
+						<div class="col-4 col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2">
+							<a href="/datasets2tools/help" class="jumbotron-button">
+								<div class="jumbotron-button-content"><i class="fa fa-question-circle fa-5x" aria-hidden="true"></i><p>Help</p></div>
+							</a>
+						</div>
+					</div> <!-- .row -->
+				</div> <!-- .jumbotron .container -->
+			</div> <!-- #jumbotron-wrapper -->
+
+		</div> <!-- #main_container -->
+
+	    <footer class="footer text-center">
+		    <div class="container-fluid">
+				<hr class="my-1" width="90%">
+				
+				Developed by the <a href="http://icahn.mssm.edu/research/labs/maayan-laboratory">Ma'ayan Lab</a> at the <a href="http://icahn.mssm.edu/">Icahn School of Medicine at Mount Sinai</a>.
+		    </div>
+	    </footer>
+
+		<div id="js">
+			<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+			<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+			<script> $(function() {$('[data-toggle="tooltip"]').tooltip()}) </script>
+		</div> <!-- #js -->
+
+	</body>
 </html>
