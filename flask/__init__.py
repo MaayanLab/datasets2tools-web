@@ -63,6 +63,7 @@ engine = SQLAlchemy(app).engine
 ### 1. Homepage
 #########################
 
+@app.route('/datasets2tools/')
 @app.route('/datasets2tools')
 def index():
 	return render_template('index.html')
