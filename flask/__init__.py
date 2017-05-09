@@ -204,6 +204,7 @@ def advanced_search_api():
 def analysis_api():
 	Database = CannedAnalysisDatabase(engine)
 	ids = Database.analysis_api(request.args.to_dict())
+	print ids
 	summary_json = Database.get_annotations(ids, 'analysis', output='json')
 	return summary_json
 
