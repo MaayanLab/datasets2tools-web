@@ -421,20 +421,24 @@ class CannedAnalysisDatabase:
 
     def make_extension_tool_table(self, analysis_summary_dataframe, dataset_accession):
         tool_annotation_list = analysis_summary_dataframe.groupby(["tool_name", "tool_icon_url", "tool_description", "tool_homepage_url"]).size().rename("count").sort_values(ascending=False).to_frame().reset_index().to_dict(orient="index").values()
-        tool_table_html = "<div class='d2t-wrapper' id='{dataset_accession}'><table class='d2t-tool-table'><tr><th></th><th></th><th></th></tr>" + "".join(["<tr><td class='tool-name-cell'><a href='{tool_homepage_url}'><img class='tool-icon-img' src='{tool_icon_url}'><div class='tool-name'>{tool_name}</div></a></td><td class='tool-description-cell'>{tool_description}</td><td><img class='tool-table-plus-img' src=''></td></tr>".format(**tool_annotation_dict) for tool_annotation_dict in tool_annotation_list]) + "</table></div>"
+        tool_table_html = "<div class='d2t-wrapper' id='{dataset_accession}'><table class='d2t-tool-table'><tr><th></th><th></th><th></th></tr>" + "".join(["<tr><td class='tool-name-cell'><a href='{tool_homepage_url}'><img class='tool-icon-img' src='{tool_icon_url}'><div class='tool-name'>{tool_name}</div></a></td><td class='tool-description-cell'>{tool_description}</td><td><i class='fa fa-plus-square fa-1x' aria-hidden='true'></i></td></tr>".format(**tool_annotation_dict) for tool_annotation_dict in tool_annotation_list]) + "</table></div>"
         return tool_table_html
-
 
 ##############################
 ##### 3. Canned Analysis Table
 ##############################
 
-    def make_extension_canned_analysis_table_dict(self, analysis_summary_dataframe, page_size=5):
+    def make_extension_canned_analysis_table_dict(self, analysis_summary_dataframe, page_type, page_size=5):
         chunks = lambda lst, sz: [lst[i:i+sz] for i in range(0, len(lst), sz)]
         analysis_dict = {x:analysis_summary_dataframe.set_index("tool_name").loc[x].set_index("canned_analysis_accession").to_dict(orient="index") for x in analysis_summary_dataframe["tool_name"].unique()}
-        row_dict = {tool_name:["<tr><td class='canned-analysis-url-cell'><a href='{canned_analysis_url}'><img class='canned-analysis-icon-img' src='{tool_icon_url}'></a></td class='canned-analysis-title-cell'>{canned_analysis_title}<td></td><td class='canned-analysis-metadata-cell'>Metadata</td><td class='share-canned-analysis-cell'>Share</td></tr>".format(**canned_analysis) for canned_analysis in canned_analysis_dict.values()] for tool_name, canned_analysis_dict in analysis_dict.iteritems()}
+        tool_annotation_dict = analysis_summary_dataframe.groupby(['tool_name', 'tool_icon_url', 'tool_description', 'tool_homepage_url']).size().rename('count').sort_values(ascending=False).to_frame().reset_index().set_index('tool_name', drop=False).to_dict(orient='index')
+        row_dict = {tool_name:["<tr><td class='canned-analysis-url-cell'><a href='{canned_analysis_url}'><img class='canned-analysis-icon-img' src='{tool_icon_url}'></a></td><td class='canned-analysis-title-cell'>{canned_analysis_title}<sup><i class='fa fa-info-circle fa-1x' aria-hidden='true'></i></sup></td><td class='canned-analysis-metadata-cell'><i class='fa fa-info-circle fa-1x' aria-hidden='true'></i><i class='fa fa-download fa-1x' aria-hidden='true'></i></td><td class='share-canned-analysis-cell'><i class='fa fa-share-alt fa-1x' aria-hidden='true'></i></td></tr>".format(**canned_analysis) for canned_analysis in canned_analysis_dict.values()] for tool_name, canned_analysis_dict in analysis_dict.iteritems()}
         table_dict = {tool_name: ["<table class='d2t-canned-analysis-table'><tr><th>Link</th><th>Title</th><th>Metadata</th><th>Share</th></tr>"+"".join(x)+"</table>" for x in chunks(row_list, page_size)] for tool_name, row_list in row_dict.iteritems()}
         table_dict = {tool_name: [e + "<div class='arrow-wrapper'><img class='left-arrow' src='' data-active='"+str(i>0).lower()+"' data-target-page='"+str(i-1)+"'><img class='right-arrow' src='' data-active='"+str(i+1<len(table_list)).lower()+"' data-target-page='"+str(i+1)+"'></div>" for i, e in enumerate(table_list)] for tool_name, table_list in table_dict.iteritems()}
+        if page_type == 'search':
+            table_dict = {tool_name: ["<div class='search-tool-annotation'><img class='search-tool-annotation-img' src='{tool_icon_url}'><div class='search-tool-annotation-text'><div class='search-tool-annotation-name'>{tool_name}</div><div class='search-tool-annotation-description'>{tool_description}</div></div></div>".format(**tool_annotation_dict[tool_name])+row for row in row_list] for tool_name, row_list in table_dict.iteritems()}
+        elif page_type == 'landing':
+            table_dict = {tool_name: ["<div class='landing-tool-annotation'><div class='search-tool-annotation-logo'><img class='search-tool-annotation-img' src='{tool_icon_url}'><div class='search-tool-annotation-name'>{tool_name}</div></div><div class='search-tool-annotation-description'>{tool_description}<br>The table below allows to browse.</div></div>".format(**tool_annotation_dict[tool_name])+row for row in row_list] for tool_name, row_list in table_dict.iteritems()}
         return table_dict
 
 ##############################
@@ -447,8 +451,11 @@ class CannedAnalysisDatabase:
             try:
                 analysis_summary_dataframe = pd.DataFrame(self.get_annotations(self.analysis_api(query_dict={'dataset_accession': dataset_accession}), 'analysis'))
                 interface_dict[dataset_accession]['toolbar'] = self.make_extension_toolbar(analysis_summary_dataframe, dataset_accession)
-                interface_dict[dataset_accession]['canned_analysis_tables'] = self.make_extension_canned_analysis_table_dict(analysis_summary_dataframe)
+                interface_dict[dataset_accession]['canned_analysis_tables'] = self.make_extension_canned_analysis_table_dict(analysis_summary_dataframe, page_type='search')
             except:
+                analysis_summary_dataframe = pd.DataFrame(self.get_annotations(self.analysis_api(query_dict={'dataset_accession': dataset_accession}), 'analysis'))
+                interface_dict[dataset_accession]['toolbar'] = self.make_extension_toolbar(analysis_summary_dataframe, dataset_accession)
+                interface_dict[dataset_accession]['canned_analysis_tables'] = self.make_extension_canned_analysis_table_dict(analysis_summary_dataframe, page_type='search')
                 del interface_dict[dataset_accession]
         return interface_dict
 
@@ -461,7 +468,7 @@ class CannedAnalysisDatabase:
         try:
             analysis_summary_dataframe = pd.DataFrame(self.get_annotations(self.analysis_api(query_dict={'dataset_accession': dataset_accession}), 'analysis'))
             interface_dict[dataset_accession]['tool_table'] = self.make_extension_tool_table(analysis_summary_dataframe, dataset_accession)
-            interface_dict[dataset_accession]['canned_analysis_tables'] = self.make_extension_canned_analysis_table_dict(analysis_summary_dataframe)
+            interface_dict[dataset_accession]['canned_analysis_tables'] = self.make_extension_canned_analysis_table_dict(analysis_summary_dataframe, page_type='landing')
         except:
             del interface_dict[dataset_accession]
 
