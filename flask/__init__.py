@@ -46,9 +46,9 @@ if os.path.exists(connection_file):
 	os.environ['DB_NAME'] = 'datasets2tools'
 
 # Initialize database
-uriString = 'mysql://' + os.environ['DB_USER'] + ':' + os.environ['DB_PASS'] + '@' + os.environ['DB_HOST'] + '/' + os.environ['DB_NAME']
-app.config['SQLALCHEMY_DATABASE_URI'] = uriString
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://' + os.environ['DB_USER'] + ':' + os.environ['DB_PASS'] + '@' + os.environ['DB_HOST'] + '/' + os.environ['DB_NAME']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_POOL_RECYCLE'] = 290
 engine = SQLAlchemy(app).engine
 
 #######################################################
