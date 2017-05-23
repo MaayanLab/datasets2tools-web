@@ -289,8 +289,6 @@ input[type="radio"]:checked + .btn-blue {
 								margin-top: 3px;
 							}
 
-
-
 #guide-wrapper {
 	background-color: #F3F4F3;
 	/*color: white;*/
@@ -303,7 +301,7 @@ input[type="radio"]:checked + .btn-blue {
 	}
 
 		.guide-option {
-			background-color: #d3ebff;
+			/*background-color: #d3ebff;*/
 			padding: 15px 5px;
 			height: 100%;
 			border-radius: 5px;
@@ -321,6 +319,47 @@ input[type="radio"]:checked + .btn-blue {
 				font-weight: 700;
 				font-size: 11pt;
 			}
+
+#news-wrapper {
+	background-color: transparent;
+	padding: 30px 0px;
+}
+
+	#news-slider-col {
+	}
+
+		#news-slider-col .slick-arrow::before {
+			color: black;
+		}
+		
+			.news-wrapper {
+				padding: 0px 10px;
+			}
+
+				.news-box {
+					border: 1px solid lightgrey;
+					border-radius: 5px;
+				}
+
+					.news-title {
+						width: 100%;
+						background-color: #b92626;
+						padding: 5px 0px 5px 10px;
+						border-radius: 5px 5px 0px 0px;
+						color: white;
+						font-size: 10pt;
+						font-weight: 500;
+					}
+
+					.news-date {
+						padding: 5px 10px 5px 10px;
+						font-weight: 500;
+					}
+
+					.news-content {
+						padding: 0px 10px 7px 10px;
+						font-weight: 100;
+					}
 
 /*** Simple Search Bar ***/
 

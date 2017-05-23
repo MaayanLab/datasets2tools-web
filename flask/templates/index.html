@@ -71,7 +71,7 @@
 								<div class="col-4"><div class="object-count-wrapper"><i class="fa fa-cogs fa-5x" aria-hidden="true"></i><br>{{object_count['tools']}}<br>Tools</div></div>
 							</div>
 						</div>
-						<div class="col-md-7 slider-col">
+						<div id="main-slider-col" class="col-md-7">
 							<div id="canned-analysis-slider" class="slider-element" style="background-image:linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 100%), url('{{ url_for('static', filename='img/ca_workflow.png') }}');background-size: cover;"></div>
 							<div id="user-manual-slider" class="slider-element"> <br><br><br>User Manual<br><br><br></div>
 							<div id="featured-analysis-slider" class="slider-element">{{featured_objects['analysis']|safe}}</div>
@@ -103,6 +103,26 @@
 				</div> <!-- .container -->
 			</div> <!-- #guide-wrapper -->
 
+			<div id="news-wrapper">
+				<div id="guide-container" class="container text-center">
+				<div class="row">
+					<div id="news-title" class="col-12 h2">
+						Latest News
+						<hr width="75%" class="my-4">
+					</div>
+					<div id="news-slider-col" class="col-12">
+
+					{%for i in range(10)%}
+
+					<div class="news-wrapper text-left"><div class="news-box"><div class="news-title">New Analyses</div><div class="news-date">April {{i+1}}, 2017</div><div class="news-content">13 new analyses were added</div></div></div>
+
+					{%endfor%}
+
+					</div>
+				</div>
+				</div> <!-- .container -->
+			</div> <!-- #news-wrapper -->
+
 		</div> <!-- #main_container -->
 
 	    <footer class="footer text-center">
@@ -122,10 +142,17 @@
 			<script> $(function() {$('[data-toggle="tooltip"]').tooltip()}) </script>
 			<script type="text/javascript">
 				$(document).ready(function(){
-				  $('.slider-col').slick({
+				  $('#main-slider-col').slick({
 					dots:true,
 					autoplay: false,
 					autoplaySpeed: 10000,
+				  });
+				  $('#news-slider-col').slick({
+					dots:true,
+					autoplay: false,
+					autoplaySpeed: 10000,
+					slidesToShow: 7,
+					slidesToScroll: 1
 				  });
 				});
 			</script>
