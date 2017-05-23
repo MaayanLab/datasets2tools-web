@@ -4,8 +4,12 @@
 		<title>Datasets2Tools</title>
 		<link rel="stylesheet" type="text/css" href="https://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css">
 		<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome.css') }}">
+		<link rel="icon" type="image/ico" href="{{ url_for('static', filename='img/favicon.ico') }}">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick.css') }}"/>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick-theme.css') }}"/>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+
 	</head>
 
 	<body>
@@ -16,7 +20,7 @@
 				  <button id="toggler" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
 				    <span class="navbar-toggler-icon"></span>
 				  </button>
-				  <a id="navbar-logo" class="navbar-brand" href="/datasets2tools">Datasets2Tools</a>
+				  <a id="navbar-logo" class="navbar-brand" href="/datasets2tools"><img id="datasets2tools-icon" src="{{ url_for('static', filename='img/d2t_icon.png') }}"><div id="datasets2tools-logo">Datasets2Tools</div></a>
 				  <div class="collapse navbar-collapse" id="navbarNavDropdown">
 				    <div class="nav navbar-nav ml-auto">
 					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools">HOME</a>
@@ -43,44 +47,61 @@
 					      </li>
 					    </ul>					    
 					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/upload">CONTRIBUTE</a>
-					    <a class="nav-item nav-link pull-xs-right navbar-link" href="#">EXTENSION</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="https://chrome.google.com/webstore/detail/datasets2tools/fbamphimpljabaailcaidmeegpcpkdel">EXTENSION</a>
 					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/help">HELP</a>
 				    </div>
 				  </div>
 				</nav>
 			</div> <!-- #navbar-wrapper -->
 
-			<div id="jumbotron-wrapper">
-				<div class="jumbotron container text-center">
-					<div class="row">
-						<div class="col-12">
-							<h1 class="my-2">Promoting the findability, accessibility and sharability of bioinformatics analyses</h1>
-							<br>
-							<p class="lead">By introducing a new type of digital object, the canned analysis, we aim to make it easier for researchers and tool developers
-							to share and discover datasets, tools, and analyses.</p>
-							<hr class="my-4">
-							<p class="lead">Here are a few suggestions on getting started.</p>
+			<div id="slider-wrapper">
+				<div id="slider-container" class="container text-center">
+					<div id="slider-row" class="row">
+						<div class="col-md-5">
+							<div class="row">
+								<div class="col-12">
+									<h1>Discover Bioinformatics<br>Analyses, Datasets and Tools.</h2>
+									<hr width="100%">
+									<div class="lead">Datasets2Tools is a platform which allows to find, discover and share thousands computational analyses of biomedical datasets of multiple data types.</div>
+								</div>
+							</div>
+							<div id="object-count-row" class="row">
+								<div class="col-4"><div class="object-count-wrapper"><i class="fa fa-pie-chart fa-5x" aria-hidden="true"></i><br>{{object_count['analyses']}}<br>Analyses</div></div>
+								<div class="col-4"><div class="object-count-wrapper"><i class="fa fa-database fa-5x" aria-hidden="true"></i><br>{{object_count['datasets']}}<br>Datasets</div></div>
+								<div class="col-4"><div class="object-count-wrapper"><i class="fa fa-cogs fa-5x" aria-hidden="true"></i><br>{{object_count['tools']}}<br>Tools</div></div>
+							</div>
+						</div>
+						<div class="col-md-7 slider-col">
+							<div id="canned-analysis-slider" class="slider-element" style="background-image:linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 100%), url('{{ url_for('static', filename='img/ca_workflow.png') }}');background-size: cover;"></div>
+							<div id="user-manual-slider" class="slider-element"> <br><br><br>User Manual<br><br><br></div>
+							<div id="featured-analysis-slider" class="slider-element">{{featured_objects['analysis']|safe}}</div>
+							<div id="featured-tool-slider" class="slider-element">{{featured_objects['tool']|safe}}</div>
+							<div id="featured-dataset-slider" class="slider-element">{{featured_objects['dataset']|safe}}</div>
 						</div>
 					</div> <!-- .row -->
-					<div class="row justify-content-center my-4">
-						<div class="col-4 col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2">
-							<a href="/datasets2tools/search" class="jumbotron-button">
-								<div class="jumbotron-button-content"><i class="fa fa-search fa-5x" aria-hidden="true"></i><p>Search</p></div>
-							</a>
-						</div>
-						<div class="col-4 col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2">
-							<a href="/datasets2tools/upload" class="jumbotron-button">
-								<div class="jumbotron-button-content"><i class="fa fa-upload fa-5x" aria-hidden="true"></i><p>Contribute</p></div>
-							</a>
-						</div>
-						<div class="col-4 col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2">
-							<a href="/datasets2tools/help" class="jumbotron-button">
-								<div class="jumbotron-button-content"><i class="fa fa-question-circle fa-5x" aria-hidden="true"></i><p>Help</p></div>
-							</a>
-						</div>
-					</div> <!-- .row -->
-				</div> <!-- .jumbotron .container -->
-			</div> <!-- #jumbotron-wrapper -->
+				</div> <!-- .container -->
+			</div> <!-- #slider-wrapper -->
+
+			<div id="guide-wrapper">
+				<div id="guide-container" class="container text-center">
+				<div class="row">
+					<div id="guide-title" class="col-12 h2">
+						What can be accomplished using Datasets2Tools?
+						<hr width="75%" class="my-4">
+					</div>
+					<div class="col-12">
+						<div id="guide-row" class="row">
+							<div class="col-2 guide-option-col"><div class="guide-option"><a href="/datasets2tools/search"><i class="fa fa-search fa-5x" aria-hidden="true"></i></a><br><span class="guide-option-keyword">Find</span> analyses, datasets and computational tools.</div></div>
+							<div class="col-2 guide-option-col"><div class="guide-option"><a href="/datasets2tools/collections"><i class="fa fa-compass fa-5x" aria-hidden="true"></i></a><br><span class="guide-option-keyword">Explore</span> manually curated collections of analyses.</div></div>
+							<div class="col-2 guide-option-col"><div class="guide-option"><a href="https://chrome.google.com/webstore/detail/datasets2tools/fbamphimpljabaailcaidmeegpcpkdel"><i class="fa fa-chrome fa-5x" aria-hidden="true"></i></a><br><span class="guide-option-keyword">Enrich</span> GEO and other repositories with our Chrome Extension.</div></div>
+							<div class="col-2 guide-option-col"><div class="guide-option"><a href="/datasets2tools/help"><i class="fa fa-code fa-5x" aria-hidden="true"></i></a><br>Use the <span class="guide-option-keyword">API</span> to programmatically access our database.</div></div>
+							<div class="col-2 guide-option-col"><div class="guide-option"><a href="/datasets2tools/upload"><i class="fa fa-upload fa-5x" aria-hidden="true"></i></a><br><span class="guide-option-keyword">Contribute</span> analyses, datasets and tools to the database.</div></div>
+							<div class="col-2 guide-option-col"><div class="guide-option"><a href="/datasets2tools/help"><i class="fa fa-question-circle fa-5x" aria-hidden="true"></i></a><br>Visit our<span class="guide-option-keyword"> help section</span> for more information on using Datasets2Tools.</div></div>
+						</div> <!-- .row -->
+					</div>
+				</div>
+				</div> <!-- .container -->
+			</div> <!-- #guide-wrapper -->
 
 		</div> <!-- #main_container -->
 
@@ -96,8 +117,18 @@
 			<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+			<script src="{{ url_for('static', filename='slick/slick.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 			<script> $(function() {$('[data-toggle="tooltip"]').tooltip()}) </script>
+			<script type="text/javascript">
+				$(document).ready(function(){
+				  $('.slider-col').slick({
+					dots:true,
+					autoplay: false,
+					autoplaySpeed: 10000,
+				  });
+				});
+			</script>
 		</div> <!-- #js -->
 
 	</body>

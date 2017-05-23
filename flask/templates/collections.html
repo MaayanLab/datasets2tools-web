@@ -6,6 +6,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome.css') }}">
+		<link rel="icon" type="image/ico" href="{{ url_for('static', filename='img/favicon.ico') }}">
 	</head>
 
 	<body>
@@ -16,7 +17,7 @@
 				  <button id="toggler" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
 				    <span class="navbar-toggler-icon"></span>
 				  </button>
-				  <a id="navbar-logo" class="navbar-brand" href="/datasets2tools">Datasets2Tools</a>
+				  <a id="navbar-logo" class="navbar-brand" href="/datasets2tools"><img id="datasets2tools-icon" src="{{ url_for('static', filename='img/d2t_icon.png') }}"><div id="datasets2tools-logo">Datasets2Tools</div></a>
 				  <div class="collapse navbar-collapse" id="navbarNavDropdown">
 				    <div class="nav navbar-nav ml-auto">
 					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools">HOME</a>
@@ -43,7 +44,7 @@
 					      </li>
 					    </ul>					    
 					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/upload">CONTRIBUTE</a>
-					    <a class="nav-item nav-link pull-xs-right navbar-link" href="#">EXTENSION</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="https://chrome.google.com/webstore/detail/datasets2tools/fbamphimpljabaailcaidmeegpcpkdel">EXTENSION</a>
 					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/help">HELP</a>
 				    </div>
 				  </div>

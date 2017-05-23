@@ -66,7 +66,10 @@ engine = SQLAlchemy(app).engine
 @app.route('/datasets2tools/')
 @app.route('/datasets2tools')
 def index():
-	return render_template('index.html')
+	Database = CannedAnalysisDatabase(engine)
+	object_count = Database.get_object_count()
+	featured_objects = Database.get_featured_objects()
+	return render_template('index.html', object_count=object_count, featured_objects=featured_objects)
 
 #########################
 ### 2. Keyword Search
@@ -234,7 +237,24 @@ def chrome_extension_api():
 
 
 ##############################
-##### 3. Miscellaneous
+##### 3. Upload API
+##############################
+
+#########################
+### 1. Upload
+#########################
+
+@app.route('/datasets2tools/api/upload', methods=['POST'])
+def upload_api():
+	Database = CannedAnalysisDatabase(engine)
+	canned_analysis_list = request.get_json()['canned_analyses']
+	print 'Loading Canned Analyses...'
+	status = Database.upload_canned_analysis(canned_analysis_list)
+	print status
+	return status
+
+##############################
+##### 4. Miscellaneous
 ##############################
 
 #########################
@@ -246,7 +266,6 @@ def analysis_preview_api():
 	Database = CannedAnalysisDatabase(engine)
 	analysis_preview = Database.get_analysis_preview(request.args.get('data'))
 	return analysis_preview
-
 
 #########################
 ### 2. Search Terms

@@ -1,6 +1,8 @@
-import re, json, cgi
+import re, json
 import pandas as pd
 import numpy as np
+from datetime import date, datetime
+from CannedAnalysis import CannedAnalysis
 pd.set_option('max.colwidth', -1)
 
 class CannedAnalysisDatabase:
@@ -421,7 +423,7 @@ class CannedAnalysisDatabase:
 
     def make_extension_tool_table(self, analysis_summary_dataframe, dataset_accession):
         tool_annotation_list = analysis_summary_dataframe.groupby(["tool_name", "tool_icon_url", "tool_description", "tool_homepage_url"]).size().rename("count").sort_values(ascending=False).to_frame().reset_index().to_dict(orient="index").values()
-        tool_table_html =  "<div class='d2t-wrapper' id='{dataset_accession}'>The table below allows to browse the computational tools and canned analyses associated to the dataset.<table class='d2t-tool-table' cellspacing='0'><tr><th class='tool-header'>Tool</th><th class='description-header'>Description</th><th class='canned-analyses-header'>Canned Analysis</th></tr>".format(**locals()) + "".join(["<tr><td class='tool-cell'><a href='{tool_homepage_url}'><img class='tool-icon' src='{tool_icon_url}'><div class='tool-name'>{tool_name}</div></a></td><td class='description-cell'>{tool_description}</td><td class='canned-analyses-cell'><i class='fa fa-plus-square fa-1x' aria-hidden='true'></i></td></tr>".format(**tool_annotation_dict) for tool_annotation_dict in tool_annotation_list]) + "</table></div>"
+        tool_table_html =  "<div class='d2t-wrapper' id='{dataset_accession}'>The table below allows to browse the computational tools and canned analyses associated to the dataset.<table class='d2t-tool-table' cellspacing='0'><tr><th class='tool-header'>Tool</th><th class='description-header'>Description</th><th class='canned-analyses-header'>Canned Analyses</th></tr>".format(**locals()) + "".join(["<tr><td class='tool-cell'><a href='{tool_homepage_url}'><img class='tool-icon' src='{tool_icon_url}'><div class='tool-name'>{tool_name}</div></a></td><td class='description-cell'>{tool_description}</td><td class='canned-analyses-cell'><span style='font-size:medium;margin-right:15px;'>{count}</span><i class='fa fa-plus-square fa-1x' aria-hidden='true'></i></td></tr>".format(**tool_annotation_dict) for tool_annotation_dict in tool_annotation_list]) + "</table></div>"
         return tool_table_html
 
 ##############################
@@ -431,7 +433,10 @@ class CannedAnalysisDatabase:
     def make_extension_canned_analysis_table_dict(self, analysis_summary_dataframe, dataset_accession, page_type, page_size=5):
         pd.set_option('display.max_colwidth', -1)
         chunks = lambda lst, sz: [lst[i:i+sz] for i in range(0, len(lst), sz)]
-        analysis_dict = {x:analysis_summary_dataframe.set_index("tool_name").loc[x].set_index("canned_analysis_accession", drop=False).to_dict(orient="index") for x in analysis_summary_dataframe["tool_name"].unique()}
+        for x in analysis_summary_dataframe["tool_name"].unique():
+            print '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'
+            print analysis_summary_dataframe.set_index("tool_name").loc[x]
+        analysis_dict = {x:analysis_summary_dataframe.set_index("tool_name").loc[x].set_index("canned_analysis_accession", drop=False).to_dict(orient="index") if type(analysis_summary_dataframe.set_index("tool_name").loc[x]) == pd.core.frame.DataFrame else analysis_summary_dataframe.set_index("tool_name").loc[x].to_frame().T.set_index("canned_analysis_accession", drop=False).to_dict(orient="index") for x in analysis_summary_dataframe["tool_name"].unique()}
         tool_annotation_dict = analysis_summary_dataframe.groupby(['tool_name', 'tool_icon_url', 'tool_description', 'tool_homepage_url']).size().rename('count').sort_values(ascending=False).to_frame().reset_index().set_index('tool_name', drop=False).to_dict(orient='index')
         row_dict = {tool_name:["<tr><td class='link-cell'><a href='{canned_analysis_url}'><img class='tool-icon' src='{tool_icon_url}'></a></td><td class='title-cell'><div class='canned-analysis-title'>{canned_analysis_title}</div><div class='d2t-tooltip'>{canned_analysis_description}</div></td><td class='metadata-cell'><i class='fa fa-info-circle fa-1x view-metadata' aria-hidden='true'></i><div class='d2t-tooltip'><ul>".format(**canned_analysis)+"".join(["<li><span class='metadata-tag'>"+key.replace('_', ' ').title()+"</span>: "+value+"</li>" for key, value in canned_analysis['metadata'].iteritems()])+"</ul></div><i class='fa fa-download fa-1x download-metadata' aria-hidden='true'></i><div class='d2t-tooltip'>Download Metadata:<div class='button-wrapper'><button data-accession='"+canned_analysis['canned_analysis_accession']+"' data-download='"+json.dumps(canned_analysis['metadata'])+"'>JSON</button><button data-accession='"+canned_analysis['canned_analysis_accession']+"' data-download='"+pd.DataFrame.from_dict(canned_analysis['metadata'], orient='index').reset_index().rename(columns={'index': 'term_name', 0: 'value'}).to_csv(sep='\t', index=False)+"'>TXT</button></div></div></td><td class='share-cell'><i class='fa fa-share-alt fa-1x share' aria-hidden='true'></i><div class='d2t-tooltip'>Copy URL<div class='copy-wrapper'><textarea rows='2'>{canned_analysis_url}</textarea><button><i class='fa fa-clipboard fa-1x' aria-hidden='true'></i></button></div>Embed as Icon<div class='copy-wrapper'><textarea rows='3'><a href=\"{canned_analysis_url}\"><img src=\"{tool_icon_url}\" style=\"height: 50px;\"></a></textarea><button><i class='fa fa-clipboard fa-1x' aria-hidden='true'></i></button></div></div></td></tr>".format(**canned_analysis) for canned_analysis in canned_analysis_dict.values()] for tool_name, canned_analysis_dict in analysis_dict.iteritems()}
         table_dict = {tool_name: ["<table class='canned-analysis-table' cellspacing='0'><tr><th class='link-header'>Link</th><th class='title-header'>Title</th><th class='metadata-header'>Metadata</th><th class='share-header'>Share</th></tr>"+"".join(x)+"</table>" for x in chunks(row_list, page_size)] for tool_name, row_list in row_dict.iteritems()}
@@ -469,6 +474,9 @@ class CannedAnalysisDatabase:
             interface_dict[dataset_accession]['tool_table'] = self.make_extension_tool_table(analysis_summary_dataframe, dataset_accession)
             interface_dict[dataset_accession]['canned_analysis_tables'] = self.make_extension_canned_analysis_table_dict(analysis_summary_dataframe, dataset_accession, page_type='landing')
         except:
+            analysis_summary_dataframe = pd.DataFrame(self.get_annotations(self.analysis_api(query_dict={'dataset_accession': dataset_accession}), 'analysis'))
+            interface_dict[dataset_accession]['tool_table'] = self.make_extension_tool_table(analysis_summary_dataframe, dataset_accession)
+            interface_dict[dataset_accession]['canned_analysis_tables'] = self.make_extension_canned_analysis_table_dict(analysis_summary_dataframe, dataset_accession, page_type='landing')
             del interface_dict[dataset_accession]
 
         return interface_dict
@@ -493,7 +501,115 @@ class CannedAnalysisDatabase:
         return interface_json
 
 #######################################################
-########## 6. Miscellaneous ###########################
+########## 6. Upload API ##############################
+#######################################################
+
+##############################
+##### 1. Canned Analysis
+##############################
+
+    def upload_canned_analysis(self, canned_analysis_list):
+        # try:
+        i = 0
+        for canned_analysis_dict in canned_analysis_list:
+            i += 1
+            print 'Canned analysis ' + str(i) + '...'
+            cannedAnalysisObject = CannedAnalysis(canned_analysis_dict, self.engine)
+            cannedAnalysisObject.upload()
+        response = 'Success.'
+        # except:
+            # response = 'Sorry, there has been an error.'
+        return response
+
+#######################################################
+########## 7. Homepage Functions ######################
+#######################################################
+
+##############################
+##### 1. Homepage Numbers
+##############################
+
+    def get_object_count(self):
+        object_count = {'analyses': pd.read_sql_query('SELECT COUNT(*) AS count FROM canned_analysis', self.engine)['count'][0],
+                        'datasets': pd.read_sql_query('SELECT COUNT(DISTINCT dataset_fk) AS count FROM canned_analysis', self.engine)['count'][0],
+                        'tools': pd.read_sql_query('SELECT COUNT(DISTINCT tool_fk) AS count FROM canned_analysis', self.engine)['count'][0]}
+        return object_count
+
+##############################
+##### 2. Select Featured Objects
+##############################
+
+    def get_featured_objects(self):
+        # get days and weeks
+        days = abs(date(1937, 4, 25) - datetime.now().date()).days
+        weeks = days/7
+
+        # objects
+        objects = {'analysis': pd.read_sql_query('SELECT DISTINCT canned_analysis_title, canned_analysis_preview_url, canned_analysis_url, canned_analysis_description, dataset_accession, tool_name FROM canned_analysis ca LEFT JOIN dataset d on d.id=ca.dataset_fk LEFT JOIN tool t ON t.id=ca.tool_fk', self.engine),
+                   'dataset': pd.read_sql_query('SELECT DISTINCT dataset_accession, dataset_title, dataset_description, dataset_landing_url, repository_name, repository_icon_url, COUNT(*) AS count FROM canned_analysis ca LEFT JOIN dataset d ON d.id=ca.dataset_fk LEFT JOIN repository r ON r.id=d.repository_fk GROUP BY dataset_accession', self.engine),
+                   'tool': pd.read_sql_query('SELECT tool_name, tool_description, tool_icon_url, tool_homepage_url, count(*) AS count FROM canned_analysis ca LEFT JOIN tool t ON t.id=ca.tool_fk', self.engine)}
+
+        # selected objects
+        selected_object_dict = {x:objects[x].iloc[weeks % len(objects[x])].to_dict() if x == 'tool' else objects[x].iloc[days % len(objects[x])].to_dict() for x in objects.keys()}
+
+        # featured objects
+        featured_objects = {
+            'analysis':
+                '''<div id="featured-analysis" class="featured-object" style="background-image:linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 100%), url(\'{canned_analysis_preview_url}\')">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="featured-header col-12">Analysis of the Day</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 featured-text">
+                                        <a href="{canned_analysis_url}" class="featured-title">{canned_analysis_title}</a>
+                                        <div class="featured-description">{canned_analysis_description}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>'''.format(**selected_object_dict['analysis']),
+
+            'dataset':
+                '''<div id="featured-dataset" class="featured-object" style="background-image:linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 100%), url(\'{repository_icon_url}\')">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="featured-header col-12">Dataset of the Day</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 featured-text">
+                                        <a href="{dataset_landing_url}" class="featured-title">{dataset_title}</a>
+                                        <div class="featured-description">{dataset_description}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>'''.format(**selected_object_dict['dataset']),
+
+            'tool':
+                '''<div id="featured-analysis" class="featured-object" style="background-image:linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 100%), url(\'{tool_icon_url}\')">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="featured-header col-12">Tool of the Week</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 featured-text">
+                                        <a href="{tool_homepage_url}" class="featured-title">{tool_name}</a>
+                                        <div class="featured-description">{tool_description}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>'''.format(**selected_object_dict['tool'])
+        }
+
+        return featured_objects
+
+#######################################################
+########## 8. Miscellaneous ###########################
 #######################################################
 
 ##############################

@@ -19,10 +19,6 @@ body {
 /* Container */
 
 .container {
-	max-width: 1000px;
-}
-
-.container {
 	max-width: 1200px;
 }
 
@@ -62,11 +58,25 @@ body {
 	font-family: 'Quicksand', sans-serif;
 	color: #A0A4B0;
 	margin: 10px 0;
+	display: table;
 }
 
 #navbar-logo:hover {
 	color: #C2C5CC;
 	transition: 0.3s;
+}
+
+#datasets2tools-icon {
+	display: table-cell;
+	vertical-align: middle;
+	height: 50px;
+	margin: auto 15px auto 0px;
+}
+
+#datasets2tools-logo {
+	display: table-cell;
+	vertical-align: middle;
+	margin: auto;
 }
 
 /* Links */
@@ -180,6 +190,137 @@ input[type="radio"]:checked + .btn-blue {
 }
 
 /***** Specific Pages *****/
+
+/*** Homepage ***/
+
+#slider-wrapper {
+	background-color: #F9F9F9;
+}
+
+	#slider-container {
+		max-width: 1100px;
+		padding: 40px 0px 25px 0px;
+	}
+
+		#slider-container .slick-arrow {
+		    z-index: 1;
+		    line-height: 10px;
+		    top: 135px;
+		}
+
+		#slider-container .slick-prev {
+		    left: 35px;
+		}
+
+		#slider-container .slick-next {
+		    right: 35px;
+		}
+
+		#slider-container .slick-arrow::before {
+		    font-family: "FontAwesome";
+		    font-size: 52px;
+		}
+
+		#slider-container .slick-prev::before {
+		    content: "\f104";
+		}  
+
+		#slider-container .slick-next::before {
+		    content:  "\f105";
+		}   
+
+		#slider-row {
+			margin-top: 15px;
+		}
+
+			#object-count-row {
+				margin-top: 20px;
+			}
+
+				#object-count-row .fa {
+					margin-bottom: 10px;
+				}
+
+				#object-count-row .object-count-wrapper {
+					background-color: #1D2541;
+					border-radius: 5px;
+					padding: 15px 10px;
+					color: #F3F4F3;
+				}
+
+			.slick-slider {
+			}
+
+				.slider-element {
+					height: 320px;
+					-webkit-box-shadow: inset 0px 0px 98px 38px rgba(0,0,0,0.33);
+					-moz-box-shadow: inset 0px 0px 98px 38px rgba(0,0,0,0.33);
+					box-shadow: inset 0px 0px 98px 38px rgba(0,0,0,0.33);
+				}
+
+					.featured-object {
+						padding: 25px 65px;
+						-webkit-box-shadow: inset 0px 0px 98px 38px rgba(0,0,0,0.33);
+						-moz-box-shadow: inset 0px 0px 98px 38px rgba(0,0,0,0.33);
+						box-shadow: inset 0px 0px 98px 38px rgba(0,0,0,0.33);
+						text-align: left;
+						height: 100%;
+					}
+
+						.featured-header {
+							font-size: 25pt;
+							font-weight: 300;
+							display: table-cell;
+						}
+
+						.featured-text {
+						}
+
+							.featured-title {
+								font-size: 13pt;
+								font-weight: 300;
+								margin-top: 5px;
+								color: black;
+								text-decoration: underline;
+							}
+
+							.featured-description {
+								font-size: 9pt;
+								margin-top: 3px;
+							}
+
+
+
+#guide-wrapper {
+	background-color: #F3F4F3;
+	/*color: white;*/
+	padding: 30px 0px;
+}
+
+	.guide-option-col {
+		font-weight: 100;
+		font-size: 10pt;
+	}
+
+		.guide-option {
+			background-color: #d3ebff;
+			padding: 15px 5px;
+			height: 100%;
+			border-radius: 5px;
+		}
+
+			.guide-option a {
+				color: black;
+			}
+
+			.guide-option .fa {
+				margin-bottom: 10px;
+			}
+
+			.guide-option-keyword {
+				font-weight: 700;
+				font-size: 11pt;
+			}
 
 /*** Simple Search Bar ***/
 
