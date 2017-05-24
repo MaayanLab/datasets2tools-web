@@ -540,73 +540,24 @@ class CannedAnalysisDatabase:
 ##############################
 
     def get_featured_objects(self):
-        # get days and weeks
-        days = abs(date(1937, 4, 25) - datetime.now().date()).days
-        weeks = days/7
 
         # objects
-        objects = {'analysis': pd.read_sql_query('SELECT DISTINCT canned_analysis_title, canned_analysis_preview_url, canned_analysis_url, canned_analysis_description, dataset_accession, tool_name FROM canned_analysis ca LEFT JOIN dataset d on d.id=ca.dataset_fk LEFT JOIN tool t ON t.id=ca.tool_fk', self.engine),
-                   'dataset': pd.read_sql_query('SELECT DISTINCT dataset_accession, dataset_title, dataset_description, dataset_landing_url, repository_name, repository_icon_url, COUNT(*) AS count FROM canned_analysis ca LEFT JOIN dataset d ON d.id=ca.dataset_fk LEFT JOIN repository r ON r.id=d.repository_fk GROUP BY dataset_accession', self.engine),
-                   'tool': pd.read_sql_query('SELECT tool_name, tool_description, tool_icon_url, tool_homepage_url, count(*) AS count FROM canned_analysis ca LEFT JOIN tool t ON t.id=ca.tool_fk', self.engine)}
+        featured_objects = {'analysis': pd.read_sql_query('SELECT DISTINCT canned_analysis_title AS title, canned_analysis_description AS description, canned_analysis_url AS url, canned_analysis_preview_url AS image_url FROM canned_analysis WHERE id IN (SELECT canned_analysis_fk FROM featured_analysis WHERE `day` = CURDATE())', self.engine).iloc[0].to_dict(),
+                            'dataset': pd.read_sql_query('SELECT DISTINCT dataset_title AS title, dataset_description AS description, dataset_landing_url AS url, repository_icon_url AS image_url FROM dataset d LEFT JOIN repository r ON r.id=d.repository_fk WHERE d.id IN (SELECT dataset_fk FROM featured_dataset WHERE `day` = CURDATE())', self.engine).iloc[0].to_dict(),
+                            'tool': pd.read_sql_query('SELECT tool_name AS title, tool_description AS description, tool_homepage_url AS url, tool_icon_url AS image_url FROM tool WHERE id IN (SELECT tool_fk FROM featured_tool WHERE `start_day` <= CURDATE() AND `end_day` > CURDATE())', self.engine).iloc[0].to_dict()}
 
-        # selected objects
-        selected_object_dict = {x:objects[x].iloc[weeks % len(objects[x])].to_dict() if x == 'tool' else objects[x].iloc[days % len(objects[x])].to_dict() for x in objects.keys()}
-
-        # featured objects
-        featured_objects = {
-            'analysis':
-                '''<div id="featured-analysis" class="featured-object" style="background-image:linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 100%), url(\'{canned_analysis_preview_url}\')">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="row">
-                                    <div class="featured-header col-12">Analysis of the Day</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 featured-text">
-                                        <a href="{canned_analysis_url}" class="featured-title">{canned_analysis_title}</a>
-                                        <div class="featured-description">{canned_analysis_description}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                </div>'''.format(**selected_object_dict['analysis']),
-
-            'dataset':
-                '''<div id="featured-dataset" class="featured-object" style="background-image:linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 100%), url(\'{repository_icon_url}\')">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="row">
-                                    <div class="featured-header col-12">Dataset of the Day</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 featured-text">
-                                        <a href="{dataset_landing_url}" class="featured-title">{dataset_title}</a>
-                                        <div class="featured-description">{dataset_description}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                </div>'''.format(**selected_object_dict['dataset']),
-
-            'tool':
-                '''<div id="featured-analysis" class="featured-object" style="background-image:linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 100%), url(\'{tool_icon_url}\')">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="row">
-                                    <div class="featured-header col-12">Tool of the Week</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 featured-text">
-                                        <a href="{tool_homepage_url}" class="featured-title">{tool_name}</a>
-                                        <div class="featured-description">{tool_description}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                </div>'''.format(**selected_object_dict['tool'])
-        }
-
+        print featured_objects
         return featured_objects
+
+##############################
+##### 3. News
+##############################
+
+    def get_news_list(self):
+        news_dataframe = pd.read_sql_query('SELECT * FROM news ORDER BY news_date DESC', self.engine)
+        news_dataframe['news_date'] = [x.strftime('%B %d, %Y') for x in news_dataframe['news_date']]
+        news_list = news_dataframe.to_dict(orient='records')
+        return news_list
 
 #######################################################
 ########## 8. Miscellaneous ###########################

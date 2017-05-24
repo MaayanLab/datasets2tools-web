@@ -69,7 +69,8 @@ def index():
 	Database = CannedAnalysisDatabase(engine)
 	object_count = Database.get_object_count()
 	featured_objects = Database.get_featured_objects()
-	return render_template('index.html', object_count=object_count, featured_objects=featured_objects)
+	news_list = Database.get_news_list()
+	return render_template('index.html', object_count=object_count, featured_objects=featured_objects, news_list=news_list)
 
 #########################
 ### 2. Keyword Search

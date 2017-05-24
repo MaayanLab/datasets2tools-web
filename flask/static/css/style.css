@@ -235,6 +235,7 @@ input[type="radio"]:checked + .btn-blue {
 
 			#object-count-row {
 				margin-top: 20px;
+				margin-bottom: 20px;
 			}
 
 				#object-count-row .fa {
@@ -331,7 +332,11 @@ input[type="radio"]:checked + .btn-blue {
 		#news-slider-col .slick-arrow::before {
 			color: black;
 		}
-		
+
+		#news-slider-col .slick-track {
+			margin-bottom: 15px;
+		}
+
 			.news-wrapper {
 				padding: 0px 10px;
 			}
@@ -339,17 +344,25 @@ input[type="radio"]:checked + .btn-blue {
 				.news-box {
 					border: 1px solid lightgrey;
 					border-radius: 5px;
+					height: 140px;
 				}
 
 					.news-title {
 						width: 100%;
-						background-color: #b92626;
 						padding: 5px 0px 5px 10px;
 						border-radius: 5px 5px 0px 0px;
 						color: white;
 						font-size: 10pt;
 						font-weight: 500;
 					}
+
+						.news-title.new-analyses {
+							background-color: #b92626;
+						}
+
+						.news-title.new-tool {
+							background-color: #3452bc;
+						}
 
 					.news-date {
 						padding: 5px 10px 5px 10px;
