@@ -10,9 +10,11 @@
 
 function main() {
 
+	homepage.main();
 	keywordSearch.main();
 	advancedSearch.main();
 	uploadForm.main();
+	help.main();
 
 };
 
@@ -21,7 +23,17 @@ function main() {
 ///////////////////////////////////
 
 //////////////////////////////
-///// 1. Keyword Search //////
+///// 1. Homepage //////
+//////////////////////////////
+
+var homepage = {
+	main: function() {
+
+	}
+};
+
+//////////////////////////////
+///// 2. Keyword Search //////
 //////////////////////////////
 
 var keywordSearch = {
@@ -154,7 +166,7 @@ var keywordSearch = {
 };
 
 //////////////////////////////
-///// 2. Advanced Search /////
+///// 3. Advanced Search /////
 //////////////////////////////
 
 var advancedSearch = {
@@ -257,7 +269,7 @@ var advancedSearch = {
 };
 
 //////////////////////////////
-///// 3. Upload //////////////
+///// 4. Upload //////////////
 //////////////////////////////
 
 var uploadForm = {
@@ -472,6 +484,20 @@ var uploadForm = {
 			analysisObject = self.previewAnalysis(analysisObject);
 			analysisObject = self.reviewAnalysis(analysisObject);
 			self.submitAnalysis(analysisObject);
+		}
+	}
+};
+
+//////////////////////////////
+///// 5. Help //////////////
+//////////////////////////////
+
+var help = {
+
+	// main
+	main: function() {
+		if (window.location.pathname === '/datasets2tools/help') {
+			var self = this;
 		}
 	}
 

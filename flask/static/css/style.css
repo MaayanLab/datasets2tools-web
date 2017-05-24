@@ -978,6 +978,96 @@ input[type="radio"]:checked + .btn-blue {
 	margin-top: 11px;
 }
 
+/*** Help Page ***/
+
+#user-manual-row {
+	padding-top: 25px;
+}
+
+	#questions-col {
+		margin-bottom: 25px;
+	}
+
+		.help-section {
+			background-color: #fff;
+			border: 1px solid lightgrey;
+			border-radius: 5px;
+			padding: 10px 15px;
+		}
+
+			.help-section-link {
+				display: table;
+				color: black;
+			}
+
+				.help-section-link:not(.collapsed){
+					pointer-events: none;
+				}
+
+				.help-section-link:focus,
+				.help-section-link:active,
+				.help-section-link:hover {
+					color: black;
+					text-decoration: none;
+				}
+
+				.help-section-link .fa {
+					display: table-cell;
+					vertical-align: middle;
+				}
+
+				.help-section-link-text {
+					display: table-cell;
+					vertical-align: middle;
+					padding-left: 15px;
+				}
+
+					.help-section-link-title {
+						font-size: 11pt;
+						font-weight: 500;
+					}
+
+					.help-section-link-description {
+						font-weight: 100;
+						color: #828282;
+						font-size: 10pt;
+					}
+
+			.help-section-questions {
+			}
+
+				.help-section-questions ul {
+					list-style: none;
+					color: #595766;
+					margin-left: -20px;
+				}
+
+					.help-section-questions ul li {
+						margin-bottom: 7px;
+						font-size: 9pt;
+					}
+
+						.help-section-questions ul li:before {
+							font-family: 'FontAwesome';
+							content: '\f054';
+							margin: 0 5px 0 -15px;
+						}
+
+						.help-section-questions ul li a {
+							color: #595766;
+						}
+
+	#answers-col {
+		max-height: 600px;
+		overflow-y: scroll;
+		/*border: 1px solid lightgrey;*/
+		border-radius: 5px;
+		padding: 10px 15px;
+	}
+
+		#answers-col h2 {
+			padding-top: 10px;
+		}
 
 /*
 .btn {

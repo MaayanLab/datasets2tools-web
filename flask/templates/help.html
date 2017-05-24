@@ -55,93 +55,184 @@
 				<div class="jumbotron">
 					<div class="container text-center">
 						<div class="row">
-							<div class="col-sm-12">
-								<h1>Help</h1>
-								<hr width="100%">
-								<div class="lead my-4">The section below contains Frequently Asked Questions and a summary of the key features and properties of the Canned Analysis.</div>
+							<div class="col-12">
+								<h1>User Manual</h1>
+								<hr width="100%" class="my-4">
+								<div class="lead">The section below contains an interactive user manual to guide you through the use of Datasets2Tools.</div>
 							</div>
 						</div> <!-- .row -->
 
-					<div class="row">
-						<div class="col-sm-12">
-							<p class="h5">Frequently Asked Questions</p>
-							<hr width="35%">
-						</div> <!-- .col -->
-					</div> <!-- .row -->
-					<div class="row">
-						<div class="col-sm-4">
-							<i class="fa fa-question-circle fa-3x" aria-hidden="true"></i>
-							<p class="h6">What is a Canned Analysis?</p>
-							<p class="subtext-2">A Canned Analysis is a pre-run analysis of a biomedical dataset by computational tool.	It is stored on a website and can be easily accessed by any user.</p>
-						</div> <!-- .col -->
-						<div class="col-sm-4">
-							<i class="fa fa-table fa-3x" aria-hidden="true"></i>
-							<p class="h6">Where are they indexed?</p>
-							<p class="subtext-2">Information about Canned Analyses, relevant datasets, and tools is currently indexed in a database managed by the <a href="http://icahn.mssm.edu/research/labs/maayan-laboratory">Ma'ayan Lab</a> at the <a href="http://icahn.mssm.edu/">Icahn School of Medicine at Mount Sinai</a>.</p>
-						</div> <!-- .col -->
-						<div class="col-sm-4">
-							<i class="fa fa-globe fa-3x" aria-hidden="true"></i>
-							<p class="h6">Where are they hosted?</p>
-							<p class="subtext-2">Canned Analyses are hosted on websites maintained by external developers.	We do not currently provide hosting services.</p>
-						</div> <!-- .col -->
-					</div> <!-- #faq_row -->
-					<div class="row">
-						<div class="col-sm-12">
-							<p class="h5">Key Features</p>
-							<hr width="25%">
-						</div> <!-- .col -->
-					</div> <!-- .row -->
-					<div class="row">
-						<div class="col-sm-3">
-							<i class="fa fa-database fa-3x" aria-hidden="true"></i>
-							<p class="h6">Dataset</p>
-							<p class="subtext-2">The first key feature of a Canned Analysis is a biomedical dataset.	It is identified by a unique accession, and must be accessible through an online repository.</p>
-						</div> <!-- .col -->
-						<div class="col-sm-3">
-							<i class="fa fa-cogs fa-3x" aria-hidden="true"></i>
-							<p class="h6">Tool</p>
-							<p class="subtext-2">The second key feature is a computational tool.	It must be able to perform an analysis on the specified dataset, and has its own website.</p>
-						</div> <!-- .col -->
-						<div class="col-sm-3">
-							<i class="fa fa-link fa-3x" aria-hidden="true"></i>
-							<p class="h6">URL</p>
-							<p class="subtext-2">The third key feature is the Canned Analysis URL.	It is a hard-coded link to a webpage containing the results of the analysis run by the tool on the dataset.</p>
-						</div> <!-- .col -->
-						<div class="col-sm-3">
-							<i class="fa fa-tags fa-3x" aria-hidden="true"></i>
-							<p class="h6">Annotations</p>
-							<p class="subtext-2">Canned Analyses can be annotated by adding a brief description and any number of relevant metadata tags or keywords.</p>
-						</div> <!-- .col -->
-					</div> <!-- #key_features_row -->
-					<div class="row">
-						<div class="col-sm-12">
-							<p class="h5">Properties</p>
-							<hr width="25%">
-						</div> <!-- .col -->
-					</div> <!-- .row -->
-					<div id="properties_row" class="row">
-						<div class="col-sm-3">
-							<i class="fa fa-search fa-3x" aria-hidden="true"></i>
-							<p class="h6">Findable</p>
-							<div class="subtext-2">Canned analyses relevant to the desired data can be easily found by using the embedded interfaces.
-								They are available on dataset search result pages and dataset landing pages.</div>
-						</div> <!-- .col -->
-						<div class="col-sm-3">
-							<i class="fa fa-universal-access fa-3x" aria-hidden="true"></i>
-							<p class="h6">Accessible</p>
-							<div class="subtext-2">Canned analyses can be rapidly accessed by clicking on the links provided in the embedded interfaces. They are displayed as small icons with the tool's logo.</div>
-						</div> <!-- .col -->
-						<div class="col-sm-3">
-							<i class="fa fa-connectdevelop fa-3x" aria-hidden="true"></i>
-							<p class="h6">Flexible</p>
-							<div class="subtext-2">Canned analyses can support multiple data, tool and analysis types.</div>
-						</div> <!-- .col -->
-						<div class="col-sm-3 text-center">
-							<i class="fa fa-share-alt fa-3x" aria-hidden="true"></i>
-							<p class="h6">Shareable</p>
-							<div class="subtext-2">Canned analyses can be easily shared by copy-pasting their URLs, or by embedding them as icons in websites. The interface provides access to both solutions.</div>
-						</div> <!-- .col -->
-					</div> <!-- #properties_row -->
+						<div id="user-manual-row" class="row">
+							<div id="questions-col" class="col-md-4 text-left">
+								<div id="accordion" role="tablist" aria-multiselectable="true">
+
+									<div class="card help-section">
+										<a class="help-section-link" data-toggle="collapse" data-parent="#accordion" href="#help-general" aria-expanded="true" aria-controls="help-general">
+											<i class="fa fa-info-circle fa-3x" aria-hidden="true"></i>
+											<div class="help-section-link-text">
+												<div class="help-section-link-title">General Information</div>
+												<div class="help-section-link-description">Learn the basics of Datasets2Tools</div>
+											</div>
+										</a>
+										<div id="help-general" class="show help-section-questions" role="tabpanel">
+											<hr width="100%">
+											<ul>
+												<li><a href="#general1">What is Datasets2Tools?</a></li>
+												<li><a href="#general2">What is a Canned Analysis?</a></li>
+												<li><a href="#general3">What is the Datasets2Tools Chrome Extension?</a></li>
+											</ul>
+										</div>
+									</div>
+
+									<div class="card help-section">
+										<a class="help-section-link collapsed" data-toggle="collapse" data-parent="#accordion" href="#help-search" aria-expanded="true" aria-controls="help-search">
+											<i class="fa fa-search fa-3x" aria-hidden="true"></i>
+											<div class="help-section-link-text">
+												<div class="help-section-link-title">Search</div>
+												<div class="help-section-link-description">Learn how to find analyses, datasets, tools</div>
+											</div>
+										</a>
+										<div id="help-search" class="collapse help-section-questions" role="tabpanel">
+											<hr width="100%">
+											<ul>
+												<li><a href="#search1">How do I use the keyword search?</a></li>
+												<li><a href="#search2">How do I use the advanced search form?</a></li>
+												<li><a href="#search3">How do I search using the API?</a></li>
+											</ul>
+										</div>
+									</div>
+
+									<div class="card help-section">
+										<a class="help-section-link collapsed" data-toggle="collapse" data-parent="#accordion" href="#help-contribute" aria-expanded="true" aria-controls="help-contribute">
+											<i class="fa fa-upload fa-3x" aria-hidden="true"></i>
+											<div class="help-section-link-text">
+												<div class="help-section-link-title">Contribute</div>
+												<div class="help-section-link-description">Learn how to contribute to Datasets2Tools</div>
+											</div>
+										</a>
+										<div id="help-contribute" class="collapse help-section-questions" role="tabpanel">
+											<hr width="100%">
+											<ul>
+												<li><a href="#contribute1">How do I add new analyses, datasets and tools to Datasets2Tools?</a></li>
+												<li><a href="#contribute2">How can I upload analyses using the form?</a></li>
+												<li><a href="#contribute3">How do I use the API to upload analyses?</a></li>
+											</ul>
+										</div>
+									</div>
+
+									<div class="card help-section">
+										<a class="help-section-link collapsed" data-toggle="collapse" data-parent="#accordion" href="#help-api" aria-expanded="true" aria-controls="help-api">
+											<i class="fa fa-code fa-3x" aria-hidden="true"></i>
+											<div class="help-section-link-text">
+												<div class="help-section-link-title">API</div>
+												<div class="help-section-link-description">Learn how to use the API effectively</div>
+											</div>
+										</a>
+										<div id="help-api" class="collapse help-section-questions" role="tabpanel">
+											<hr width="100%">
+											<ul>
+												<li><a href="#api1">How do I use the API to retrieve analyses?</a></li>
+												<li><a href="#api2">How do I use the API to retrieve datasets?</a></li>
+												<li><a href="#api3">How do I use the API to retrieve tools?</a></li>
+												<li><a href="#api4">How do I use the advanced API?</a></li>
+												<li><a href="#api5">How do I use the API to upload new canned analyses?</a></li>
+											</ul>
+										</div>
+									</div>
+
+									<div class="card help-section">
+										<a class="help-section-link collapsed" data-toggle="collapse" data-parent="#accordion" href="#help-extension" aria-expanded="true" aria-controls="help-extension">
+											<i class="fa fa-chrome fa-3x" aria-hidden="true"></i>
+											<div class="help-section-link-text">
+												<div class="help-section-link-title">Chrome Extension</div>
+												<div class="help-section-link-description">Learn more about the Chrome Extension</div>
+											</div>
+										</a>
+										<div id="help-extension" class="collapse help-section-questions" role="tabpanel">
+											<hr width="100%">
+											<ul>
+												<li><a href="#extension1">What is the Datasets2Tools Chrome Extension?</a></li>
+												<li><a href="#extension2">How can the Chrome Extension help me?</a></li>
+											</ul>
+										</div>
+									</div>
+
+
+								</div>
+							</div>
+							<div id="answers-col" class="col-md-8 text-center">
+
+								<h2 id="general-information">General Information</h2>
+								<hr width="75%">
+								<br><br><br><br><br>
+								<h4 id="general1">What is Datasets2Tools?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+								<h4 id="general2">What is a Canned Analysis?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+								<h4 id="general3">What is the Datasets2Tools Chrome Extension?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+
+								<h2 id="search">Search</h2>
+								<hr width="75%">
+								<br><br><br><br><br>
+								<h4 id="search1">How do I use the keyword search?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+								<h4 id="search2">How do I use the advanced search form?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+								<h4 id="search3">How do I search using the API?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+
+								<h2 id="contribute">Contribute</h2>
+								<hr width="75%">
+								<br><br><br><br><br>
+								<h4 id="contribute1">How do I add new analyses, datasets and tools to Datasets2Tools?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+								<h4 id="contribute2">How can I upload analyses using the form?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+								<h4 id="contribute3">How do I use the API to upload analyses?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+
+								<h2 id="api">API</h2>
+								<hr width="75%">
+								<br><br><br><br><br>
+								<h4 id="api1">How do I use the API to retrieve analyses?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+								<h4 id="api2">How do I use the API to retrieve datasets?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+								<h4 id="api3">How do I use the API to retrieve tools?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+								<h4 id="api4">How do I use the advanced API?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+								<h4 id="api5">How do I use the API to upload new canned analyses?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+
+								<h2 id="extension">Extension</h2>
+								<hr width="75%">
+								<br><br><br><br><br>
+								<h4 id="extension1">What is the Datasets2Tools Chrome Extension?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+								<h4 id="extension2">How can the Chrome Extension help me?</h4>
+								<hr width="50%">
+								<br><br><br><br><br>
+
+							</div>
+						</div> <!-- .row -->
+
 				</div> <!-- .container -->
 				</div> <!-- .jumbotron -->
 			</div> <!-- #jumbotron-wrapper -->
@@ -151,7 +242,6 @@
 	    <footer class="footer text-center">
 		    <div class="container-fluid">
 				<hr class="my-1" width="90%">
-				
 				Developed by the <a href="http://icahn.mssm.edu/research/labs/maayan-laboratory">Ma'ayan Lab</a> at the <a href="http://icahn.mssm.edu/">Icahn School of Medicine at Mount Sinai</a>.
 		    </div>
 	    </footer>
