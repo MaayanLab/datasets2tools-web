@@ -3,6 +3,7 @@
 		<meta charset="UTF-8">
 		<title>Datasets2Tools</title>
 		<link rel="stylesheet" type="text/css" href="https://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
 		<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome.css') }}">
@@ -63,7 +64,7 @@
 						</div> <!-- .row -->
 
 						<div id="user-manual-row" class="row">
-							<div id="questions-col" class="col-md-4 text-left">
+							<div id="questions-col" class="col-lg-4 text-left">
 								<div id="accordion" role="tablist" aria-multiselectable="true">
 
 									<div class="card help-section">
@@ -76,8 +77,8 @@
 										</a>
 										<div id="help-general" class="show help-section-questions" role="tabpanel">
 											<hr width="100%">
-											<ul>
-												<li><a href="#general1">What is Datasets2Tools?</a></li>
+											<ul class="question-list">
+												<li><a href="#general">What is Datasets2Tools?</a></li>
 												<li><a href="#general2">What is a Canned Analysis?</a></li>
 												<li><a href="#general3">What is the Datasets2Tools Chrome Extension?</a></li>
 											</ul>
@@ -94,8 +95,8 @@
 										</a>
 										<div id="help-search" class="collapse help-section-questions" role="tabpanel">
 											<hr width="100%">
-											<ul>
-												<li><a href="#search1">How do I use the keyword search?</a></li>
+											<ul class="question-list">
+												<li><a href="#search">How do I use the keyword search?</a></li>
 												<li><a href="#search2">How do I use the advanced search form?</a></li>
 												<li><a href="#search3">How do I search using the API?</a></li>
 											</ul>
@@ -112,8 +113,8 @@
 										</a>
 										<div id="help-contribute" class="collapse help-section-questions" role="tabpanel">
 											<hr width="100%">
-											<ul>
-												<li><a href="#contribute1">How do I add new analyses, datasets and tools to Datasets2Tools?</a></li>
+											<ul class="question-list">
+												<li><a href="#contribute">How do I add new analyses, datasets and tools to Datasets2Tools?</a></li>
 												<li><a href="#contribute2">How can I upload analyses using the form?</a></li>
 												<li><a href="#contribute3">How do I use the API to upload analyses?</a></li>
 											</ul>
@@ -130,11 +131,13 @@
 										</a>
 										<div id="help-api" class="collapse help-section-questions" role="tabpanel">
 											<hr width="100%">
-											<ul>
-												<li><a href="#api1">How do I use the API to retrieve analyses?</a></li>
-												<li><a href="#api2">How do I use the API to retrieve datasets?</a></li>
-												<li><a href="#api3">How do I use the API to retrieve tools?</a></li>
-												<li><a href="#api4">How do I use the advanced API?</a></li>
+											<ul class="question-list">
+												<li><a href="#api">How do I use the API to find objects?</a></li>
+													<ul class="question-sublist">
+														<li><a href="#api2">Find analyses: the <i>analysis</i> endpoint</a></li>
+														<li><a href="#api3">Find datasets: the <i>dataset</i> endpoint</a></li>
+														<li><a href="#api4">Find tools: the <i>tool</i> endpoint</a></li>
+													</ul>
 												<li><a href="#api5">How do I use the API to upload new canned analyses?</a></li>
 											</ul>
 										</div>
@@ -150,9 +153,9 @@
 										</a>
 										<div id="help-extension" class="collapse help-section-questions" role="tabpanel">
 											<hr width="100%">
-											<ul>
-												<li><a href="#extension1">What is the Datasets2Tools Chrome Extension?</a></li>
-												<li><a href="#extension2">How can the Chrome Extension help me?</a></li>
+											<ul class="question-list">
+												<li><a href="#extension">What is the Datasets2Tools Chrome Extension?</a></li>
+												<li><a href="#extension2">Where is the Chrome Extension active?</a></li>
 											</ul>
 										</div>
 									</div>
@@ -160,75 +163,144 @@
 
 								</div>
 							</div>
-							<div id="answers-col" class="col-md-8 text-center">
+							<div id="answers-col" class="col-lg-8 text-left">
 
-								<h2 id="general-information">General Information</h2>
-								<hr width="75%">
-								<br><br><br><br><br>
+								<h2 id="general">General Information</h2>
 								<h4 id="general1">What is Datasets2Tools?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
+								<div class="answer">
+									Datasets2Tools is a platform which aims to promote findable, accessible and shareable bioinformatics analyses of biomedical data.
+									It is comprised of three parts: a database of dataset-tool associations, a web platform, and a search engine.
+								</div>
 								<h4 id="general2">What is a Canned Analysis?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
+								<div class="answer">
+									A canned analysis is a pre-run analysis of a biomedical dataset by a computational tool, whose results can be accessed and interactively browsed on a webpage identified by a persistent URL.
+								</div>
 								<h4 id="general3">What is the Datasets2Tools Chrome Extension?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
+								<div class="answer">
+									The Datasets2Tools Chrome extension enriches biomedical repositories such as GEO and DataMed.org by embedding links to canned analyses to dataset landing pages and dataset search pages.
+								</div>
 
 								<h2 id="search">Search</h2>
-								<hr width="75%">
-								<br><br><br><br><br>
 								<h4 id="search1">How do I use the keyword search?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
+								<div class="answer">
+									To use the keyword search functionality, begin by selecting the type of object you want to find - analyses, datasets or tools.  Then insert one or more terms relevant to what you would like to find, separating them by using the Enter key.  Terms can contain spaces, numbers and symbols.  These will be used as keywords to filter the objects you want to find based on their metadata.
+								</div>
 								<h4 id="search2">How do I use the advanced search form?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
+								<div class="answer">
+									To use the advanced search form, begin by selecting the type of object you want to find - analyses, datasets or tools.  Proceed by selecting which metadata field you want to filter on, the type of filter, and then insert the search term in the input text box.  To add more search terms to your query, click on the plus icon on the right of the first input row.  To remove undesired search terms, click on the minus button on the right of the additional input rows.
+								</div>
 								<h4 id="search3">How do I search using the API?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
+								<div class="answer">
+									For more information about using the API to find analyses, datasets and tools, please visit the section on <a href="#api">API documentation</a>.
+								</div>
 
 								<h2 id="contribute">Contribute</h2>
-								<hr width="75%">
-								<br><br><br><br><br>
 								<h4 id="contribute1">How do I add new analyses, datasets and tools to Datasets2Tools?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
+								<div class="answer">
+									Datasets2Tools currently provides two methods to upload analyses to our database:
+									<ul>
+										<li>A <a href="/datasets2tools/contribute">form</a> to manually upload analyses</li>
+										<li>An API to upload analyses in bulk</li>
+									</ul>
+								</div>
 								<h4 id="contribute2">How can I upload analyses using the form?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
+								<div class="answer">
+									Datasets2Tools is a platform which aims to promote findable, accessible and shareable bioinformatics analyses of biomedical data.
+									It is comprised of three parts: a database of dataset-tool associations, a web platform, and a search engine.
+								</div>
 								<h4 id="contribute3">How do I use the API to upload analyses?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
+								<div class="answer">
+									Datasets2Tools is a platform which aims to promote findable, accessible and shareable bioinformatics analyses of biomedical data.
+									It is comprised of three parts: a database of dataset-tool associations, a web platform, and a search engine.
+								</div>
 
 								<h2 id="api">API</h2>
-								<hr width="75%">
-								<br><br><br><br><br>
-								<h4 id="api1">How do I use the API to retrieve analyses?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
-								<h4 id="api2">How do I use the API to retrieve datasets?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
-								<h4 id="api3">How do I use the API to retrieve tools?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
-								<h4 id="api4">How do I use the advanced API?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
+								<h4 id="api1">How do I use the API to find objects?</h4>
+								<div class="answer">
+									Datasets2Tools provides an API to easily find analyses, datasets and tools of interest.<div class="break"></div>
+									There are three endpoints:
+									<ul id="api-list">
+										<li><a class="monaco">https://amp.pharm.mssm.edu/datasets2tools/api/analysis</a>, to find canned analyses.</li>
+										<li><a class="monaco">https://amp.pharm.mssm.edu/datasets2tools/api/dataset</a>, to find datasets.</li>
+										<li><a class="monaco">https://amp.pharm.mssm.edu/datasets2tools/api/tool</a>, to find tools.</li>
+									</ul>
+									For each query, the API returns a JSON object containing information relevant to the objects queried.
+									<div class="break"></div>
+									For detailed usage information, visit the manual section for the <a href="#api2">analysis</a>, <a href="#api3">dataset</a> and <a href="#api4">tool</a> endpoints below.
+								</div>
+								<h4 id="api2">Finding analyses: the <i>analysis</i> endpoint</h4>
+								<div class="answer">
+									The analysis endpoint allows to search canned analyses by filtering on the associated metadata, datasets and tools.
+									<div class="break"></div>
+									Examples:
+									<div class="example-question">How do I find analyses associated to dataset GSE37618?</div>
+									<div class="example-answer monaco"><a href="http://amp.pharm.mssm.edu/datasets2tools/api/analysis?dataset_accession=GSE37618">http://amp.pharm.mssm.edu/datasets2tools/api/analysis?dataset_accession=GSE37618</a></div>
+									<div class="example-question">How do I find analyses generated by Enrichr?</div>
+									<div class="example-answer monaco"><a href="http://amp.pharm.mssm.edu/datasets2tools/api/analysis?tool_name=Enrichr">http://amp.pharm.mssm.edu/datasets2tools/api/analysis?tool_name=Enrichr</a></div>
+									<div class="example-question">How do I find analyses generated by Enrichr on GSE37618?</div>
+									<div class="example-answer monaco"><a href="http://amp.pharm.mssm.edu/datasets2tools/api/analysis?dataset_accession=GSE37618&tool_name=Enrichr">http://amp.pharm.mssm.edu/datasets2tools/api/analysis?tool_name=Enrichr&dataset_accession=GSE37618</a></div>
+									<div class="example-question">How do I find analyses relevant to prostate cancer?</div>
+									<div class="example-answer monaco"><a href="http://amp.pharm.mssm.edu/datasets2tools/api/analysis?disease_name=prostate cancer">http://amp.pharm.mssm.edu/datasets2tools/api/analysis?disease_name=prostate cancer</a></div>
+									<div class="example-question">How do I find analyses relevant to ESR1 KD experiments?</div>
+									<div class="example-answer monaco"><a href="http://amp.pharm.mssm.edu/datasets2tools/api/analysis?hs_gene_symbol=ESR1&pert_type=KD">http://amp.pharm.mssm.edu/datasets2tools/api/analysis?hs_gene_symbol=ESR1&pert_type=KD</a></div>
+									<br>
+									<div class="break"></div>
+									<div class="break"></div>
+									Here is the full list of fields which may be searched using the analysis endpoint:
+									<div class="term-list monaco">
+										{{', '.join(available_search_terms['analysis'])}}
+									</div>
+									<div class="break"></div>
+									To perform more advanced queries, please read the advanced search API manual <a href="#api5">here</a>.
+								</div>								
+								<h4 id="api3">Find datasets: the <i>dataset</i> endpoint</h4>
+								<div class="answer">
+									The dataset endpoint allows to search datasets by filtering on the associated metadata.
+									<div class="break"></div>
+									Examples:
+									<div class="example-question">How do I find dataset GSE37618?</div>
+									<div class="example-answer monaco"><a href="http://amp.pharm.mssm.edu/datasets2tools/api/dataset?dataset_accession=GSE37618">http://amp.pharm.mssm.edu/datasets2tools/api/dataset?dataset_accession=GSE37618</a></div>
+									<div class="example-question">How do I find datasets from the LINCS repository?</div>
+									<div class="example-answer monaco"><a href="http://amp.pharm.mssm.edu/datasets2tools/api/dataset?repository_name=LINCS">http://amp.pharm.mssm.edu/datasets2tools/api/dataset?repository_name=LINCS</a></div>
+									<div class="break"></div>
+									<div class="break"></div>
+									The dataset endpoint currently supports searching by dataset accession and repository.  Additional functionalities soon to come.
+									<div class="break"></div>
+									To perform more advanced queries, please read the advanced search API manual <a href="#api5">here</a>.
+								</div>
+								<h4 id="api4">Find tools: the <i>tool</i> endpoint</h4>
+								<div class="answer">
+									The tool endpoint allows to search tools by filtering on the associated metadata.
+									<div class="break"></div>
+									Examples:
+									<div class="example-question">How do I find tool Enrichr?</div>
+									<div class="example-answer monaco"><a href="http://amp.pharm.mssm.edu/datasets2tools/api/tool?tool_name=Enrichr">http://amp.pharm.mssm.edu/datasets2tools/api/tool?tool_name=Enrichr</a></div>
+									<div class="break"></div>
+									The dataset endpoint currently supports searching by tool name.  Additional functionalities soon to come.
+									<div class="break"></div>
+									To perform more advanced queries, please read the advanced search API manual <a href="#api5">here</a>.
+								</div>
 								<h4 id="api5">How do I use the API to upload new canned analyses?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
+								<div class="answer">
+									Datasets2Tools is a platform which aims to promote findable, accessible and shareable bioinformatics analyses of biomedical data.
+									It is comprised of three parts: a database of dataset-tool associations, a web platform, and a search engine.
+								</div>
 
 								<h2 id="extension">Extension</h2>
-								<hr width="75%">
-								<br><br><br><br><br>
 								<h4 id="extension1">What is the Datasets2Tools Chrome Extension?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
-								<h4 id="extension2">How can the Chrome Extension help me?</h4>
-								<hr width="50%">
-								<br><br><br><br><br>
+								<div class="answer">
+									The Datasets2Tools Chrome extension enriches biomedical repositories such as GEO and DataMed.org by embedding links to canned analyses to dataset landing pages and dataset search pages.
+									<br>
+									<div class="break"></div>
+									It can be downloaded for free at the following <a href="https://chrome.google.com/webstore/detail/datasets2tools/fbamphimpljabaailcaidmeegpcpkdel">link</a>.
+								</div>
+								<h4 id="extension2">Where is the Chrome Extension active?</h4>
+								<div class="answer">
+									The Datasets2Tools Chrome extension is currently active on dataset landing pages and dataset search pages of the <a href="https://www.ncbi.nlm.nih.gov/geo/">Gene Expression Omnibus</a> and <a href="https://datamed.org/">DataMed.org</a>.
+									<br>
+									<div class="break"></div>
+									You can test out the extension at the following links: <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE19777">GEO Landing</a>, <a href="https://datamed.org/display-item.php?repository=0003&id=589ce5815152c60c61e09062&query=GSE19777">DataMed Landing</a>, <a href="https://www.ncbi.nlm.nih.gov/gds/?term=Antisense+miRNA-221%2F222+(si221%2F222)+and+control+inhibitor+(GFP)+treated+fulvestrant-resistant+breast+cancer+cells">GEO Search</a>, <a href="https://datamed.org/search.php?searchtype=data&query=mcf7&offset=1&repository=0003">DataMed Search</a>.
+								</div>
 
 							</div>
 						</div> <!-- .row -->
@@ -247,10 +319,12 @@
 	    </footer>
 
 		<div id="js">
-			<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+			<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+			<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
 			<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+			<script>hljs.initHighlightingOnLoad();</script>
 			<script> $(function() {$('[data-toggle="tooltip"]').tooltip()}) </script>
 		</div> <!-- #js -->
 

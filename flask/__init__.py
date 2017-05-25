@@ -141,7 +141,10 @@ def upload():
 
 @app.route('/datasets2tools/help')
 def help():
-	return render_template('help.html')
+	Database = CannedAnalysisDatabase(engine)
+	available_search_terms = Database.get_available_search_terms(pretty=False)
+	print available_search_terms
+	return render_template('help.html', available_search_terms=available_search_terms)
 
 #########################
 ### 6. Collections

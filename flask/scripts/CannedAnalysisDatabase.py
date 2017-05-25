@@ -120,12 +120,13 @@ class CannedAnalysisDatabase:
                 if 'id' in key:
                     query_terms.append('{key} = {value}'.format(**locals()))
                 elif key in term_names:
-                    query_terms.append('(`term_name` = "{key}" AND `value` = "{value}")'.format(**locals()))
+                    query_terms.append('canned_analysis_fk IN (SELECT canned_analysis_fk FROM canned_analysis_metadata cam LEFT JOIN term t on t.id=cam.term_fk WHERE `term_name` = "{key}" AND `value` = "{value}")'.format(**locals()))
                 else:
                     query_terms.append('`{key}` = "{value}"'.format(**locals()))
             if len(query_terms) > 0:
                 sql_query += ' WHERE ' + ' AND '.join(query_terms)
             sql_query += ' LIMIT {size}'.format(**locals())
+            print sql_query
             ids = pd.read_sql_query(sql_query, self.engine)['id'].tolist()
         except:
             ids = None
@@ -532,7 +533,7 @@ class CannedAnalysisDatabase:
     def get_object_count(self):
         object_count = {'analyses': pd.read_sql_query('SELECT COUNT(*) AS count FROM canned_analysis', self.engine)['count'][0],
                         'datasets': pd.read_sql_query('SELECT COUNT(DISTINCT dataset_fk) AS count FROM canned_analysis', self.engine)['count'][0],
-                        'tools': pd.read_sql_query('SELECT COUNT(DISTINCT tool_fk) AS count FROM canned_analysis', self.engine)['count'][0]}
+                        'tools': pd.read_sql_query('SELECT COUNT(DISTINCT id) AS count FROM tool', self.engine)['count'][0]}
         return object_count
 
 ##############################
@@ -604,15 +605,17 @@ class CannedAnalysisDatabase:
 ##### 2. Advanced Search Dropdown terms
 ##############################
 
-    def get_available_search_terms(self):
+    def get_available_search_terms(self, pretty=True):
         canned_analysis_metadata_terms = pd.read_sql_query('SELECT term_name FROM term', self.engine)['term_name'].tolist()
         dataset_terms = ['dataset_accession', 'dataset_title', 'dataset_description', 'repository', 'repository_description']
         tool_terms = ['tool_name', 'tool_description']
         available_search_terms = {
-            'analysis': [x.replace('_', ' ').title() for x in ['All Fields']+canned_analysis_metadata_terms+dataset_terms+tool_terms],
-            'dataset': [x.replace('_', ' ').title() for x in ['All Fields']+dataset_terms],
-            'tool': [x.replace('_', ' ').title() for x in ['All Fields']+tool_terms]
+            'analysis': ['all_fields']+canned_analysis_metadata_terms+dataset_terms+tool_terms,
+            'dataset': ['all_fields']+dataset_terms,
+            'tool': ['all_fields']+tool_terms
         }
+        if pretty == True:
+            available_search_terms = {key:[value.replace('_', ' ').title() for value in available_search_terms[key]] for key in available_search_terms.keys()}
         return available_search_terms
 
 ##############################

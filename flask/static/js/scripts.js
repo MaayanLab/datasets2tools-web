@@ -494,13 +494,23 @@ var uploadForm = {
 
 var help = {
 
+	// open accordion
+	openAccordion: function() {
+		var openLink = window.location.hash,
+			openSection = String(openLink.match(/[a-zA-Z]+/g));
+		if (['', 'general'].indexOf(openSection) == -1) {
+			$("a[href='#help-"+openSection+"']").click();
+			$(openLink).get(0).scrollIntoView();
+		}
+	},
+
 	// main
 	main: function() {
 		if (window.location.pathname === '/datasets2tools/help') {
 			var self = this;
+			self.openAccordion();
 		}
 	}
-
 };
 
 
