@@ -473,6 +473,18 @@ var uploadForm = {
 		}) 
 	},
 
+	// submit analysis
+	alterMetadata: function(analysisObject) {
+		$(document).on('click', '#add-metadata-term', function(evt) {
+			$('#metadata-row-wrapper').find('.row.hidden').first().removeClass('hidden');
+		})
+		$(document).on('click', '.remove-metadata-term', function(evt) {
+			var $parentRow = $(evt.target).parents('.form-group.row');
+			$parentRow.addClass('hidden');
+			$parentRow.find('input').val('');
+		}) 
+	},
+
 	// main
 	main: function() {
 		if (window.location.pathname === '/datasets2tools/upload') {
@@ -484,6 +496,7 @@ var uploadForm = {
 			analysisObject = self.previewAnalysis(analysisObject);
 			analysisObject = self.reviewAnalysis(analysisObject);
 			self.submitAnalysis(analysisObject);
+			self.alterMetadata(analysisObject);
 		}
 	}
 };

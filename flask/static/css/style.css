@@ -983,6 +983,13 @@ input[type="radio"]:checked + .btn-blue {
 	margin-top: 11px;
 }
 
+	#metadata-row-wrapper .fa {
+		font-size: 13pt;
+		margin-left: -20px;
+		margin-top: 6px;
+		cursor: pointer;
+}
+
 /*** Help Page ***/
 
 #user-manual-row {

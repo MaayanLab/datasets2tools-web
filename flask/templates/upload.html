@@ -314,7 +314,25 @@
 												<div class="col-4">
 													<input class="form-control metadata-value" type="text" placeholder="Insert value...">
 												</div>
+												<div id="add-metadata-term" class="col-1">
+													<i class="fa fa-plus-circle"></i>
+												</div>
 											</div>
+											{%for i in range(15)%}
+												<div class="form-group row hidden">
+													<label class="col-3 col-form-label"></label>
+													<div class="col-4">
+														<input class="form-control metadata-term" type="text" placeholder="Insert term...">
+													</div>
+													<div class="col-4">
+														<input class="form-control metadata-value" type="text" placeholder="Insert value...">
+													</div>
+													<div class="col-1 remove-metadata-term">
+														<i class="fa fa-minus-circle"></i>
+													</div>
+												</div>
+											{%endfor%}
+
 										</div>
 									</div>
 								</div>
