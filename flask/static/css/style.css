@@ -572,7 +572,7 @@ input[type="radio"]:checked + .btn-blue {
 
 .dataset-repository-image,
 .analysis-preview-image {
-	max-width: 300px;
+	max-width: 100%;
 	max-height: 200px;
 	border: 1px solid lightgrey;
 }
@@ -1220,6 +1220,10 @@ input[type="radio"]:checked + .btn-blue {
 	  pointer-events: none;
 	}
 
+#explorer-results {
+	padding: 0px 15px;
+}
+
 #explorer-selection-col {
 	border: 1px solid lightgrey;
 	border-radius: 5px;
@@ -1244,9 +1248,13 @@ input[type="radio"]:checked + .btn-blue {
 		}
 
 	#change-explorer-view {
+		margin-bottom: 20px;
 	}
 
-	
+		#change-explorer-view .fa {
+			margin-right: 7px;
+		}
+
 		#change-explorer-view label[for='view-metadata'] {
 			border-radius: 5px 0px 0px 5px;
 			margin-right: -2px;
