@@ -143,7 +143,6 @@ def upload():
 def help():
 	Database = CannedAnalysisDatabase(engine)
 	available_search_terms = Database.get_available_search_terms(pretty=False)
-	print available_search_terms
 	return render_template('help.html', available_search_terms=available_search_terms)
 
 #########################
@@ -160,7 +159,10 @@ def collections():
 
 @app.route('/datasets2tools/metadata')
 def metadata():
-	return render_template('metadata.html')
+	Database = CannedAnalysisDatabase(engine)
+	analysis_count_dict = Database.get_analysis_count_dict()
+	print analysis_count_dict
+	return render_template('metadata.html', analysis_count_dict=analysis_count_dict)
 
 ##############################
 ##### 2. Search APIs
@@ -238,6 +240,19 @@ def chrome_extension_api():
 	Database = CannedAnalysisDatabase(engine)
 	interface_json = Database.chrome_extension_api(request.args.to_dict())
 	return interface_json
+
+#########################
+### 5. Explorer API
+#########################
+
+@app.route('/datasets2tools/api/metadata_explorer')
+def metadata_explorer():
+	Database = CannedAnalysisDatabase(engine)
+	query = request.args.get('query', '{}', type=str)
+	size = request.args.get('size', 300, type=str)
+	dict_type = request.args.get('dict_type', 'd3', type=str)
+	analysis_count_json = Database.metadata_explorer_api(query, size, dict_type)
+	return analysis_count_json
 
 
 ##############################

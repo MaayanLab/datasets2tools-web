@@ -547,7 +547,6 @@ class CannedAnalysisDatabase:
                             'dataset': pd.read_sql_query('SELECT DISTINCT dataset_title AS title, dataset_description AS description, dataset_landing_url AS url, repository_icon_url AS image_url FROM dataset d LEFT JOIN repository r ON r.id=d.repository_fk WHERE d.id IN (SELECT dataset_fk FROM featured_dataset WHERE `day` = CURDATE())', self.engine).iloc[0].to_dict(),
                             'tool': pd.read_sql_query('SELECT tool_name AS title, tool_description AS description, tool_homepage_url AS url, tool_icon_url AS image_url FROM tool WHERE id IN (SELECT tool_fk FROM featured_tool WHERE `start_day` <= CURDATE() AND `end_day` > CURDATE())', self.engine).iloc[0].to_dict()}
 
-        print featured_objects
         return featured_objects
 
 ##############################
@@ -559,6 +558,47 @@ class CannedAnalysisDatabase:
         news_dataframe['news_date'] = [x.strftime('%B %d, %Y') for x in news_dataframe['news_date']]
         news_list = news_dataframe.to_dict(orient='records')
         return news_list
+
+#######################################################
+########## 9. Explorer Functions ######################
+#######################################################
+
+##############################
+##### 1. Get Count Dict
+##############################
+    
+    def get_analysis_count_dict(self, query='{}', size=100, removeKeys=True):
+        if query != '{}':
+            query = json.loads(query)
+            conditions = 'AND canned_analysis_fk IN ('
+            conditions += ') AND canned_analysis_fk IN ('.join(['SELECT canned_analysis_fk FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE ' + x for x in [' OR '.join(['(`term_name` = "{key}" AND `value` = "{value}")'.format(**locals()) for value in query[key]]) for key in query.keys()]])
+            conditions += ')'
+        else:
+            conditions = ''
+        analysis_count_dataframe = pd.read_sql_query('SELECT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE term_name NOT IN ("chdir_norm", "creeds_id", "umls_cui", "smiles", "top_genes", "ctrl_ids", "pert_ids", "mm_gene_symbol", "pubchem_cid", "do_id", "drugbank_id", "curator") {conditions} GROUP BY term_name, value ORDER BY COUNT DESC LIMIT {size}'.format(**locals()), self.engine).set_index('term_name')
+        if len(analysis_count_dataframe.index) == 0:
+            return {}
+        else:
+            if query != '{}' and removeKeys == True:
+                analysis_count_dataframe.drop(query.keys(), inplace=True)
+            analysis_count_dict = {term_name.replace('_', ' ').title():analysis_count_dataframe.loc[term_name].set_index('value').to_dict()['count'] if type(analysis_count_dataframe.loc[term_name]) == pd.DataFrame else analysis_count_dataframe.loc[term_name].to_frame().T.set_index('value').to_dict()['count'] for term_name in set(analysis_count_dataframe.index)}
+            return analysis_count_dict
+
+##############################
+##### 2. Get Dict
+##############################
+    
+    def metadata_explorer_api(self, query, size, dict_type):
+        if dict_type == 'd3':
+            analysis_count_dict = self.get_analysis_count_dict(query, size)
+            analysis_count_json = json.dumps({'name': 'circle', 'children': [{'name': term_name.replace('_', ' ').title(), 'children': [{'name': value, 'size': size} for value, size in analysis_count_dict[term_name].iteritems()]} for term_name in analysis_count_dict.keys()]})
+        elif dict_type == 'select':
+            analysis_count_dict = self.get_analysis_count_dict(query, size, False)
+            analysis_count_json = json.dumps(analysis_count_dict)
+        else:
+            raise ValueError("Wrong dict type specified - must be 'd3' or 'select'.")
+        return analysis_count_json
+
 
 #######################################################
 ########## 8. Miscellaneous ###########################
@@ -619,7 +659,7 @@ class CannedAnalysisDatabase:
         return available_search_terms
 
 ##############################
-##### 3.2 Dataset
+##### 3. Explorer API
 ##############################
 
 ##############################

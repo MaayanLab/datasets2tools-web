@@ -1190,6 +1190,55 @@ input[type="radio"]:checked + .btn-blue {
 						margin-top: 10px;
 					}
 
+/*** Metadata Explorer ***/
+
+#d3-container {
+}
+
+	.node {
+	  cursor: pointer;
+	}
+
+	.node:hover {
+	  stroke: #000;
+	  stroke-width: 1.5px;
+	}
+
+	.node--leaf {
+	  fill: white;
+	}
+
+	.label {
+	  font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	  text-anchor: middle;
+	  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+	}
+
+	.label,
+	.node--root,
+	.node--leaf {
+	  pointer-events: none;
+	}
+
+#explorer-selection-col {
+	border: 1px solid lightgrey;
+	border-radius: 5px;
+	padding-top: 15px;
+}
+
+	#explorer-selection-col .term-row {
+		padding: 15px 0;
+	}
+		
+		#explorer-selection-col .row .bootstrap-select {
+			width: 150px;
+		}
+
+	.term-name-col {
+		font-size: 10pt;
+		margin: auto;
+	}
+
 
 
 /*
@@ -1519,3 +1568,4 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
 .help-jumbotron hr {
 	margin-bottom: 15px
 }
+

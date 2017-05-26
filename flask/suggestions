@@ -1,0 +1,9 @@
+remove period from title
+subtitle: datasets2tools is a platform developed to enable finding, discovering and sharing computational analyses of biomedical datasets of multiple types
+make text bigger, icons smaller, format numbers
+featured: they look kind of empty, put in an image
+with the chrome extension
+the database
+not latest news, most recent submissions or updates, wouldn't say new, 
+add in acknowledgements: BD2K is critical, IDG, add license: copy CREEDS footer
+implement a check for URLs in a way that is self maintained cron job to check all of the URLs maybe once every few days, the ones that are dead 
