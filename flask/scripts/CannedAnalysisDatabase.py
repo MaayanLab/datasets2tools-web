@@ -567,7 +567,7 @@ class CannedAnalysisDatabase:
 ##### 1. Get Count Dict
 ##############################
     
-    def get_analysis_count_dict(self, query='{}', size=100, removeKeys=True):
+    def get_analysis_count_dict(self, query, size, removeKeys=True):
         if query != '{}':
             query = json.loads(query)
             conditions = 'AND canned_analysis_fk IN ('
@@ -588,16 +588,15 @@ class CannedAnalysisDatabase:
 ##### 2. Get Dict
 ##############################
     
-    def metadata_explorer_api(self, query, size, dict_type):
-        if dict_type == 'd3':
-            analysis_count_dict = self.get_analysis_count_dict(query, size)
-            analysis_count_json = json.dumps({'name': 'circle', 'children': [{'name': term_name.replace('_', ' ').title(), 'children': [{'name': value, 'size': size} for value, size in analysis_count_dict[term_name].iteritems()]} for term_name in analysis_count_dict.keys()]})
-        elif dict_type == 'select':
-            analysis_count_dict = self.get_analysis_count_dict(query, size, False)
-            analysis_count_json = json.dumps(analysis_count_dict)
-        else:
-            raise ValueError("Wrong dict type specified - must be 'd3' or 'select'.")
-        return analysis_count_json
+    def metadata_explorer_api(self, query):
+        # d3
+        analysis_count_dict = self.get_analysis_count_dict(query, 500)
+        d3_count_dict = {'name': 'circle', 'children': [{'name': term_name.replace('_', ' ').title(), 'children': [{'name': value, 'size': size} for value, size in analysis_count_dict[term_name].iteritems()]} for term_name in analysis_count_dict.keys()]}
+        # select
+        select_count_dict = self.get_analysis_count_dict(query, 500, removeKeys=False)
+        # result
+        metadata_explorer_json = json.dumps({'d3': d3_count_dict, 'select': select_count_dict})
+        return metadata_explorer_json
 
 
 #######################################################

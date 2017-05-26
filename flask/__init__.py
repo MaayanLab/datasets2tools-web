@@ -160,9 +160,7 @@ def collections():
 @app.route('/datasets2tools/metadata')
 def metadata():
 	Database = CannedAnalysisDatabase(engine)
-	analysis_count_dict = Database.get_analysis_count_dict()
-	print analysis_count_dict
-	return render_template('metadata.html', analysis_count_dict=analysis_count_dict)
+	return render_template('metadata.html')
 
 ##############################
 ##### 2. Search APIs
@@ -248,10 +246,8 @@ def chrome_extension_api():
 @app.route('/datasets2tools/api/metadata_explorer')
 def metadata_explorer():
 	Database = CannedAnalysisDatabase(engine)
-	query = request.args.get('query', '{}', type=str)
-	size = request.args.get('size', 300, type=str)
-	dict_type = request.args.get('dict_type', 'd3', type=str)
-	analysis_count_json = Database.metadata_explorer_api(query, size, dict_type)
+	query = request.args.get('query', type=str)
+	analysis_count_json = Database.metadata_explorer_api(query)
 	return analysis_count_json
 
 
