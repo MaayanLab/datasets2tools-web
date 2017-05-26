@@ -567,7 +567,7 @@ class CannedAnalysisDatabase:
 ##### 1. Get Count Dict
 ##############################
     
-    def get_analysis_count_dict(self, query, size, removeKeys=True):
+    def get_d3_dict(self, query, size):
         if query != '{}':
             query = json.loads(query)
             conditions = 'AND canned_analysis_fk IN ('
@@ -579,26 +579,57 @@ class CannedAnalysisDatabase:
         if len(analysis_count_dataframe.index) == 0:
             return {}
         else:
-            if query != '{}' and removeKeys == True:
+            if query != '{}':
                 analysis_count_dataframe.drop(query.keys(), inplace=True)
             analysis_count_dict = {term_name.replace('_', ' ').title():analysis_count_dataframe.loc[term_name].set_index('value').to_dict()['count'] if type(analysis_count_dataframe.loc[term_name]) == pd.DataFrame else analysis_count_dataframe.loc[term_name].to_frame().T.set_index('value').to_dict()['count'] for term_name in set(analysis_count_dataframe.index)}
-            return analysis_count_dict
+            d3_count_dict = {'name': 'circle', 'children': [{'name': term_name.replace('_', ' ').title(), 'children': [{'name': value, 'size': size, 'relsize': float(size)/max(analysis_count_dict[term_name].values())} for value, size in analysis_count_dict[term_name].iteritems()]} for term_name in analysis_count_dict.keys()]}
+            return d3_count_dict
 
 ##############################
-##### 2. Get Dict
+##### 2. Get Select Dict
 ##############################
     
-    def metadata_explorer_api(self, query):
-        # d3
-        analysis_count_dict = self.get_analysis_count_dict(query, 500)
-        d3_count_dict = {'name': 'circle', 'children': [{'name': term_name.replace('_', ' ').title(), 'children': [{'name': value, 'size': size} for value, size in analysis_count_dict[term_name].iteritems()]} for term_name in analysis_count_dict.keys()]}
-        # select
-        select_count_dict = self.get_analysis_count_dict(query, 500, removeKeys=False)
-        # result
-        metadata_explorer_json = json.dumps({'d3': d3_count_dict, 'select': select_count_dict})
-        return metadata_explorer_json
+    def get_select_dict(self, query, size):
+        terms_to_exclude = "', '".join(["chdir_norm", "creeds_id", "umls_cui", "smiles", "top_genes", "ctrl_ids", "pert_ids", "mm_gene_symbol", "pubchem_cid", "do_id", "drugbank_id", "curator"])
+        analysis_count_dataframe = pd.DataFrame()
+        if query != '{}':
+            query = json.loads(query)
+            termNames = pd.read_sql_query("SELECT term_name FROM term WHERE term_name NOT IN ('{terms_to_exclude}')".format(**locals()), self.engine)['term_name'].tolist()
+            analysis_count_dict = {}
+            for termName in termNames:   
+                if termName in query.keys():
+                    querySubset = query.copy()
+                    del querySubset[termName]
+                else:
+                    querySubset = query
+                conditions = ' AND canned_analysis_fk IN ('+') AND canned_analysis_fk IN ('.join(['SELECT canned_analysis_fk FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE ' + x for x in [' OR '.join(['(`term_name` = "{key}" AND `value` = "{value}")'.format(**locals()) for value in querySubset[key]]) for key in querySubset.keys()]]) + ')' if len(querySubset.keys()) > 0 else ''
+                analysis_count_dataframe = pd.concat([analysis_count_dataframe, pd.read_sql_query('SELECT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE `term_name` = "{termName}" {conditions} GROUP BY value'.format(**locals()), self.engine)])
+            analysis_count_dataframe = analysis_count_dataframe.sort_values('count', ascending=False).iloc[:size].set_index('term_name')
+            print analysis_count_dataframe.head(50)
+        else:
+            analysis_count_dataframe = pd.read_sql_query("SELECT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE term_name NOT IN ('{terms_to_exclude}') GROUP BY term_name, value ORDER BY COUNT DESC LIMIT {size}".format(**locals()), self.engine).set_index('term_name')
+        if len(analysis_count_dataframe.index) == 0:
+            analysis_count_dict = {}
+        else:
+            analysis_count_dict = {term_name.replace('_', ' ').title():analysis_count_dataframe.loc[term_name].set_index('value').to_dict()['count'] if type(analysis_count_dataframe.loc[term_name]) == pd.DataFrame else analysis_count_dataframe.loc[term_name].to_frame().T.set_index('value').to_dict()['count'] for term_name in set(analysis_count_dataframe.index)}
+        return analysis_count_dict
 
+##############################
+##### 3. Get Search Results
+##############################
 
+    def get_explorer_results(self, query, size):
+        if query != '{}':
+            query = json.loads(query)
+            conditions = 'WHERE canned_analysis_fk IN ('
+            conditions += ') AND canned_analysis_fk IN ('.join(['SELECT canned_analysis_fk FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE ' + x for x in [' OR '.join(['(`term_name` = "{key}" AND `value` = "{value}")'.format(**locals()) for value in query[key]]) for key in query.keys()]])
+            conditions += ')'
+        else:
+            conditions = ''
+        ids = pd.read_sql_query('SELECT DISTINCT canned_analysis_fk AS id FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk {conditions} LIMIT {size}'.format(**locals()), self.engine)['id'].tolist()
+        results = self.table_from_ids(ids, 'analysis')
+        return str(results)
+   
 #######################################################
 ########## 8. Miscellaneous ###########################
 #######################################################

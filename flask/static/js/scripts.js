@@ -511,23 +511,28 @@ var metadataExplorer = {
 	// d3 circle packing
 	circlePacking: function(root) {
 
-			$('svg').html('');
+		var self = this;
 
-			var svg = d3.select("svg"),
-			    margin = 20,
-			    diameter = +svg.attr("width"),
-			    g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+			if (root['children'].length > 0) {
 
-			var color = d3.scaleLinear()
-			    .domain([-1, 5])
-			    .range(["#eceeef", "#3366cc"])
-			    .interpolate(d3.interpolateHcl);
+				$('.metadata-explorer-results').hide();
+				$('.metadata-explorer-visualize').show();
 
-			var pack = d3.pack()
-			    .size([diameter - margin, diameter - margin])
-			    .padding(2);
+				$('svg').html('');
 
-				if (root['children'].length > 0) {
+				var svg = d3.select("svg"),
+				    margin = 20,
+				    diameter = +svg.attr("width"),
+				    g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+				var color = d3.scaleLinear()
+				    .domain([-1, 5])
+				    .range(["#eceeef", "#3366cc"])
+				    .interpolate(d3.interpolateHcl);
+
+				var pack = d3.pack()
+				    .size([diameter - margin, diameter - margin])
+				    .padding(2);
 
 				  root = d3.hierarchy(root)
 				      .sum(function(d) { return d.size; })
@@ -550,7 +555,7 @@ var metadataExplorer = {
 				      .attr("class", "label")
 				      .style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
 				      .style("display", function(d) { return d.parent === root ? "inline" : "none"; })
-				      .style("font-size", function(d) {return d.data.size > 0 ? "11pt" : "13pt"; })
+				      .style("font-size", function(d) {return d.data.relsize > 0 ? 9+5*d.data.relsize : "13pt"; })
 				      // .style("font-size", function(d) {return d.data.size > 0 ? Math.min(Math.sqrt(d.data.size)+3, 25) : "13pt"; })
 				      .text(function(d) { return d.data.name; });
 
@@ -586,6 +591,9 @@ var metadataExplorer = {
 				  }
 
 			} else {
+				$('.metadata-explorer-results').show();
+				$('.metadata-explorer-visualize').hide();
+				self.addResults();
 			}
 	},
 
@@ -614,6 +622,32 @@ var metadataExplorer = {
 
 	// refresh interface
 	refreshInterface: function(queryObj={}) {
+		var isVisualizeMode = $('.metadata-explorer-visualize').first().is(':visible'),
+			self = this;
+		if (isVisualizeMode) {
+			self.newVisualization(queryObj, true);
+		} else {
+			self.newVisualization(queryObj);
+			self.addResults();
+		}
+	},
+
+	// get query obj
+	getQueryObj: function() {
+		var queryObj = {};
+		$('#explorer-selection-col .term-row').each(function(i, elem){
+			var termName = $(elem).attr('data-term-name'),
+				values = [];
+			$(elem).find('.item').each(function(i, e){values.push($(e).attr('data-value'))});
+			if (values != '') {
+				queryObj[termName] = values;
+			}
+		});
+		return queryObj;
+	},
+
+	// get new visualization
+	newVisualization: function(queryObj, updateD3=false) {
 		var self = this;
 			$.ajax({
 				async: true,
@@ -623,28 +657,56 @@ var metadataExplorer = {
 				},
 				success: function(data) {
 					metadataExplorerObj = JSON.parse(data);
-					self.circlePacking(metadataExplorerObj['d3']);
+					if (updateD3){
+						self.circlePacking(metadataExplorerObj['d3']);
+					}
 					self.selectOptions(metadataExplorerObj['select'], queryObj);
 				}
 			});
+	},
+
+	// get results
+	addResults: function() {
+		var self = this,
+			$explorerResults = $('#explorer-results'),
+			queryObj = self.getQueryObj();
+		$explorerResults.html('');
+		$('.metadata-explorer-results').show();
+		$('.metadata-explorer-visualize').hide();
+		$.ajax({
+			async: true,
+			url: 'http://localhost:5000/datasets2tools/api/metadata_explorer',
+			data: {
+			  'query': JSON.stringify(queryObj),
+			  'query_type': 'results'
+			},
+			success: function(data) {
+				// metadataExplorerObj = JSON.parse(data);
+				$explorerResults.html(data);
+				$(function() {$('[data-toggle="tooltip"]').tooltip()}) 
+			}
+		});
 	},
 
 	// select listener
 	selectListener: function() {
 		var self = this;
 		$(document).on('change', '#explorer-selection-col', function(evt) {
-			console.log(evt);
-			var queryObj = {};
-			$('#explorer-selection-col .term-row').each(function(i, elem){
-				var termName = $(elem).attr('data-term-name'),
-					values = [];
-					$(elem).find('.item').each(function(i, e){values.push($(e).attr('data-value'))});
-
-				if (values != '') {
-					queryObj[termName] = values;
-				}
-			});
+			var queryObj = self.getQueryObj();
 			self.refreshInterface(queryObj);
+		})
+	},
+
+	// get results
+	resultsListener: function() {
+		var self = this;
+		$(document).on('click', '#change-explorer-view .metadata-explorer-visualize', function(evt) {
+			self.addResults();
+		})
+		$(document).on('click', '#change-explorer-view .metadata-explorer-results', function(evt) {
+			self.addResults();
+			$('.metadata-explorer-results').hide();
+			$('.metadata-explorer-visualize').show();
 		})
 	},
 
@@ -654,6 +716,7 @@ var metadataExplorer = {
 			var self = this;
 			self.refreshInterface();
 			self.selectListener();
+			self.resultsListener();
 		}
 	}
 };

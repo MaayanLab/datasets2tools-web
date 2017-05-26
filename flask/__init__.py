@@ -246,9 +246,13 @@ def chrome_extension_api():
 @app.route('/datasets2tools/api/metadata_explorer')
 def metadata_explorer():
 	Database = CannedAnalysisDatabase(engine)
-	query = request.args.get('query', type=str)
-	analysis_count_json = Database.metadata_explorer_api(query)
-	return analysis_count_json
+	query = request.args.get('query', '{}', type=str)
+	query_type = request.args.get('query_type', 'd3', type=str)
+	if query_type == 'd3':
+		metadata_explorer_json = json.dumps({'d3': Database.get_d3_dict(query, 500), 'select': Database.get_select_dict(query, 1000)})
+	elif query_type == 'results':
+		metadata_explorer_json = Database.get_explorer_results(query, 50)
+	return metadata_explorer_json
 
 
 ##############################

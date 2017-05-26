@@ -48,13 +48,14 @@
 						<div class="col-12">
 							<h1 class="my-2">Metadata Explorer</h1>
 							<hr class="my-4">
-							<p class="lead">This page is under development.  It will contain an interactive visualization of the metadata terms and annotations within the database, allowing users to explore available analyses, datasets and tools.</p>
-							<hr class="my-4">
 						</div>
 					</div> <!-- .row -->
 					<div class="row">
-						<div class="col-9" id="d3-container">
-							<svg width="800" height="800"></svg>
+						<div class="col-9">
+							<div id="d3-container" class="metadata-explorer-visualize">
+								<svg width="800" height="800"></svg>
+							</div>
+							<div id="explorer-results" class="metadata-explorer-results"></div>
 						</div> <!-- .col-9 -->
 						<div class="col-3" id="explorer-selection-col">
 							<div class="row">
@@ -65,6 +66,10 @@
 							</div>
 							<div id="term-row-wrapper">
 							</div> <!-- #term-row-wrapper -->
+							<div id="change-explorer-view">
+								<button class="btn btn-blue metadata-explorer-visualize">View Results</button>
+								<button class="btn btn-blue metadata-explorer-results">View Metadata</button>
+							</div>
 						</div> <!-- .col-3 -->
 					</div> <!-- .row -->
 				</div> <!-- .jumbotron .container -->
