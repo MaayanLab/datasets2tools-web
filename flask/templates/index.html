@@ -9,12 +9,18 @@
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick.css') }}"/>
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slick/slick-theme.css') }}"/>
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+			ga('create', 'UA-6277639-30', 'auto');
+			ga('send', 'pageview');
+		</script>
 	</head>
 
 	<body>
 		<div id="main-container" class="container-fluid">
-
 			<div id="navbar-wrapper">
 				<nav id="navbar" class="navbar navbar-toggleable-md navbar-inverse container">
 				  <button id="toggler" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,9 +56,9 @@
 						<div class="col-lg-5">
 							<div class="row">
 								<div class="col-12">
-									<h1>Discover Bioinformatics<br>Analyses, Datasets and Tools.</h2>
+									<h1>Discover Bioinformatics<br>Analyses, Datasets and Tools</h2>
 									<hr width="100%">
-									<div class="lead">Datasets2Tools is a platform which allows to find, discover and share thousands of computational analyses of biomedical datasets of multiple data types.</div>
+									<div class="lead">Datasets2Tools is a platform developed to enable finding, discovering and sharing computational analyses of biomedical datasets of multiple types.</div>
 								</div>
 							</div>
 							<div id="object-count-row" class="row">
@@ -103,12 +109,12 @@
 							<div id="guide-row" class="row">
 								<div class="col-4 guide-option-col"><div class="guide-option"><a href="/datasets2tools/search"><i class="fa fa-search fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Find</span> analyses, datasets and computational tools.</a></div></div>
 								<div class="col-4 guide-option-col"><div class="guide-option"><a href="/datasets2tools/metadata"><i class="fa fa-compass fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Explore</span> analyses based on their metadata.</a></div></div>
-								<div class="col-4 guide-option-col"><div class="guide-option"><a href="https://chrome.google.com/webstore/detail/datasets2tools/fbamphimpljabaailcaidmeegpcpkdel"><i class="fa fa-chrome fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Enrich</span> GEO and other repositories with our Chrome Extension.</a></div></div>
+								<div class="col-4 guide-option-col"><div class="guide-option"><a href="https://chrome.google.com/webstore/detail/datasets2tools/fbamphimpljabaailcaidmeegpcpkdel"><i class="fa fa-chrome fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Enrich</span> GEO and other repositories with the Chrome Extension.</a></div></div>
 							</div>
 						</div> <!-- .col-6 -->
 						<div class="col-lg-6">
 							<div class="row">
-								<div class="col-4 guide-option-col"><div class="guide-option"><a href="/datasets2tools/help#api"><i class="fa fa-code fa-5x" aria-hidden="true"></i><br>Use the <span class="guide-option-keyword">API</span> to programmatically access our database.</div></div>
+								<div class="col-4 guide-option-col"><div class="guide-option"><a href="/datasets2tools/help#api"><i class="fa fa-code fa-5x" aria-hidden="true"></i><br>Use the <span class="guide-option-keyword">API</span> to programmatically access the database.</div></div>
 								<div class="col-4 guide-option-col"><div class="guide-option"><a href="/datasets2tools/upload"><i class="fa fa-upload fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Contribute</span> analyses, datasets and tools to the database.</a></div></div>
 								<div class="col-4 guide-option-col"><div class="guide-option"><a href="/datasets2tools/help"><i class="fa fa-question-circle fa-5x" aria-hidden="true"></i><br>Visit our<span class="guide-option-keyword"> help section</span> for more information on using Datasets2Tools.</a></div></div>
 							</div> <!-- .row -->
@@ -121,7 +127,7 @@
 				<div id="guide-container" class="container text-center">
 				<div class="row">
 					<div id="news-title" class="col-12 h2">
-						Latest News
+						Recent Submissions
 						<hr width="75%" class="my-4">
 					</div>
 					<div id="news-slider-col" class="col-12">

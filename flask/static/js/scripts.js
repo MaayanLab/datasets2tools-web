@@ -651,7 +651,7 @@ var metadataExplorer = {
 		var self = this;
 			$.ajax({
 				async: true,
-				url: 'http://localhost:5000/datasets2tools/api/metadata_explorer',
+				url: 'http://amp.pharm.mssm.edu/datasets2tools/api/metadata_explorer',
 				data: {
 				  'query': JSON.stringify(queryObj)
 				},
@@ -675,7 +675,7 @@ var metadataExplorer = {
 		$('.metadata-explorer-visualize').hide();
 		$.ajax({
 			async: true,
-			url: 'http://localhost:5000/datasets2tools/api/metadata_explorer',
+			url: 'http://amp.pharm.mssm.edu/datasets2tools/api/metadata_explorer',
 			data: {
 			  'query': JSON.stringify(queryObj),
 			  'query_type': 'results'
@@ -707,6 +707,8 @@ var metadataExplorer = {
 			self.addResults();
 			$('.metadata-explorer-results').hide();
 			$('.metadata-explorer-visualize').show();
+						var queryObj = self.getQueryObj();
+			self.refreshInterface(queryObj);
 		})
 	},
 

@@ -251,7 +251,7 @@ def metadata_explorer():
 	if query_type == 'd3':
 		metadata_explorer_json = json.dumps({'d3': Database.get_d3_dict(query, 500), 'select': Database.get_select_dict(query, 1000)})
 	elif query_type == 'results':
-		metadata_explorer_json = Database.get_explorer_results(query, 50)
+		metadata_explorer_json = Database.get_explorer_results(query, 25)
 	return metadata_explorer_json
 
 
