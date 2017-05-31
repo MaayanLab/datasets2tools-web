@@ -254,13 +254,12 @@ def metadata_explorer():
 		metadata_explorer_json = Database.get_explorer_results(query, 25)
 	return metadata_explorer_json
 
-
 ##############################
 ##### 3. Upload API
 ##############################
 
 #########################
-### 1. Upload
+### 1. Upload Analysis
 #########################
 
 @app.route('/datasets2tools/api/upload', methods=['POST'])
@@ -271,6 +270,39 @@ def upload_api():
 	status = Database.upload_canned_analysis(canned_analysis_list)
 	print status
 	return status
+
+#########################
+### 2. Upload Dataset
+#########################
+
+@app.route('/datasets2tools/api/upload_dataset', methods=['POST'])
+def upload_dataset():
+	Database = CannedAnalysisDatabase(engine)
+	dataset_list = request.get_json()['datasets']
+	return 'dataset_list'
+
+#########################
+### 3. Upload Tool
+#########################
+
+@app.route('/datasets2tools/api/upload_tool', methods=['POST'])
+def upload_tool():
+	Database = CannedAnalysisDatabase(engine)
+	canned_analysis_list = request.get_json()['canned_analyses']
+	print 'Loading Canned Analyses...'
+	status = Database.upload_canned_analysis(canned_analysis_list)
+	print status
+	return status
+
+#########################
+### 4. Manual Upload
+#########################
+
+@app.route('/datasets2tools/api/manual_upload')
+def manual_upload():
+	Database = CannedAnalysisDatabase(engine)
+	upload_result_json = Database.manual_upload(request.args.get('data'))
+	return upload_result_json
 
 ##############################
 ##### 4. Miscellaneous
@@ -283,8 +315,18 @@ def upload_api():
 @app.route('/datasets2tools/api/get_analysis_preview')
 def analysis_preview_api():
 	Database = CannedAnalysisDatabase(engine)
-	analysis_preview = Database.get_analysis_preview(request.args.get('data'))
+	analysis_preview = Database.get_analysis_preview(json.loads(request.args.get('data')))
 	return analysis_preview
+
+#########################
+### 2. Tracker
+#########################
+
+@app.route('/datasets2tools/api/click')
+def click_api():
+	Database = CannedAnalysisDatabase(engine)
+	Database.click_api(request.args)
+	return ''
 
 #########################
 ### 2. Search Terms

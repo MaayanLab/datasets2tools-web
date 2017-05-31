@@ -1,6 +1,12 @@
-import requests, json
+import requests, json, sys
 import pandas as pd
 import time
+
+############################################################
+############################################################
+############### 1. Canned Analysis #########################
+############################################################
+############################################################
 
 class CannedAnalysis:
     
@@ -17,6 +23,7 @@ class CannedAnalysis:
         try:
             self.data['metadata'] = json.loads(self.data['metadata'])
         except:
+            print self.data['metadata']
             raise ValueError('Metadata not JSON.')
             
 #######################################################
@@ -30,6 +37,11 @@ class CannedAnalysis:
             raise ValueError('Tool '+self.data['tool_name']+' not found.')
         
     def get_dataset_fk(self):
+        if type(self.data['dataset_accession']) == list:
+            if len(self.data['dataset_accession']) == 1:
+                self.data['dataset_accession'] = self.data['dataset_accession'][0]
+            else:
+                raise ValueError('Multiple datasets not currently supported.')
         try:
             self.data['dataset_fk'] = pd.read_sql_query('SELECT id FROM dataset WHERE LCASE(dataset_accession) = "'+self.data['dataset_accession'].lower()+'"', self.engine)['id'][0]
         except:
@@ -53,8 +65,14 @@ class CannedAnalysis:
         self.get_dataset_fk()
         self.connection = self.engine.connect()
         self.transaction = self.connection.begin()
-        self.connection.execute('''INSERT INTO canned_analysis (`canned_analysis_title`, `canned_analysis_description`, `canned_analysis_url`, `canned_analysis_preview_url`, `dataset_fk`, `tool_fk`) VALUES ("{canned_analysis_title}", "{canned_analysis_description}", "{canned_analysis_url}", "{canned_analysis_preview_url}", "{dataset_fk}", "{tool_fk}")'''.format(**self.data).replace('%', '%%'))
-        self.canned_analysis_fk = self.connection.execute('SELECT LAST_INSERT_ID();').fetchall()[0][0]
+        try:
+            self.connection.execute('''INSERT INTO canned_analysis (`canned_analysis_title`, `canned_analysis_description`, `canned_analysis_url`, `canned_analysis_preview_url`, `dataset_fk`, `tool_fk`) VALUES ("{canned_analysis_title}", "{canned_analysis_description}", "{canned_analysis_url}", "{canned_analysis_preview_url}", "{dataset_fk}", "{tool_fk}")'''.format(**self.data).replace('%', '%%'))
+            self.canned_analysis_fk = self.connection.execute('SELECT LAST_INSERT_ID();').fetchall()[0][0]
+            self.transaction.commit()
+        except:
+            self.transaction.rollback()
+            self.error = sys.exc_info()[0]
+            raise
         
     def upload_metadata(self):
         print 'Uploading analysis metadata...'
@@ -68,8 +86,63 @@ class CannedAnalysis:
         # try:
         self.upload_analysis()
         self.upload_metadata()
-        self.transaction.commit()
         time.sleep(0.3)
+        return self.canned_analysis_fk
         # except:
             # pass
+
+############################################################
+############################################################
+############### 2. Dataset #################################
+############################################################
+############################################################
+
+class Dataset:
+    
+#######################################################
+########## 1. Initialize ##############################
+#######################################################
+
+    def __init__(self, datasetDict, engine):
+        self.data = datasetDict
+        self.engine = engine
+        self.fields = ['repository_fk', 'dataset_accession', 'dataset_landing_url', 'dataset_title', 'dataset_description']
+        if not all(x in self.data.keys() for x in self.fields):
+            raise ValueError('Missing fields: '+', '.join(list(set(self.fields)-set(self.data.keys())))+'.')
+                   
+#######################################################
+########## 2. Upload ##################################
+#######################################################
+
+    def upload(self):
+        columns = self.data.keys()
+        values = self.data.values()
+        'INSERT INTO dataset () VALUES ()'
+ 
+############################################################
+############################################################
+############### 3. Dataset #################################
+############################################################
+############################################################
+
+class Tool:
+    
+#######################################################
+########## 1. Initialize ##############################
+#######################################################
+
+    def __init__(self, toolDict, engine):
+        self.data = cannedAnalysisDict
+        self.engine = engine
+        self.fields = ['tool_name', 'tool_icon_url', 'tool_homepage_url', 'tool_description', 'tool_screenshot_url3']
+        if not all(x in self.data.keys() for x in self.fields):
+            raise ValueError('Missing fields: '+', '.join(list(set(self.fields)-set(self.data.keys())))+'.')
+                   
+#######################################################
+########## 2. Upload ##################################
+#######################################################
+ 
+    def upload(self):
+        pass
+ 
         

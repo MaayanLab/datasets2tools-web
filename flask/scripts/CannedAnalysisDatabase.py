@@ -1,4 +1,4 @@
-import re, json
+import re, json, sys
 import pandas as pd
 import numpy as np
 from datetime import date, datetime
@@ -512,15 +512,113 @@ class CannedAnalysisDatabase:
     def upload_canned_analysis(self, canned_analysis_list):
         # try:
         i = 0
+        canned_analysis_ids = []
         for canned_analysis_dict in canned_analysis_list:
             i += 1
             print 'Canned analysis ' + str(i) + '...'
             cannedAnalysisObject = CannedAnalysis(canned_analysis_dict, self.engine)
-            cannedAnalysisObject.upload()
+            canned_analysis_id = cannedAnalysisObject.upload()
+            canned_analysis_ids.append(canned_analysis_id)
         response = 'Success.'
         # except:
             # response = 'Sorry, there has been an error.'
-        return response
+        results = {'ids': canned_analysis_ids}
+        return json.dumps(results)
+
+##############################
+##### 2. Dataset
+##############################
+
+    def upload_dataset(self, dataset_list):
+        # try:
+        i = 0
+        dataset_ids = []
+        for canned_analysis_dict in canned_analysis_list:
+            i += 1
+            print 'Canned analysis ' + str(i) + '...'
+            cannedAnalysisObject = CannedAnalysis(canned_analysis_dict, self.engine)
+            canned_analysis_id = cannedAnalysisObject.upload()
+            canned_analysis_ids.append(canned_analysis_id)
+        response = 'Success.'
+        # except:
+            # response = 'Sorry, there has been an error.'
+        results = {'ids': canned_analysis_ids}
+        return json.dumps(results)
+
+##############################
+##### 3. Tool
+##############################
+
+    def upload_tool(self, tool_list):
+        # try:
+        i = 0
+        canned_analysis_ids = []
+        for canned_analysis_dict in canned_analysis_list:
+            i += 1
+            print 'Canned analysis ' + str(i) + '...'
+            cannedAnalysisObject = CannedAnalysis(canned_analysis_dict, self.engine)
+            canned_analysis_id = cannedAnalysisObject.upload()
+            canned_analysis_ids.append(canned_analysis_id)
+        response = 'Success.'
+        # except:
+            # response = 'Sorry, there has been an error.'
+        results = {'ids': canned_analysis_ids}
+        return json.dumps(results)
+
+##############################
+##### 4. Manual upload
+##############################
+
+    def manual_upload(self, manual_upload_dict):
+        connection = self.engine.connect()
+        manual_upload_dict = json.loads(manual_upload_dict)
+        canned_analysis_dict = manual_upload_dict['analysis']#.copy()
+
+        # add dataset
+        canned_analysis_dict['dataset_accession'] = []
+        for dataset in manual_upload_dict['dataset']:
+            if type(dataset) == dict:
+                columns = '`, `'.join(dataset.keys())
+                values = '", "'.join(dataset.values())
+                query = 'INSERT INTO dataset (`{columns}`) VALUES ("{values}")'.format(**locals())
+                transaction = connection.begin()
+                try:
+                    connection.execute(query)
+                    transaction.commit()
+                    canned_analysis_dict['dataset_accession'].append(dataset['dataset_accession'])
+                except:
+                    transaction.rollback()
+                    print sys.exc_info()[0]
+                    raise
+            else:
+                canned_analysis_dict['dataset_accession'].append(dataset)
+
+        # add tool
+        tool = manual_upload_dict['tool']
+        if type(tool) == dict:
+            columns = '`, `'.join(tool.keys())
+            values = '", "'.join(tool.values())
+            query = 'INSERT INTO tool (`{columns}`) VALUES ("{values}")'.format(**locals())
+            transaction = connection.begin()
+            try:
+                connection.execute(query)
+                transaction.commit()
+                canned_analysis_dict['tool_name'].append(tool)
+            except:
+                transaction.rollback()
+                print sys.exc_info()[0]
+                raise
+        else:
+            canned_analysis_dict['tool_name'] = tool
+
+        # prepare metadata
+        if 'keywords' in canned_analysis_dict['metadata'].keys():
+            canned_analysis_dict['metadata']['keywords'] = ', '.join(canned_analysis_dict['metadata']['keywords'])
+        canned_analysis_dict['metadata'] = json.dumps(canned_analysis_dict['metadata'])
+
+        upload_result_json = self.upload_canned_analysis([canned_analysis_dict])
+        return upload_result_json
+
 
 #######################################################
 ########## 7. Homepage Functions ######################
@@ -544,9 +642,9 @@ class CannedAnalysisDatabase:
 
         # objects
         featured_objects = {'analysis': pd.read_sql_query('SELECT DISTINCT canned_analysis_title AS title, canned_analysis_description AS description, canned_analysis_url AS url, canned_analysis_preview_url AS image_url FROM canned_analysis WHERE id IN (SELECT canned_analysis_fk FROM featured_analysis WHERE `day` = CURDATE())', self.engine).iloc[0].to_dict(),
-                            'dataset': pd.read_sql_query('SELECT DISTINCT dataset_title AS title, dataset_description AS description, dataset_landing_url AS url, repository_icon_url AS image_url FROM dataset d LEFT JOIN repository r ON r.id=d.repository_fk WHERE d.id IN (SELECT dataset_fk FROM featured_dataset WHERE `day` = CURDATE())', self.engine).iloc[0].to_dict(),
-                            'tool': pd.read_sql_query('SELECT tool_name AS title, tool_description AS description, tool_homepage_url AS url, tool_icon_url AS image_url FROM tool WHERE id IN (SELECT tool_fk FROM featured_tool WHERE `start_day` <= CURDATE() AND `end_day` > CURDATE())', self.engine).iloc[0].to_dict()}
-
+                            'dataset': pd.read_sql_query('SELECT DISTINCT dataset_title AS title, dataset_description AS description, dataset_landing_url AS url, repository_screenshot_url AS image_url FROM dataset d LEFT JOIN repository r ON r.id=d.repository_fk WHERE d.id IN (SELECT dataset_fk FROM featured_dataset WHERE `day` = CURDATE())', self.engine).iloc[0].to_dict(),
+                            'tool': pd.read_sql_query('SELECT tool_name AS title, tool_description AS description, tool_homepage_url AS url, tool_screenshot_url AS image_url FROM tool WHERE id IN (SELECT tool_fk FROM featured_tool WHERE `start_day` <= CURDATE() AND `end_day` > CURDATE())', self.engine).iloc[0].to_dict()}
+        featured_objects['dataset']['description'] = featured_objects['dataset']['description'] if len(featured_objects['dataset']['description']) < 300 else featured_objects['dataset']['description'][:300]+'...'
         return featured_objects
 
 ##############################
@@ -638,10 +736,10 @@ class CannedAnalysisDatabase:
 ##### 1. Analysis Preview
 ##############################
 
-    def get_analysis_preview(self, analysis_json):
-        analysis_dict = json.loads(analysis_json)
-        analysis_dict['dataset'] = [self.dataset_summary(x) if type(x) != dict else x for x in analysis_dict['dataset']]
-        analysis_dict['tool'] = self.tool_summary(analysis_dict['tool']) if type(analysis_dict['tool']) != dict else analysis_dict['tool']
+    def get_analysis_preview(self, analysis_dict):
+        # analysis_dict = json.loads(analysis_json)
+        analysis_dict['dataset'] = [self.dataset_summary(self.dataset_api({'dataset_accession': x})[0]) if type(x) != dict else x for x in analysis_dict['dataset']]
+        analysis_dict['tool'] = self.tool_summary(self.tool_api({'tool_name': analysis_dict['tool']})[0]) if type(analysis_dict['tool']) != dict else analysis_dict['tool']
         analysis_dict['analysis']['metadata'].pop('', None)
         metadata = '<br>'.join([key+': '+', '.join(value) if type(value) == list else key+': '+value for key, value in analysis_dict['analysis']['metadata'].iteritems()]) if len(analysis_dict['analysis']['metadata'].keys()) > 0 else 'No metadata supplied.'
         preview = '''
@@ -689,8 +787,15 @@ class CannedAnalysisDatabase:
         return available_search_terms
 
 ##############################
-##### 3. Explorer API
+##### 3. Click API
 ##############################
+
+    def click_api(self, click_dict):
+        columns = '`, `'.join(click_dict.keys())
+        values = '", "'.join(click_dict.values())
+        query = 'INSERT INTO click (`{columns}`) VALUES ("{values}")'.format(**locals())
+        self.engine.execute(query)
+
 
 ##############################
 ##### 3.3 Tool

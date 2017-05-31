@@ -16,6 +16,7 @@ function main() {
 	uploadForm.main();
 	metadataExplorer.main();
 	help.main();
+	// all.main();
 
 };
 
@@ -24,7 +25,7 @@ function main() {
 ///////////////////////////////////
 
 //////////////////////////////
-///// 1. Homepage //////
+///// 1. Homepage ////////////
 //////////////////////////////
 
 var homepage = {
@@ -300,9 +301,9 @@ var uploadForm = {
 				datasetIdentifier = objectData;
 				objectSummary = JSON.parse($.ajax({ // get annotation from id
 					async: false,
-					url: 'http://amp.pharm.mssm.edu/datasets2tools/api/dataset',
+					url: 'http://localhost:5000/datasets2tools/api/dataset',
 					data: {
-					  'd.id':objectData,
+					  'dataset_accession':objectData,
 					},
 					success: function(data) {
 						return data;
@@ -333,9 +334,9 @@ var uploadForm = {
 			if (typeof objectData === 'string') {
 				objectSummary = JSON.parse($.ajax({ // get annotation from id
 					async: false,
-					url: 'http://amp.pharm.mssm.edu/datasets2tools/api/tool',
+					url: 'http://localhost:5000/datasets2tools/api/tool',
 					data: {
-					  'id':objectData,
+					  'tool_name':objectData,
 					},
 					success: function(data) {
 						return data;
@@ -441,7 +442,7 @@ var uploadForm = {
 
 			if (analysisObject['dataset'] != [] && analysisObject['tool'] != '' && Object.values(analysisObject['analysis']).indexOf('') === -1) {
 				$.ajax({ // get preview html from api
-					url: 'http://amp.pharm.mssm.edu/datasets2tools/api/get_analysis_preview',
+					url: 'http://localhost:5000/datasets2tools/api/get_analysis_preview',
 					data: {
 					  'data': JSON.stringify(analysisObject),
 					},
@@ -449,6 +450,7 @@ var uploadForm = {
 						$('#preview-analysis-row').find('.col-12').html(data);
 						$('#add-analysis-wrapper').addClass('hidden');
 						$('#preview-analysis-wrapper').removeClass('hidden');
+						$('#preview-analysis-row').removeClass('hidden');
 						$('[data-toggle="tooltip"]').tooltip();
 					}
 				})
@@ -465,12 +467,37 @@ var uploadForm = {
 			$('#add-analysis-wrapper').removeClass('hidden');
 			$('#preview-analysis-wrapper').addClass('hidden');
 		})
+		$('#review-error-analysis-button').click(function(evt) {
+			$('#add-analysis-wrapper').removeClass('hidden');
+			$('#preview-analysis-wrapper').addClass('hidden');
+			$('#upload-error').addClass('hidden');
+		})
 	},
 
 	// submit analysis
 	submitAnalysis: function(analysisObject) {
 		$('#submit-analysis-button').click(function(evt) {
-			console.log(analysisObject);
+			var $previewWrapper = $('#preview-analysis-wrapper'),
+				$previewRow = $('#preview-analysis-row'),
+				$success = $('#upload-success'),
+				$error = $('#upload-error');
+			$.ajax({
+				url: 'http://localhost:5000/datasets2tools/api/manual_upload',
+				data: {
+				  'data': JSON.stringify(analysisObject),
+				},
+				success: function(data) {
+					$previewWrapper.addClass('hidden');
+					$previewRow.addClass('hidden');
+					$success.removeClass('hidden');
+					$error.addClass('hidden');
+				},
+				error: function(err) {
+					$previewWrapper.addClass('hidden');
+					$success.addClass('hidden');
+					$error.removeClass('hidden');
+				}
+			})
 		}) 
 	},
 
@@ -651,7 +678,7 @@ var metadataExplorer = {
 		var self = this;
 			$.ajax({
 				async: true,
-				url: 'http://amp.pharm.mssm.edu/datasets2tools/api/metadata_explorer',
+				url: 'http://localhost:5000/datasets2tools/api/metadata_explorer',
 				data: {
 				  'query': JSON.stringify(queryObj)
 				},
@@ -675,7 +702,7 @@ var metadataExplorer = {
 		$('.metadata-explorer-visualize').hide();
 		$.ajax({
 			async: true,
-			url: 'http://amp.pharm.mssm.edu/datasets2tools/api/metadata_explorer',
+			url: 'http://localhost:5000/datasets2tools/api/metadata_explorer',
 			data: {
 			  'query': JSON.stringify(queryObj),
 			  'query_type': 'results'
@@ -724,18 +751,21 @@ var metadataExplorer = {
 };
 
 //////////////////////////////
-///// 6. Help //////////////
+///// 6. Help ////////////////
 //////////////////////////////
 
 var help = {
 
 	// open accordion
 	openAccordion: function() {
-		var openLink = window.location.hash,
-			openSection = String(openLink.match(/[a-zA-Z]+/g));
-		if (['', 'general'].indexOf(openSection) == -1) {
-			$("a[href='#help-"+openSection+"']").click();
-			$(openLink).get(0).scrollIntoView();
+		try {
+			var openLink = window.location.hash,
+				openSection = String(openLink.match(/[a-zA-Z]+/g));
+			if (['', 'general'].indexOf(openSection) == -1) {
+				$("a[href='#help-"+openSection+"']").click();
+				$(openLink).get(0).scrollIntoView();
+			}	
+		} catch(err) {
 		}
 	},
 
@@ -745,6 +775,44 @@ var help = {
 			var self = this;
 			self.openAccordion();
 		}
+	}
+};
+
+//////////////////////////////
+///// 7. Help ////////////////
+//////////////////////////////
+
+var all = {
+
+	// click api
+	clickApi: function() {
+		$('html').on('click', function(evt) {
+
+			var $evtTarget = $(evt.target),
+				$parent = $evtTarget.parent();
+
+		    $.get('http://jsonip.com/', function(response) {
+				$.ajax({
+					url: 'http://localhost:5000/datasets2tools/api/click',
+					data: {
+					  'href': String(window.location.href),
+					  'target_id': String($evtTarget.attr('id')),
+					  'target_class': String($evtTarget.attr('class')),
+					  'parent_id': String($parent.attr('id')),
+					  'parent_class': String($parent.attr('class')),
+					  'target_href': String($evtTarget.attr('href')),
+					  'ip': String(response.ip)
+					}
+				});
+		    });
+
+		})
+	},
+
+	// main
+	main: function() {
+		var self = this;
+		self.clickApi();
 	}
 };
 
