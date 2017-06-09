@@ -308,7 +308,7 @@ input[type="radio"]:checked + .btn-blue {
 				.slick-slider {
 				}
 
-					.slick-list {
+					#slider-row .slick-list {
 						margin-left: 30px;
 						-webkit-box-shadow: 10px 10px 22px -9px rgba(140,140,140,1);
 						-moz-box-shadow: 10px 10px 22px -9px rgba(140,140,140,1);
@@ -407,6 +407,9 @@ input[type="radio"]:checked + .btn-blue {
 					border: 1px solid lightgrey;
 					border-radius: 5px;
 					height: 140px;
+					-webkit-box-shadow: 10px 10px 22px -9px rgba(140,140,140,1);
+					-moz-box-shadow: 10px 10px 22px -9px rgba(140,140,140,1);
+					box-shadow: 10px 10px 22px -9px rgba(140,140,140,1);
 				}
 
 					.news-title {

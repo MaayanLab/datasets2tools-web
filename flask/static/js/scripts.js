@@ -301,7 +301,7 @@ var uploadForm = {
 				datasetIdentifier = objectData;
 				objectSummary = JSON.parse($.ajax({ // get annotation from id
 					async: false,
-					url: 'http://localhost:5000/datasets2tools/api/dataset',
+					url: window.location.origin+'/datasets2tools/api/dataset',
 					data: {
 					  'dataset_accession':objectData,
 					},
@@ -334,7 +334,7 @@ var uploadForm = {
 			if (typeof objectData === 'string') {
 				objectSummary = JSON.parse($.ajax({ // get annotation from id
 					async: false,
-					url: 'http://localhost:5000/datasets2tools/api/tool',
+					url: window.location.origin+'/datasets2tools/api/tool',
 					data: {
 					  'tool_name':objectData,
 					},
@@ -442,7 +442,7 @@ var uploadForm = {
 
 			if (analysisObject['dataset'] != [] && analysisObject['tool'] != '' && Object.values(analysisObject['analysis']).indexOf('') === -1) {
 				$.ajax({ // get preview html from api
-					url: 'http://localhost:5000/datasets2tools/api/get_analysis_preview',
+					url: window.location.origin+'/datasets2tools/api/get_analysis_preview',
 					data: {
 					  'data': JSON.stringify(analysisObject),
 					},
@@ -482,7 +482,7 @@ var uploadForm = {
 				$success = $('#upload-success'),
 				$error = $('#upload-error');
 			$.ajax({
-				url: 'http://localhost:5000/datasets2tools/api/manual_upload',
+				url: window.location.origin+'/datasets2tools/api/manual_upload',
 				data: {
 				  'data': JSON.stringify(analysisObject),
 				},
@@ -678,7 +678,7 @@ var metadataExplorer = {
 		var self = this;
 			$.ajax({
 				async: true,
-				url: 'http://localhost:5000/datasets2tools/api/metadata_explorer',
+				url: window.location.origin+'/datasets2tools/api/metadata_explorer',
 				data: {
 				  'query': JSON.stringify(queryObj)
 				},
@@ -702,7 +702,7 @@ var metadataExplorer = {
 		$('.metadata-explorer-visualize').hide();
 		$.ajax({
 			async: true,
-			url: 'http://localhost:5000/datasets2tools/api/metadata_explorer',
+			url: window.location.origin+'/datasets2tools/api/metadata_explorer',
 			data: {
 			  'query': JSON.stringify(queryObj),
 			  'query_type': 'results'
@@ -793,7 +793,7 @@ var all = {
 
 		    $.get('http://jsonip.com/', function(response) {
 				$.ajax({
-					url: 'http://localhost:5000/datasets2tools/api/click',
+					url: window.location.origin+'/datasets2tools/api/click',
 					data: {
 					  'href': String(window.location.href),
 					  'target_id': String($evtTarget.attr('id')),

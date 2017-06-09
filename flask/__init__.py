@@ -13,7 +13,7 @@
 ##############################
 import sys, json, os, urllib
 import pandas as pd
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 
 ##############################
@@ -254,6 +254,15 @@ def metadata_explorer():
 		metadata_explorer_json = Database.get_explorer_results(query, 25)
 	return metadata_explorer_json
 
+#########################
+### 6. ARCHS4 API
+#########################
+
+@app.route('/datasets2tools/api/archs4')
+def archs4_api():
+	query = request.args.get('q', '', type=str)
+	return send_from_directory('static/clustergrammer', query+'.json')
+
 ##############################
 ##### 3. Upload API
 ##############################
@@ -341,45 +350,12 @@ def advanced_search_terms():
 	return Database.get_term_names(request.args.get('object_type'))
 
 #########################
-### 3. Object Search
+### 3. ARCHS4
 #########################
 
-# No idea whatsoever.
-
-@app.route('/datasets2tools/object_search')
-def object_search():
-	Database = CannedAnalysisDatabase(engine)
-	request_dict = dict(request.args)
-	object_type = request_dict.pop('object_type')[0]
-	column = request_dict.keys()[0]
-	value = request_dict[column][0]
-	print object_type, column, value
-	return Database.object_search(object_type, column, value)
-
-#########################
-### 4. Stored Terms
-#########################
-
-# No idea whatsoever.
-
-@app.route('/datasets2tools/stored_terms')
-def stored_terms():
-	Database = CannedAnalysisDatabase(engine)
-	stored_data = Database.get_stored_data()
-	return '\n'.join(stored_data['term']['term_name'])
-
-#########################
-### 5. Prepare CA Table
-#########################
-
-# No idea whatsoever.
-
-@app.route('/datasets2tools/prepare_canned_analysis_table')
-def prepare_canned_analysis_table():
-	Database = CannedAnalysisDatabase(engine)
-	canned_analysis_json = urllib.unquote(request.args.get('canned_analysis_json'))
-	canned_analysis_table = Database.prepare_canned_analysis_table(canned_analysis_json)
-	return canned_analysis_table
+@app.route('/datasets2tools/archs4')
+def archs4():
+	return render_template('archs4.html')
 
 
 #######################################################
