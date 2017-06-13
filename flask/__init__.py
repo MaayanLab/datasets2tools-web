@@ -11,7 +11,7 @@
 ##############################
 ##### 1.1 Python Libraries
 ##############################
-import sys, json, os, urllib
+import sys, json, os, urllib2
 import pandas as pd
 from flask import Flask, render_template, request, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
@@ -385,8 +385,11 @@ def archs4_api():
 	# Get query
 	query = request.args.get('q', '', type=str)
 
+	# Read file
+	json = urllib2.urlopen('https://s3.amazonaws.com/mssm-seq-series-json/{query}.json'.format(**locals())).read()
+
 	# Return query
-	return send_from_directory('static/clustergrammer', query+'.json')
+	return json
 
 ##############################
 ##### 3. Upload API

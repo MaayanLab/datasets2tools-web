@@ -4,7 +4,7 @@ Example files
 
 var hzome = ini_hzome();
 
-viz_url = window.location.href.replace('/archs4', '/api/archs4')
+viz_url = window.location.href.replace('/archs4', '/api/archs4');
 
 make_clust(viz_url);
 
@@ -86,7 +86,7 @@ function dendro_callback(inst_selection){
 
 function resize_container(args){
 
-  var screen_width = window.innerWidth;
+  var screen_width = window.innerWidth/3*2;
   var screen_height = window.innerHeight - 20;
 
   d3.select(args.root)
