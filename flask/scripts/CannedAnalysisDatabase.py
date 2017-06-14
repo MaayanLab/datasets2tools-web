@@ -510,20 +510,24 @@ class CannedAnalysisDatabase:
 ##############################
 
     def upload_canned_analysis(self, canned_analysis_list):
-        # try:
-        i = 0
-        canned_analysis_ids = []
-        for canned_analysis_dict in canned_analysis_list:
-            i += 1
-            print 'Canned analysis ' + str(i) + '...'
-            cannedAnalysisObject = CannedAnalysis(canned_analysis_dict, self.engine)
-            canned_analysis_id = cannedAnalysisObject.upload()
-            canned_analysis_ids.append(canned_analysis_id)
-        response = 'Success.'
-        # except:
-            # response = 'Sorry, there has been an error.'
-        results = {'ids': canned_analysis_ids}
-        return json.dumps(results)
+
+        # Print
+        print 'Loading Canned Analyses...'
+
+        # # try:
+        # i = 0
+        # canned_analysis_ids = []
+        # for canned_analysis_dict in canned_analysis_list:
+        #     i += 1
+        #     print 'Canned analysis ' + str(i) + '...'
+        #     cannedAnalysisObject = CannedAnalysis(canned_analysis_dict, self.engine)
+        #     canned_analysis_id = cannedAnalysisObject.upload()
+        #     canned_analysis_ids.append(canned_analysis_id)
+        # response = 'Success.'
+        # # except:
+        #     # response = 'Sorry, there has been an error.'
+        # results = {'ids': canned_analysis_ids}
+        return "json.dumps(results)"
 
 ##############################
 ##### 2. Dataset
@@ -644,18 +648,47 @@ class CannedAnalysisDatabase:
         featured_objects = {'analysis': pd.read_sql_query('SELECT DISTINCT canned_analysis_title AS title, canned_analysis_description AS description, canned_analysis_url AS url, canned_analysis_preview_url AS image_url FROM canned_analysis WHERE id IN (SELECT canned_analysis_fk FROM featured_analysis WHERE `day` = CURDATE())', self.engine).iloc[0].to_dict(),
                             'dataset': pd.read_sql_query('SELECT DISTINCT dataset_title AS title, dataset_description AS description, dataset_landing_url AS url, repository_screenshot_url AS image_url FROM dataset d LEFT JOIN repository r ON r.id=d.repository_fk WHERE d.id IN (SELECT dataset_fk FROM featured_dataset WHERE `day` = CURDATE())', self.engine).iloc[0].to_dict(),
                             'tool': pd.read_sql_query('SELECT tool_name AS title, tool_description AS description, tool_homepage_url AS url, tool_screenshot_url AS image_url FROM tool WHERE id IN (SELECT tool_fk FROM featured_tool WHERE `start_day` <= CURDATE() AND `end_day` > CURDATE())', self.engine).iloc[0].to_dict()}
-        featured_objects['dataset']['description'] = featured_objects['dataset']['description'] if len(featured_objects['dataset']['description']) < 300 else featured_objects['dataset']['description'][:300]+'...'
+        # featured_objects['dataset']['description'] = featured_objects['dataset']['description'] if len(featured_objects['dataset']['description']) < 300 else featured_objects['dataset']['description'][:300]+'...'
         return featured_objects
 
 ##############################
 ##### 3. News
 ##############################
 
-    def get_news_list(self):
-        news_dataframe = pd.read_sql_query('SELECT * FROM news ORDER BY news_date DESC', self.engine)
-        news_dataframe['news_date'] = [x.strftime('%B %d, %Y') for x in news_dataframe['news_date']]
-        news_list = news_dataframe.to_dict(orient='records')
-        return news_list
+    def get_submissions_list(self):
+
+        # Get objects
+        object_types = ['repository', 'dataset', 'analysis', 'tool']
+
+        # Read data
+        submission_data = {x: pd.read_sql_query('SELECT * FROM {x}_submission'.format(**locals()), self.engine) for x in object_types}
+
+        # News list
+        news_list = []
+
+        # Add analyses
+        news_list += [{'news_date': rowData['date'], 'news_title': 'New Analyses' if rowData['analyses'] > 1 else 'New Analysis', 'news_text': 'Added {analyses} new analyses of {datasets} datasets by {name}.'.format(**rowData), 'news_class': 'new-analyses'} for index, rowData in submission_data['analysis'].iterrows()]
+
+        # Add tools
+        news_list += [{'news_date': rowData['date'], 'news_title': 'New Tools' if rowData['count'] > 1 else 'New Tool', 'news_text': 'Added new tool: {tools}.'.format(**rowData) if rowData['count'] == 1 else 'Added {count} new tools.'.format(**rowData), 'news_class': 'new-tools'} for index, rowData in submission_data['tool'].iterrows()]
+
+        # Add datasets
+        news_list += [{'news_date': rowData['date'], 'news_title': 'New Datasets' if rowData['count'] > 1 else 'New Dataset', 'news_text': 'Added {count} new dataset.'.format(**rowData) if rowData['count'] == 1 else 'Added {count} new datasets.'.format(**rowData), 'news_class': 'new-datasets'} for index, rowData in submission_data['dataset'].iterrows()]
+
+        # Add repositories
+        news_list += [{'news_date': rowData['date'], 'news_title': 'New Repositories' if rowData['count'] > 1 else 'New Repository', 'news_text': 'Added {count} new repository.'.format(**rowData) if rowData['count'] == 1 else 'Added {count} new repositories.'.format(**rowData), 'news_class': 'new-repositories'} for index, rowData in submission_data['repository'].iterrows()]
+
+        # Create dataframe
+        news_dataframe = pd.DataFrame(news_list).sort_values('news_date', ascending=False)
+
+        # Convert date
+        news_dataframe['news_date'] = ['{:%B %d, %Y}'.format(x) for x in news_dataframe['news_date']]
+
+        # Convert to list
+        submissions_list = news_dataframe.to_dict(orient='records')
+
+        # Return
+        return submissions_list
 
 #######################################################
 ########## 9. Explorer Functions ######################

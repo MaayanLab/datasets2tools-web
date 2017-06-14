@@ -425,8 +425,16 @@ input[type="radio"]:checked + .btn-blue {
 							background-color: #b92626;
 						}
 
-						.news-title.new-tool {
+						.news-title.new-tools {
 							background-color: #3452bc;
+						}
+
+						.news-title.new-datasets {
+							background-color: #46397b;
+						}
+
+						.news-title.new-repositories {
+							background-color: #565656;
 						}
 
 					.news-date {

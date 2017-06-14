@@ -74,7 +74,7 @@
  -->
 							{% for object_type in featured_objects.keys() %}
 								<div id="featured-{{object_type}}-slider" class="slider-element">
-				                	<div id="featured-{{object_type}}" class="featured-object" style="background-image:linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 100%), url('{{featured_objects[object_type]['image_url']}}')">
+				                	<div id="featured-{{object_type}}" class="featured-object" style="background-image:linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 100%), url('{{'https://lh3.googleusercontent.com/4m_KWqBJaB-TZYu388H4Y-zuhWDbSElxxfX5YsDIdDlwGtd8Nv-9Vy5VGn35bi7XxB0LT15Ges03CYRz6BhWedoLVti0tYayqovxucskpVefUNr9ruCif5YgZS4ekAH9fKm0WsHZyR9Px0nvQw00vHXoVkdDFBFRwpqmb9ua6_lgPcZXecreyivxUndephzkjPyzqFYpGXyaKTiRI-x7m15IVuQ5U8tDE_-wbleRA0QpCKoMZWqmnYQSV15o8fRhmkUQVnc2eLqQKpY6pY10hi_qatUaCvYhrFPU9MTzd1RLRBdZp0C5zTClF29YKzpnNfOiY0GfXAHdvilHt18d-RIb48C8EB83o8UK4V_w8Efpbn_NyVaAs9HtFXz4Pi1ZbvLAOkwDCtnNdW4v_D0Lmpk75Rljcputf5ZA1hrn4pb7a698AXNHFsEz_M41BOY4mskHQAr4exjY4dFn3NL2Qi7Zwt1X3AsaWzLXfZPL1jllmjOz5orfFKzG4_nettBnj_x5l5bu-dRAquao066t1Ruukt1zJmWxGWnjWuWZ4oB4zNu8KdjN4sxHTM9O_Az-Ts5K4wvHERQ8YukyWgoZgIJC5y-pKwOVyY58E4AqPAnIUC8T57HAxrHRQtQztuwR7OLkey8JSutr5jfp8gmaDvDlFdj-w4U9--bBVfUH=w1023-h538-no' if object_type == 'dataset' else featured_objects[object_type]['image_url']}}')">
 				                        <div class="row">
 				                            <div class="col-12">
 				                                <div class="row">
@@ -132,13 +132,13 @@
 					</div>
 					<div id="news-slider-col" class="col-12">
 
-						{% for news_dict in news_list %}
+						{% for submission_dict in submissions_list %}
 
 							<div class="news-wrapper text-left">
 								<div class="news-box">
-									<div class="news-title {{news_dict['news_class']}}">{{news_dict['news_title']}}</div>
-									<div class="news-date">{{news_dict['news_date']}}</div>
-									<div class="news-content">{{news_dict['news_text']}}</div>
+									<div class="news-title {{submission_dict['news_class']}}">{{submission_dict['news_title']}}</div>
+									<div class="news-date">{{submission_dict['news_date']}}</div>
+									<div class="news-content">{{submission_dict['news_text']}}</div>
 								</div>
 							</div>
 

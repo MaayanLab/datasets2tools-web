@@ -24,6 +24,7 @@ if os.path.exists('/datasets2tools/flask/scripts'):
 else:
 	sys.path.append('scripts')
 from CannedAnalysisDatabase import CannedAnalysisDatabase
+from CannedAnalysisTable import CannedAnalysisTable
 
 ##############################
 ##### 1.3 Setup App
@@ -78,10 +79,10 @@ def index():
 	featured_objects = Database.get_featured_objects()
 
 	# Get news
-	news_list = Database.get_news_list()
+	submissions_list = Database.get_submissions_list()
 	
 	# Render template
-	return render_template('index.html', object_count=object_count, featured_objects=featured_objects, news_list=news_list)
+	return render_template('index.html', object_count=object_count, featured_objects=featured_objects, submissions_list=submissions_list)
 
 #########################
 ### 2. Keyword Search
@@ -403,15 +404,30 @@ def archs4_api():
 
 def upload_api():
 
-	# Connect to Database
-	Database = CannedAnalysisDatabase(engine)
+	# If method is post
+	if request.method == 'POST':
 
-	# Get canned analysis list
-	canned_analysis_list = request.get_json()['canned_analyses']
-	print 'Loading Canned Analyses...'
-	status = Database.upload_canned_analysis(canned_analysis_list)
-	print status
-	return status
+		# Print length of data
+		print(len(request.data))  #<< Uncomment to fix!!!**
+
+		# Get canned analysis json
+		canned_analysis_json = request.get_json()
+
+		# Convert to dataframe
+		canned_analysis_dataframe = pd.DataFrame(canned_analysis_json)
+
+		# Create table
+		table = CannedAnalysisTable(canned_analysis_dataframe, engine)
+		
+		# Upload
+		table.upload()
+
+		# Get results string
+		results = json.dumps({'canned_analysis': table.canned_analysis_dataframe.to_dict(orient='index'), 'metadata': table.canned_analysis_metadata_dataframe.to_dict(orient='index')})
+
+		# Return
+		return results
+
 
 #########################
 ### 2. Upload Dataset
@@ -501,7 +517,7 @@ def advanced_search_terms():
 ### 2. ARCHS4
 #########################
 
-@app.route('/datasets2tools/archs4')
+@app.route('/datasets2tools/analysis/archs4')
 
 def archs4():
 	

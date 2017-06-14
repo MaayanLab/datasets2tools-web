@@ -4,7 +4,7 @@ Example files
 
 var hzome = ini_hzome();
 
-viz_url = window.location.href.replace('/archs4', '/api/archs4');
+viz_url = window.location.href.replace('/analysis/', '/api/');
 
 make_clust(viz_url);
 
