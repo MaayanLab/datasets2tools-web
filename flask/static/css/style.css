@@ -359,20 +359,19 @@ input[type="radio"]:checked + .btn-blue {
 	}
 
 		.guide-option {
-			/*background-color: #d3ebff;*/
+			background-color: #1d2541;
 			padding: 15px 5px;
 			height: 100%;
 			border-radius: 5px;
 			border:1px solid lightgrey;
+			display: block;
+			color: white;
 		}
-
-			.guide-option a {
-				color: black;
+	
+			.guide-option:hover {
+				text-decoration: none;
+				color: white;
 			}
-
-				.guide-option a:hover {
-					text-decoration: none;
-				}
 
 			.guide-option .fa {
 				margin-bottom: 10px;
@@ -446,6 +445,232 @@ input[type="radio"]:checked + .btn-blue {
 						padding: 0px 10px 7px 10px;
 						font-weight: 100;
 					}
+
+
+
+/*** Search Page ***/
+
+#search-wrapper {
+}
+
+	#search-wrapper .container {
+		width: 800px;
+	}
+
+		#search-label-row {
+			margin-top: 50px;
+		}
+
+			#search-label {
+				font-size: 17pt;
+				font-weight: 300;
+			}
+
+		#search-input-row {
+
+		}
+
+			#submit-search-button {
+				height: 100%;
+				font-size: 12pt;
+			}
+
+				#submit-search-button .fa {
+					margin-left: 10px;
+					font-size: 11pt;
+				}
+
+		#search-options-row {
+			margin-top: 15px;
+			border-bottom: 1px solid darkgrey;
+			padding-left: 15px;
+			padding-right: 15px;
+		}
+
+			.object-option-col {
+				font-size: 10pt;
+			}
+
+				.object-option-text {
+					font-size: 10pt;
+					padding: 7px 0px;
+				}
+
+					.selected-option-col {
+						border-left: 1px solid darkgrey;
+						border-right: 1px solid darkgrey;
+						border-top: 2px solid black;
+					}
+
+					.selected-option-col::after {
+						content: '';
+						border-bottom: 2px solid #ECEEEF;
+						position: absolute;
+						bottom: -1;
+						left: 0;
+						width: 100%;
+					}
+
+			#search-results-count-col {
+			    margin-top: auto;
+			    margin-bottom: auto;
+			}
+
+			#search-results-row {
+				margin-top: 25px;
+			}
+
+				#search-results-row .col-4 {
+					padding: 5px 10px;
+				}
+
+					.canned-analysis-card {
+	 					border: 1px solid darkgrey;
+						border-radius: 5px;
+						background-color: #F3F4F3;
+						height: 130px;
+						width: 100%;
+						-webkit-box-shadow: 5px 5px 8px -4px rgba(112,112,112,0.3);
+						-moz-box-shadow: 5px 5px 8px -4px rgba(112,112,112,0.3);
+						box-shadow: 5px 5px 8px -4px rgba(112,112,112,0.3);
+					}
+
+						.canned-analysis-info-icon {
+							position: absolute;
+							top: 3px;
+							right: 6px;
+							color: #5f5f5f;
+						}
+
+						.canned-analysis-preview-col {
+							overflow: hidden;
+						}
+
+							.canned-analysis-preview {
+								height: 105px;
+							}
+
+						.canned-analysis-data-col {
+							padding: 10px 10px;
+						}
+
+							.canned-analysis-title-text {
+								font-size: 8pt;
+								font-weight: 600;
+								margin-bottom: 5px;
+								color: black;
+							}
+
+								.canned-analysis-title-text a {
+									color: black;
+								}
+
+							.canned-analysis-submitter {
+								font-size: 7pt;
+								font-weight: 600;
+								margin-bottom: 5px;
+								font-style: italic;
+							}
+
+								.canned-analysis-submitter .fa {
+									color: #5b5bff;
+									font-size: 8pt;
+									margin-left: 5px;
+								}
+
+							.canned-analysis-tool-text {
+								font-size: 7pt;
+								font-weight: 300;
+								margin-bottom: 5px;
+							}
+
+								.canned-analysis-tool-text a {
+									color: black;
+									font-weight: 400;	
+								}
+
+								.canned-analysis-tool-text .fa {
+									color: black;
+									font-size: 8pt;
+									margin-left: 3px;
+								}
+
+							.canned-analysis-info {
+								color: #454545;
+							}
+	
+								.canned-analysis-info .fa {
+									margin-right: 3px;
+									font-size: 10pt;
+								}
+
+			#search-navigation-row {
+				margin-top: 10px;
+				margin-bottom: 10px;
+			}
+
+				
+				#search-navigation-row .col-6 {
+					padding: 0px;
+				}
+
+					#page-nr-wrapper {
+						display: table;
+						border-spacing: 5px;
+					}
+
+						.navigation-nr {
+							background-color: #F3F4F3;
+							border: 1px solid lightgrey;
+							display: table-cell;
+							vertical-align: middle;
+							font-size: 8pt;
+							text-align: center;
+							font-weight: 600;
+							color: #5f5f5f;
+						}
+
+						.navigation-nr:hover {
+							text-decoration: none;
+							color: #5f5f5f;
+						}
+
+							.page-nr {
+								height: 25px;
+								width: 25px;
+							}
+
+								.selected-nr {
+									color: white;
+									background-color: #001627;
+									border-color: #001627;
+								}
+
+								.selected-nr:hover {
+									color: white;
+								}
+
+					#page-size-wrapper {
+						display: table;
+						border-spacing: 5px;
+					}
+
+						.page-size {
+							height: 25px;
+							width: 30px;
+						}
+
+						#page-size-label {
+							display: table-cell;
+							vertical-align: middle;
+							font-size: 9pt;
+							text-align: right;
+							font-weight: 400;
+							color: #5f5f5f;
+						}
+
+/*** ***/
+
 
 /*** Simple Search Bar ***/
 

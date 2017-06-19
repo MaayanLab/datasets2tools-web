@@ -128,7 +128,7 @@ class CannedAnalysisTable:
         canned_analysis_metadata_list = []
             
         # Loop through canned analysis urls
-        for canned_analysis_url in canned_analysis_fk_dict.keys()[:5]:
+        for canned_analysis_url in canned_analysis_fk_dict.keys():
             
             # Get metadata dict
             canned_analysis_metadata_dict = self.metadata_dict[canned_analysis_url]
@@ -144,11 +144,11 @@ class CannedAnalysisTable:
                                                       'term_fk': self.data_dict['term'][term_name.lower().replace(' ', '_')],
                                                       'value': value})
                 
-            # Convert to dataframe
-            self.canned_analysis_metadata_dataframe = pd.DataFrame(canned_analysis_metadata_list)
+        # Convert to dataframe
+        self.canned_analysis_metadata_dataframe = pd.DataFrame(canned_analysis_metadata_list)
             
-            # Upload
-            self.canned_analysis_metadata_dataframe.to_sql('canned_analysis_metadata', self.engine, if_exists='append', index=False)
+        # Upload
+        self.canned_analysis_metadata_dataframe.to_sql('canned_analysis_metadata', self.engine, if_exists='append', index=False)
             
     ##### 8. Upload Terms
     def upload_terms(self):

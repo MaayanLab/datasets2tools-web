@@ -117,6 +117,31 @@ def search():
 	# Render template
 	return render_template('search.html', table_html=table_html)
 
+
+
+@app.route('/datasets2tools/search_dev')
+
+def search_dev():
+
+	# Connect to Database
+	Database = CannedAnalysisDatabase(engine)
+
+	# Get query arguments
+	object_type = request.args.get('object_type', 'analysis', type=str)
+	keywords_list = request.args.get('keywords', 'None', type=str).split(',')
+	size = request.args.get('size', 15, type=int)
+	page = request.args.get('page', 1, type=int)
+
+	# Get IDs
+	ids = Database.keyword_search(object_type, keywords_list, size, page)
+	print ids
+
+	# Get annotations
+	result_list = Database.get_annotations(ids, object_type)
+
+	# Render template
+	return render_template('search_dev.html', result_list=result_list)
+
 #########################
 ### 3. Advanced Search
 #########################
@@ -238,8 +263,6 @@ def keyword_search_api():
 	summary_json = Database.get_annotations(ids, object_type, output='json')
 	
 	# Return summary JSON
-	
-	# Return summary JSON
 	return summary_json
 
 #########################
@@ -283,6 +306,7 @@ def analysis_api():
 
 	# Get IDs
 	ids = Database.analysis_api(request.args.to_dict())
+	print ids
 
 	# Get summary JSON
 	summary_json = Database.get_annotations(ids, 'analysis', output='json')
@@ -411,18 +435,23 @@ def upload_api():
 		print(len(request.data))  #<< Uncomment to fix!!!**
 
 		# Get canned analysis json
+		print 'Getting data...'
 		canned_analysis_json = request.get_json()
 
 		# Convert to dataframe
+		print 'Converting to dataframe...'
 		canned_analysis_dataframe = pd.DataFrame(canned_analysis_json)
 
 		# Create table
+		print 'Creating table...'
 		table = CannedAnalysisTable(canned_analysis_dataframe, engine)
 		
 		# Upload
+		print 'Uploading table...'
 		table.upload()
 
 		# Get results string
+		print 'Getting results...'
 		results = json.dumps({'canned_analysis': table.canned_analysis_dataframe.to_dict(orient='index'), 'metadata': table.canned_analysis_metadata_dataframe.to_dict(orient='index')})
 
 		# Return

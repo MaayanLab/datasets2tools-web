@@ -22,7 +22,7 @@ class CannedAnalysisDatabase:
 ##### 2.1 Keyword Search
 ##############################
 
-    def keyword_search(self, object_type, keywords_list, size):
+    def keyword_search(self, object_type, keywords_list, size, page):
         try:
             if object_type == 'analysis':
                 query = 'SELECT id FROM canned_analysis WHERE id IN ('
@@ -38,9 +38,8 @@ class CannedAnalysisDatabase:
                 raise ValueError('Wrong object_type specified.  Must be analysis, dataset or tool.')
             if keywords_list == ['None']:
                 raise ValueError('No keywords specified.  Please insert a comma-separated string of keywords for the search.')
-            query += 'LIMIT {size}'.format(**locals())
             search_results = pd.read_sql_query(query, self.engine)
-            ids = search_results['id'].tolist()
+            ids = search_results['id'].tolist()[(page-1)*size:page*size]
         except:
             ids = None
         return ids
@@ -98,7 +97,6 @@ class CannedAnalysisDatabase:
             db_query += ' LIMIT 25'
 
             # db query
-            print db_query
             search_results = pd.read_sql_query(db_query, self.engine)
             ids = search_results['id'].tolist() if len(search_results.index) > 0 else []
         except:
@@ -126,8 +124,7 @@ class CannedAnalysisDatabase:
             if len(query_terms) > 0:
                 sql_query += ' WHERE ' + ' AND '.join(query_terms)
             sql_query += ' LIMIT {size}'.format(**locals())
-            print sql_query
-            ids = pd.read_sql_query(sql_query, self.engine)['id'].tolist()
+            ids = pd.read_sql_query(sql_query, self.engine)['id'].dropna().tolist()
         except:
             ids = None
         return ids
@@ -150,7 +147,7 @@ class CannedAnalysisDatabase:
             if len(query_terms) > 0:
                 sql_query += ' WHERE ' + ' AND '.join(query_terms)
             sql_query += ' LIMIT {size}'.format(**locals())
-            ids = pd.read_sql_query(sql_query, self.engine)['id'].tolist()
+            ids = pd.read_sql_query(sql_query, self.engine)['id'].dropna().tolist()
         except:
             ids = None
         return ids
@@ -173,7 +170,7 @@ class CannedAnalysisDatabase:
             if len(query_terms) > 0:
                 sql_query += ' WHERE ' + ' AND '.join(query_terms)
             sql_query += ' LIMIT {size}'.format(**locals())
-            ids = pd.read_sql_query(sql_query, self.engine)['id'].tolist()
+            ids = pd.read_sql_query(sql_query, self.engine)['id'].dropna().tolist()
         except:
             ids = None
         return ids
@@ -209,7 +206,7 @@ class CannedAnalysisDatabase:
 ##############################
 
     def tool_summary(self, id):
-        tool_data = pd.read_sql_query('SELECT * FROM tool WHERE id = {id}'.format(**locals()), self.engine)
+        tool_data = pd.read_sql_query('SELECT * FROM tool WHERE id = {id}'.format(**locals()), self.engine).drop('date')
         tool_summary_dict = tool_data.to_dict(orient='index')[0]
         tool_summary_dict['canned_analyses'] = pd.read_sql_query('SELECT count(*) AS count FROM canned_analysis ca LEFT JOIN tool t ON t.id=ca.tool_fk WHERE t.id = {id}'.format(**locals()), self.engine)['count'][0]
         tool_summary_dict['datasets_analyzed'] = pd.read_sql_query('SELECT count(DISTINCT dataset_fk) AS count FROM canned_analysis ca LEFT JOIN tool t ON t.id=ca.tool_fk WHERE t.id = {id}'.format(**locals()), self.engine)['count'][0]
@@ -226,7 +223,6 @@ class CannedAnalysisDatabase:
     def analysis_table(self, analysis_summary_list):
         result_list = ['<hr width="100%">']
         for analysis_summary_dict in analysis_summary_list:
-            print analysis_summary_dict
             analysis_summary_dict['datasets'] = '<a href="{dataset_landing_url}">{dataset_accession}</a>'.format(**analysis_summary_dict)
             analysis_summary_dict['metadata'] = '<br>'.join([': '.join([key, value]) for key, value in analysis_summary_dict['metadata'].iteritems()]) if len(analysis_summary_dict['metadata'].keys()) > 0 else 'No metadata supplied.'
             result_list.append('''
@@ -434,9 +430,9 @@ class CannedAnalysisDatabase:
     def make_extension_canned_analysis_table_dict(self, analysis_summary_dataframe, dataset_accession, page_type, page_size=5):
         pd.set_option('display.max_colwidth', -1)
         chunks = lambda lst, sz: [lst[i:i+sz] for i in range(0, len(lst), sz)]
-        for x in analysis_summary_dataframe["tool_name"].unique():
-            print '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'
-            print analysis_summary_dataframe.set_index("tool_name").loc[x]
+        # for x in analysis_summary_dataframe["tool_name"].unique():
+            # print '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'
+            # print analysis_summary_dataframe.set_index("tool_name").loc[x]
         analysis_dict = {x:analysis_summary_dataframe.set_index("tool_name").loc[x].set_index("canned_analysis_accession", drop=False).to_dict(orient="index") if type(analysis_summary_dataframe.set_index("tool_name").loc[x]) == pd.core.frame.DataFrame else analysis_summary_dataframe.set_index("tool_name").loc[x].to_frame().T.set_index("canned_analysis_accession", drop=False).to_dict(orient="index") for x in analysis_summary_dataframe["tool_name"].unique()}
         tool_annotation_dict = analysis_summary_dataframe.groupby(['tool_name', 'tool_icon_url', 'tool_description', 'tool_homepage_url']).size().rename('count').sort_values(ascending=False).to_frame().reset_index().set_index('tool_name', drop=False).to_dict(orient='index')
         row_dict = {tool_name:["<tr><td class='link-cell'><a href='{canned_analysis_url}'><img class='tool-icon' src='{tool_icon_url}'></a></td><td class='title-cell'><div class='canned-analysis-title'>{canned_analysis_title}</div><div class='d2t-tooltip'>{canned_analysis_description}</div></td><td class='metadata-cell'><i class='fa fa-info-circle fa-1x view-metadata' aria-hidden='true'></i><div class='d2t-tooltip'><ul>".format(**canned_analysis)+"".join(["<li><span class='metadata-tag'>"+key.replace('_', ' ').title()+"</span>: "+value+"</li>" for key, value in canned_analysis['metadata'].iteritems()])+"</ul></div><i class='fa fa-download fa-1x download-metadata' aria-hidden='true'></i><div class='d2t-tooltip'>Download Metadata:<div class='button-wrapper'><button data-accession='"+canned_analysis['canned_analysis_accession']+"' data-download='"+json.dumps(canned_analysis['metadata'])+"'>JSON</button><button data-accession='"+canned_analysis['canned_analysis_accession']+"' data-download='"+pd.DataFrame.from_dict(canned_analysis['metadata'], orient='index').reset_index().rename(columns={'index': 'term_name', 0: 'value'}).to_csv(sep='\t', index=False)+"'>TXT</button></div></div></td><td class='share-cell'><i class='fa fa-share-alt fa-1x share' aria-hidden='true'></i><div class='d2t-tooltip'>Copy URL<div class='copy-wrapper'><textarea rows='2'>{canned_analysis_url}</textarea><button><i class='fa fa-clipboard fa-1x' aria-hidden='true'></i></button></div>Embed as Icon<div class='copy-wrapper'><textarea rows='3'><a href=\"{canned_analysis_url}\"><img src=\"{tool_icon_url}\" style=\"height: 50px;\"></a></textarea><button><i class='fa fa-clipboard fa-1x' aria-hidden='true'></i></button></div></div></td></tr>".format(**canned_analysis) for canned_analysis in canned_analysis_dict.values()] for tool_name, canned_analysis_dict in analysis_dict.iteritems()}
@@ -706,7 +702,7 @@ class CannedAnalysisDatabase:
             conditions += ')'
         else:
             conditions = ''
-        analysis_count_dataframe = pd.read_sql_query('SELECT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE term_name NOT IN ("chdir_norm", "creeds_id", "umls_cui", "smiles", "top_genes", "ctrl_ids", "pert_ids", "mm_gene_symbol", "pubchem_cid", "do_id", "drugbank_id", "curator") {conditions} GROUP BY term_name, value ORDER BY COUNT DESC LIMIT {size}'.format(**locals()), self.engine).set_index('term_name')
+        analysis_count_dataframe = pd.read_sql_query('SELECT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE term_name NOT IN ("gene_rank_method", "genes", "data_normalization_method", "chdir_norm", "creeds_id", "umls_cui", "smiles", "top_genes", "ctrl_ids", "pert_ids", "mm_gene_symbol", "pubchem_cid", "do_id", "drugbank_id", "curator") {conditions} GROUP BY term_name, value ORDER BY COUNT DESC LIMIT {size}'.format(**locals()), self.engine).set_index('term_name')
         if len(analysis_count_dataframe.index) == 0:
             return {}
         else:
@@ -721,7 +717,7 @@ class CannedAnalysisDatabase:
 ##############################
     
     def get_select_dict(self, query, size):
-        terms_to_exclude = "', '".join(["chdir_norm", "creeds_id", "umls_cui", "smiles", "top_genes", "ctrl_ids", "pert_ids", "mm_gene_symbol", "pubchem_cid", "do_id", "drugbank_id", "curator"])
+        terms_to_exclude = "', '".join(["gene_rank_method", "genes", "data_normalization_method", "chdir_norm", "creeds_id", "umls_cui", "smiles", "top_genes", "ctrl_ids", "pert_ids", "mm_gene_symbol", "pubchem_cid", "do_id", "drugbank_id", "curator"])
         analysis_count_dataframe = pd.DataFrame()
         if query != '{}':
             query = json.loads(query)
@@ -736,7 +732,6 @@ class CannedAnalysisDatabase:
                 conditions = ' AND canned_analysis_fk IN ('+') AND canned_analysis_fk IN ('.join(['SELECT canned_analysis_fk FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE ' + x for x in [' OR '.join(['(`term_name` = "{key}" AND `value` = "{value}")'.format(**locals()) for value in querySubset[key]]) for key in querySubset.keys()]]) + ')' if len(querySubset.keys()) > 0 else ''
                 analysis_count_dataframe = pd.concat([analysis_count_dataframe, pd.read_sql_query('SELECT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE `term_name` = "{termName}" {conditions} GROUP BY value'.format(**locals()), self.engine)])
             analysis_count_dataframe = analysis_count_dataframe.sort_values('count', ascending=False).iloc[:size].set_index('term_name')
-            print analysis_count_dataframe.head(50)
         else:
             analysis_count_dataframe = pd.read_sql_query("SELECT term_name, value, count(*) AS count FROM canned_analysis_metadata cam LEFT JOIN term t ON t.id=cam.term_fk WHERE term_name NOT IN ('{terms_to_exclude}') GROUP BY term_name, value ORDER BY COUNT DESC LIMIT {size}".format(**locals()), self.engine).set_index('term_name')
         if len(analysis_count_dataframe.index) == 0:
@@ -834,3 +829,7 @@ class CannedAnalysisDatabase:
 ##### 3.3 Tool
 ##############################
 
+
+    def get_stored_data(self):
+        stored_data = {x: pd.read_sql_query('SELECT * FROM %(x)s' % locals(), self.engine, index_col='id') for x in ['dataset', 'tool', 'term', 'repository']}
+        return stored_data

@@ -12,6 +12,7 @@ function main() {
 
 	homepage.main();
 	keywordSearch.main();
+	developmentSearch.main();
 	advancedSearch.main();
 	uploadForm.main();
 	metadataExplorer.main();
@@ -163,6 +164,38 @@ var keywordSearch = {
 			self.searchExample();
 			self.goBack();
 			self.pageSetup();
+		}
+	}
+};
+
+var developmentSearch = {
+
+	// navigates to search url when clicking on search button
+	submitSearch: function() {
+		// event listener
+		$('#submit-search-button').click(function(evt) {
+
+			// get object type
+			objectType = 'analysis'
+
+			// get keywords
+			var keywords = [];
+			$('.tags-input').find('span').each(function(i, elem) {
+				keywords.push($(elem).text());
+			});
+
+			// navigate
+			if (keywords.length > 0) {
+				window.location = 'search_dev?object_type=' + objectType + '&keywords=' + keywords.join(', ')
+			}
+		})
+	},
+
+	// main 
+	main: function() {
+		if (window.location.pathname === '/datasets2tools/search_dev') {
+			var self = this;
+			self.submitSearch();
 		}
 	}
 };
