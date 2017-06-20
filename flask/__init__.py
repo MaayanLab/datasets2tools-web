@@ -29,6 +29,9 @@ from CannedAnalysisTable import CannedAnalysisTable
 ##############################
 ##### 1.3 Setup App
 ##############################
+# Set route
+route = 'datasets2tools-dev'
+
 # Initialize Flask App
 if os.path.exists('/datasets2tools/flask/static'):
 	app = Flask(__name__, static_url_path='/datasets2tools/flask/static')
@@ -64,8 +67,8 @@ engine = SQLAlchemy(app).engine
 ### 1. Homepage
 #########################
 
-@app.route('/datasets2tools/')
-@app.route('/datasets2tools')
+@app.route(route+'/')
+@app.route(route+'')
 
 def index():
 
@@ -88,7 +91,7 @@ def index():
 ### 2. Keyword Search
 #########################
 
-@app.route('/datasets2tools/search')
+@app.route(route+'/search')
 
 def search():
 
@@ -104,7 +107,7 @@ def search():
 		size = request.args.get('size', 10, type=int)
 
 		# Get IDs
-		ids = Database.keyword_search(object_type, keywords_list, size)
+		ids = Database.keyword_search(object_type, keywords_list, size, 1)
 
 		# Get result table
 		table_html = Database.table_from_ids(ids, object_type)
@@ -119,7 +122,7 @@ def search():
 
 
 
-@app.route('/datasets2tools/search_dev')
+@app.route(route+'/search_dev')
 
 def search_dev():
 
@@ -134,10 +137,10 @@ def search_dev():
 
 	# Get IDs
 	ids = Database.keyword_search(object_type, keywords_list, size, page)
-	print ids
 
 	# Get annotations
 	result_list = Database.get_annotations(ids, object_type)
+	print result_listasd
 
 	# Render template
 	return render_template('search_dev.html', result_list=result_list)
@@ -146,7 +149,7 @@ def search_dev():
 ### 3. Advanced Search
 #########################
 
-@app.route('/datasets2tools/advanced_search')
+@app.route(route+'/advanced_search')
 
 def advanced_search():
 	
@@ -181,7 +184,7 @@ def advanced_search():
 ### 4. Upload
 #########################
 
-@app.route('/datasets2tools/upload')
+@app.route(route+'/upload')
 
 def upload():
 
@@ -198,7 +201,7 @@ def upload():
 ### 5. Help
 #########################
 
-@app.route('/datasets2tools/help')
+@app.route(route+'/help')
 
 def help():
 
@@ -215,7 +218,7 @@ def help():
 ### 6. Collections
 #########################
 
-@app.route('/datasets2tools/collections')
+@app.route(route+'/collections')
 
 def collections():
 	
@@ -226,7 +229,7 @@ def collections():
 ### 7. Metadata Explorer
 #########################
 
-@app.route('/datasets2tools/metadata')
+@app.route(route+'/metadata')
 
 def metadata():
 
@@ -244,7 +247,7 @@ def metadata():
 ### 1. Keyword Search
 #########################
 
-@app.route('/datasets2tools/api/keyword_search')
+@app.route(route+'/api/keyword_search')
 
 def keyword_search_api():
 
@@ -269,7 +272,7 @@ def keyword_search_api():
 ### 2. Advanced Search
 #########################
 
-@app.route('/datasets2tools/api/advanced_search')
+@app.route(route+'/api/advanced_search')
 
 def advanced_search_api():
 
@@ -297,7 +300,7 @@ def advanced_search_api():
 # Analysis
 ##########
 
-@app.route('/datasets2tools/api/analysis')
+@app.route(route+'/api/analysis')
 
 def analysis_api():
 
@@ -318,7 +321,7 @@ def analysis_api():
 # Dataset
 ##########
 
-@app.route('/datasets2tools/api/dataset')
+@app.route(route+'/api/dataset')
 
 def dataset_api():
 
@@ -338,7 +341,7 @@ def dataset_api():
 # Tool
 ##########
 
-@app.route('/datasets2tools/api/tool')
+@app.route(route+'/api/tool')
 
 def tool_api():
 
@@ -358,7 +361,7 @@ def tool_api():
 ### 4. Extension APIs
 #########################
 
-@app.route('/datasets2tools/api/chrome_extension')
+@app.route(route+'/api/chrome_extension')
 
 def chrome_extension_api():
 
@@ -375,7 +378,7 @@ def chrome_extension_api():
 ### 5. Explorer API
 #########################
 
-@app.route('/datasets2tools/api/metadata_explorer')
+@app.route(route+'/api/metadata_explorer')
 
 def metadata_explorer():
 
@@ -403,7 +406,7 @@ def metadata_explorer():
 ### 6. ARCHS4 API
 #########################
 
-@app.route('/datasets2tools/api/archs4')
+@app.route(route+'/api/archs4')
 
 def archs4_api():
 
@@ -424,7 +427,7 @@ def archs4_api():
 ### 1. Upload Analysis
 #########################
 
-@app.route('/datasets2tools/api/upload', methods=['POST'])
+@app.route(route+'/api/upload', methods=['POST'])
 
 def upload_api():
 
@@ -462,7 +465,7 @@ def upload_api():
 ### 2. Upload Dataset
 #########################
 
-@app.route('/datasets2tools/api/upload_dataset', methods=['POST'])
+@app.route(route+'/api/upload_dataset', methods=['POST'])
 
 def upload_dataset():
 
@@ -479,7 +482,7 @@ def upload_dataset():
 ### 3. Upload Tool
 #########################
 
-@app.route('/datasets2tools/api/upload_tool', methods=['POST'])
+@app.route(route+'/api/upload_tool', methods=['POST'])
 
 def upload_tool():
 
@@ -495,7 +498,7 @@ def upload_tool():
 ### 4. Analysis Preview
 #########################
 
-@app.route('/datasets2tools/api/get_analysis_preview')
+@app.route(route+'/api/get_analysis_preview')
 
 def analysis_preview_api():
 
@@ -512,7 +515,7 @@ def analysis_preview_api():
 ### 5. Manual Upload
 #########################
 
-@app.route('/datasets2tools/api/manual_upload')
+@app.route(route+'/api/manual_upload')
 
 def manual_upload():
 
@@ -532,7 +535,7 @@ def manual_upload():
 # Gets list of terms which are to be used in the advanced search form,
 # appearing in the selection menu.
 
-@app.route('/datasets2tools/advanced_search_terms')
+@app.route(route+'/advanced_search_terms')
 
 def advanced_search_terms():
 
@@ -546,7 +549,7 @@ def advanced_search_terms():
 ### 2. ARCHS4
 #########################
 
-@app.route('/datasets2tools/analysis/archs4')
+@app.route(route+'/analysis/archs4')
 
 def archs4():
 	

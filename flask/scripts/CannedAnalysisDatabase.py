@@ -206,7 +206,7 @@ class CannedAnalysisDatabase:
 ##############################
 
     def tool_summary(self, id):
-        tool_data = pd.read_sql_query('SELECT * FROM tool WHERE id = {id}'.format(**locals()), self.engine).drop('date')
+        tool_data = pd.read_sql_query('SELECT * FROM tool WHERE id = {id}'.format(**locals()), self.engine).drop('date', axis=1)
         tool_summary_dict = tool_data.to_dict(orient='index')[0]
         tool_summary_dict['canned_analyses'] = pd.read_sql_query('SELECT count(*) AS count FROM canned_analysis ca LEFT JOIN tool t ON t.id=ca.tool_fk WHERE t.id = {id}'.format(**locals()), self.engine)['count'][0]
         tool_summary_dict['datasets_analyzed'] = pd.read_sql_query('SELECT count(DISTINCT dataset_fk) AS count FROM canned_analysis ca LEFT JOIN tool t ON t.id=ca.tool_fk WHERE t.id = {id}'.format(**locals()), self.engine)['count'][0]

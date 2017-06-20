@@ -606,12 +606,12 @@ input[type="radio"]:checked + .btn-blue {
 
 			#search-navigation-row {
 				margin-top: 10px;
-				margin-bottom: 10px;
 			}
 
 				
 				#search-navigation-row .col-6 {
 					padding: 0px;
+					margin-bottom: 10px;
 				}
 
 					#page-nr-wrapper {
