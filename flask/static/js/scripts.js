@@ -17,7 +17,7 @@ function main() {
 	uploadForm.main();
 	metadataExplorer.main();
 	help.main();
-	// all.main();
+	analyze.main();
 
 };
 
@@ -815,40 +815,25 @@ var help = {
 ///// 7. Help ////////////////
 //////////////////////////////
 
-var all = {
+var analyze = {
 
-	// click api
-	clickApi: function() {
-		$('html').on('click', function(evt) {
-
-			var $evtTarget = $(evt.target),
-				$parent = $evtTarget.parent();
-
-		    $.get('http://jsonip.com/', function(response) {
-				$.ajax({
-					url: window.location.origin+'/datasets2tools/api/click',
-					data: {
-					  'href': String(window.location.href),
-					  'target_id': String($evtTarget.attr('id')),
-					  'target_class': String($evtTarget.attr('class')),
-					  'parent_id': String($parent.attr('id')),
-					  'parent_class': String($parent.attr('class')),
-					  'target_href': String($evtTarget.attr('href')),
-					  'ip': String(response.ip)
-					}
-				});
-		    });
-
+	// analyze
+	submitAnalysis: function() {
+		$('#submit-analysis-button').on('click', function(evt) {
+			
+			// Get analysis parameters
+			alert('hello');
 		})
 	},
 
 	// main
 	main: function() {
-		var self = this;
-		self.clickApi();
+		if (window.location.pathname === '/datasets2tools/analyze') {
+			var self = this;
+			self.submitAnalysis();
+		}
 	}
 };
-
 
 
 

@@ -13,7 +13,7 @@
 ##############################
 import sys, json, os, urllib2
 import pandas as pd
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, render_template_string, request, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 
 ##############################
@@ -25,12 +25,13 @@ else:
 	sys.path.append('scripts')
 from CannedAnalysisDatabase import CannedAnalysisDatabase
 from CannedAnalysisTable import CannedAnalysisTable
+from Analysis import AnalysisNotebook
 
 ##############################
 ##### 1.3 Setup App
 ##############################
 # Set route
-route = 'datasets2tools-dev'
+route = '/datasets2tools-dev'
 
 # Initialize Flask App
 if os.path.exists('/datasets2tools/flask/static'):
@@ -239,6 +240,43 @@ def metadata():
 	# Render template
 	return render_template('metadata.html')
 
+#########################
+### 8. ARCHS4
+#########################
+
+@app.route(route+'/analysis/archs4')
+
+def archs4():
+	
+	# Render template
+	return render_template('archs4.html')
+
+#########################
+### 9. Analyze
+#########################
+
+@app.route(route+'/analyze')
+
+def analyze():
+
+	# Get query arguments
+	query = request.args.get('q', None, type=str)
+
+	# If query
+	if query:
+
+		# Get notebook
+		notebook = AnalysisNotebook(json.loads(query))
+
+		# Export to html
+		notebook_html = notebook.export_to_html()
+
+		# Render notebook
+		return notebook_html
+	else:
+		# Render template
+		return render_template('analyze.html')
+
 ##############################
 ##### 2. Search APIs
 ##############################
@@ -292,13 +330,13 @@ def advanced_search_api():
 	# Return summary JSON
 	return summary_json
 
-#########################
-### 3. Object APIs
-#########################
+##############################
+##### 3. Object APIs
+##############################
 
-##########
-# Analysis
-##########
+#########################
+### 1. Analysis API
+#########################
 
 @app.route(route+'/api/analysis')
 
@@ -317,9 +355,9 @@ def analysis_api():
 	# Return summary JSON
 	return summary_json
 
-##########
-# Dataset
-##########
+#########################
+### 2. Dataset API
+#########################
 
 @app.route(route+'/api/dataset')
 
@@ -337,9 +375,9 @@ def dataset_api():
 	# Return summary JSON
 	return summary_json
 
-##########
-# Tool
-##########
+#########################
+### 3. Tool API
+#########################
 
 @app.route(route+'/api/tool')
 
@@ -357,70 +395,8 @@ def tool_api():
 	# Return summary JSON
 	return summary_json
 
-#########################
-### 4. Extension APIs
-#########################
-
-@app.route(route+'/api/chrome_extension')
-
-def chrome_extension_api():
-
-	# Connect to Database
-	Database = CannedAnalysisDatabase(engine)
-
-	# Get interface JSON
-	interface_json = Database.chrome_extension_api(request.args.to_dict())
-
-	# Return interface JSON
-	return interface_json
-
-#########################
-### 5. Explorer API
-#########################
-
-@app.route(route+'/api/metadata_explorer')
-
-def metadata_explorer():
-
-	# Connect to Database
-	Database = CannedAnalysisDatabase(engine)
-
-	# Get query and query type
-	query = request.args.get('query', '{}', type=str)
-	query_type = request.args.get('query_type', 'd3', type=str)
-
-	# Check query type
-	if query_type == 'd3':
-
-		# Get D3 query
-		metadata_explorer_json = json.dumps({'d3': Database.get_d3_dict(query, 500), 'select': Database.get_select_dict(query, 1000)})
-	elif query_type == 'results':
-
-		# Get results query
-		metadata_explorer_json = Database.get_explorer_results(query, 25)
-
-	# Return JSON
-	return metadata_explorer_json
-
-#########################
-### 6. ARCHS4 API
-#########################
-
-@app.route(route+'/api/archs4')
-
-def archs4_api():
-
-	# Get query
-	query = request.args.get('q', '', type=str)
-
-	# Read file
-	json = urllib2.urlopen('https://s3.amazonaws.com/mssm-seq-series-json/{query}.json'.format(**locals())).read()
-
-	# Return query
-	return json
-
 ##############################
-##### 3. Upload API
+##### 4. Upload APIs
 ##############################
 
 #########################
@@ -460,39 +436,84 @@ def upload_api():
 		# Return
 		return results
 
+#########################
+### 5. Manual Upload
+#########################
+
+@app.route(route+'/api/manual_upload')
+
+def manual_upload():
+
+	# Connect to Database
+	Database = CannedAnalysisDatabase(engine)
+	upload_result_json = Database.manual_upload(request.args.get('data'))
+	return upload_result_json
+
+##############################
+##### 3. Other APIs
+##############################
 
 #########################
-### 2. Upload Dataset
+### 1. Chrome Extension API
 #########################
 
-@app.route(route+'/api/upload_dataset', methods=['POST'])
+@app.route(route+'/api/chrome_extension')
 
-def upload_dataset():
+def chrome_extension_api():
 
 	# Connect to Database
 	Database = CannedAnalysisDatabase(engine)
 
-	# Get dataset list
-	dataset_list = request.get_json()['datasets']
+	# Get interface JSON
+	interface_json = Database.chrome_extension_api(request.args.to_dict())
 
-	# Return dataset list
-	return 'dataset_list'
+	# Return interface JSON
+	return interface_json
 
 #########################
-### 3. Upload Tool
+### 2. Explorer API
 #########################
 
-@app.route(route+'/api/upload_tool', methods=['POST'])
+@app.route(route+'/api/metadata_explorer')
 
-def upload_tool():
+def metadata_explorer():
 
 	# Connect to Database
 	Database = CannedAnalysisDatabase(engine)
-	canned_analysis_list = request.get_json()['canned_analyses']
-	print 'Loading Canned Analyses...'
-	status = Database.upload_canned_analysis(canned_analysis_list)
-	print status
-	return status
+
+	# Get query and query type
+	query = request.args.get('query', '{}', type=str)
+	query_type = request.args.get('query_type', 'd3', type=str)
+
+	# Check query type
+	if query_type == 'd3':
+
+		# Get D3 query
+		metadata_explorer_json = json.dumps({'d3': Database.get_d3_dict(query, 500), 'select': Database.get_select_dict(query, 1000)})
+	elif query_type == 'results':
+
+		# Get results query
+		metadata_explorer_json = Database.get_explorer_results(query, 25)
+
+	# Return JSON
+	return metadata_explorer_json
+
+#########################
+### 3. ARCHS4 API
+#########################
+
+@app.route(route+'/api/archs4')
+
+def archs4_api():
+
+	# Get query
+	query = request.args.get('q', '', type=str)
+
+	# Read file
+	json = urllib2.urlopen('https://s3.amazonaws.com/mssm-seq-series-json/{query}.json'.format(**locals())).read()
+
+	# Return query
+	return json
 
 #########################
 ### 4. Analysis Preview
@@ -512,24 +533,7 @@ def analysis_preview_api():
 	return analysis_preview
 
 #########################
-### 5. Manual Upload
-#########################
-
-@app.route(route+'/api/manual_upload')
-
-def manual_upload():
-
-	# Connect to Database
-	Database = CannedAnalysisDatabase(engine)
-	upload_result_json = Database.manual_upload(request.args.get('data'))
-	return upload_result_json
-
-##############################
-##### 4. Miscellaneous
-##############################
-
-#########################
-### 1. Search Terms
+### 5. Search Terms
 #########################
 
 # Gets list of terms which are to be used in the advanced search form,
@@ -544,17 +548,6 @@ def advanced_search_terms():
 
 	# Return search terms
 	return Database.get_term_names(request.args.get('object_type'))
-
-#########################
-### 2. ARCHS4
-#########################
-
-@app.route(route+'/analysis/archs4')
-
-def archs4():
-	
-	# Render template
-	return render_template('archs4.html')
 
 
 #######################################################

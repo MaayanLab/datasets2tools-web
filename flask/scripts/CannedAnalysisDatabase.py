@@ -2,15 +2,14 @@ import re, json, sys
 import pandas as pd
 import numpy as np
 from datetime import date, datetime
-from CannedAnalysis import CannedAnalysis
 pd.set_option('max.colwidth', -1)
-
-class CannedAnalysisDatabase:
 
 #######################################################
 ########## 1. Initialize ##############################
 #######################################################
     
+class CannedAnalysisDatabase:
+
     def __init__(self, engine):
         self.engine = engine
 
@@ -502,71 +501,7 @@ class CannedAnalysisDatabase:
 #######################################################
 
 ##############################
-##### 1. Canned Analysis
-##############################
-
-    def upload_canned_analysis(self, canned_analysis_list):
-
-        # Print
-        print 'Loading Canned Analyses...'
-
-        # # try:
-        # i = 0
-        # canned_analysis_ids = []
-        # for canned_analysis_dict in canned_analysis_list:
-        #     i += 1
-        #     print 'Canned analysis ' + str(i) + '...'
-        #     cannedAnalysisObject = CannedAnalysis(canned_analysis_dict, self.engine)
-        #     canned_analysis_id = cannedAnalysisObject.upload()
-        #     canned_analysis_ids.append(canned_analysis_id)
-        # response = 'Success.'
-        # # except:
-        #     # response = 'Sorry, there has been an error.'
-        # results = {'ids': canned_analysis_ids}
-        return "json.dumps(results)"
-
-##############################
-##### 2. Dataset
-##############################
-
-    def upload_dataset(self, dataset_list):
-        # try:
-        i = 0
-        dataset_ids = []
-        for canned_analysis_dict in canned_analysis_list:
-            i += 1
-            print 'Canned analysis ' + str(i) + '...'
-            cannedAnalysisObject = CannedAnalysis(canned_analysis_dict, self.engine)
-            canned_analysis_id = cannedAnalysisObject.upload()
-            canned_analysis_ids.append(canned_analysis_id)
-        response = 'Success.'
-        # except:
-            # response = 'Sorry, there has been an error.'
-        results = {'ids': canned_analysis_ids}
-        return json.dumps(results)
-
-##############################
-##### 3. Tool
-##############################
-
-    def upload_tool(self, tool_list):
-        # try:
-        i = 0
-        canned_analysis_ids = []
-        for canned_analysis_dict in canned_analysis_list:
-            i += 1
-            print 'Canned analysis ' + str(i) + '...'
-            cannedAnalysisObject = CannedAnalysis(canned_analysis_dict, self.engine)
-            canned_analysis_id = cannedAnalysisObject.upload()
-            canned_analysis_ids.append(canned_analysis_id)
-        response = 'Success.'
-        # except:
-            # response = 'Sorry, there has been an error.'
-        results = {'ids': canned_analysis_ids}
-        return json.dumps(results)
-
-##############################
-##### 4. Manual upload
+##### 1. Manual upload
 ##############################
 
     def manual_upload(self, manual_upload_dict):

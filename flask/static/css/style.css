@@ -669,7 +669,15 @@ input[type="radio"]:checked + .btn-blue {
 							color: #5f5f5f;
 						}
 
-/*** ***/
+/*** Analyze ***/
+
+#analyze-container {
+	margin-top: 50px;
+}
+
+	#analyze-container .row {
+		margin-bottom: 10px;
+	}
 
 
 /*** Simple Search Bar ***/
