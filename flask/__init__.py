@@ -31,7 +31,7 @@ from Analysis import AnalysisNotebook
 ##### 1.3 Setup App
 ##############################
 # Set route
-route = '/datasets2tools-dev'
+entry_point = '/datasets2tools-dev'
 
 # Initialize Flask App
 if os.path.exists('/datasets2tools/flask/static'):
@@ -48,7 +48,7 @@ if os.path.exists(connection_file):
 	os.environ['DB_USER'] = connectionDict['username']
 	os.environ['DB_PASS'] = connectionDict['password']
 	os.environ['DB_HOST'] = connectionDict['host']
-	os.environ['DB_NAME'] = 'datasets2tools'
+	os.environ['DB_NAME'] = 'datasets2tools_dev'
 
 # Initialize database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://' + os.environ['DB_USER'] + ':' + os.environ['DB_PASS'] + '@' + os.environ['DB_HOST'] + '/' + os.environ['DB_NAME']
@@ -68,8 +68,8 @@ engine = SQLAlchemy(app).engine
 ### 1. Homepage
 #########################
 
-@app.route(route+'/')
-@app.route(route+'')
+@app.route(entry_point+'/')
+@app.route(entry_point+'')
 
 def index():
 
@@ -86,13 +86,13 @@ def index():
 	submissions_list = Database.get_submissions_list()
 	
 	# Render template
-	return render_template('index.html', object_count=object_count, featured_objects=featured_objects, submissions_list=submissions_list)
+	return render_template('index.html', object_count=object_count, featured_objects=featured_objects, submissions_list=submissions_list, entry_point=entry_point)
 
 #########################
 ### 2. Keyword Search
 #########################
 
-@app.route(route+'/search')
+@app.route(entry_point+'/search')
 
 def search():
 
@@ -119,11 +119,11 @@ def search():
 		table_html = ''
 
 	# Render template
-	return render_template('search.html', table_html=table_html)
+	return render_template('search.html', table_html=table_html, entry_point=entry_point)
 
 
 
-@app.route(route+'/search_dev')
+@app.route(entry_point+'/search_dev')
 
 def search_dev():
 
@@ -144,13 +144,13 @@ def search_dev():
 	print result_listasd
 
 	# Render template
-	return render_template('search_dev.html', result_list=result_list)
+	return render_template('search_dev.html', result_list=result_list, entry_point=entry_point)
 
 #########################
 ### 3. Advanced Search
 #########################
 
-@app.route(route+'/advanced_search')
+@app.route(entry_point+'/advanced_search')
 
 def advanced_search():
 	
@@ -171,7 +171,7 @@ def advanced_search():
 		table_html = Database.table_from_ids(ids, object_type)
 		
 		# Render template
-		return render_template('advanced_search_results.html', table_html=table_html)
+		return render_template('advanced_search_results.html', table_html=table_html, entry_point=entry_point)
 
 	else:
 
@@ -179,13 +179,13 @@ def advanced_search():
 		available_search_terms = Database.get_available_search_terms()
 
 		# Render template
-		return render_template('advanced_search.html', available_search_terms=available_search_terms, number_of_rows=10)
+		return render_template('advanced_search.html', available_search_terms=available_search_terms, number_of_rows=10, entry_point=entry_point)
 
 #########################
 ### 4. Upload
 #########################
 
-@app.route(route+'/upload')
+@app.route(entry_point+'/upload')
 
 def upload():
 
@@ -196,13 +196,13 @@ def upload():
 	stored_data = Database.get_stored_data()
 	
 	# Render template
-	return render_template('upload.html', stored_data=stored_data)
+	return render_template('upload.html', stored_data=stored_data, entry_point=entry_point)
 
 #########################
 ### 5. Help
 #########################
 
-@app.route(route+'/help')
+@app.route(entry_point+'/help')
 
 def help():
 
@@ -213,24 +213,24 @@ def help():
 	available_search_terms = Database.get_available_search_terms(pretty=False)
 	
 	# Render template
-	return render_template('help.html', available_search_terms=available_search_terms)
+	return render_template('help.html', available_search_terms=available_search_terms, entry_point=entry_point)
 
 #########################
 ### 6. Collections
 #########################
 
-@app.route(route+'/collections')
+@app.route(entry_point+'/collections')
 
 def collections():
 	
 	# Render template
-	return render_template('collections.html')
+	return render_template('collections.html', entry_point=entry_point)
 
 #########################
 ### 7. Metadata Explorer
 #########################
 
-@app.route(route+'/metadata')
+@app.route(entry_point+'/metadata')
 
 def metadata():
 
@@ -238,13 +238,13 @@ def metadata():
 	Database = CannedAnalysisDatabase(engine)
 	
 	# Render template
-	return render_template('metadata.html')
+	return render_template('metadata.html', entry_point=entry_point)
 
 #########################
 ### 8. ARCHS4
 #########################
 
-@app.route(route+'/analysis/archs4')
+@app.route(entry_point+'/analysis/archs4')
 
 def archs4():
 	
@@ -255,7 +255,7 @@ def archs4():
 ### 9. Analyze
 #########################
 
-@app.route(route+'/analyze')
+@app.route(entry_point+'/analyze')
 
 def analyze():
 
@@ -265,17 +265,35 @@ def analyze():
 	# If query
 	if query:
 
-		# Get notebook
-		notebook = AnalysisNotebook(json.loads(query))
-
-		# Export to html
-		notebook_html = notebook.export_to_html()
-
 		# Render notebook
-		return notebook_html
+		return render_template('notebook.html')
 	else:
+
+		# Get processed datasets
+		processed_datasets = pd.read_sql('SELECT pd.id, dataset_accession FROM processed_dataset pd LEFT JOIN dataset d ON d.id=pd.dataset_fk', engine).to_dict(orient='records')
+
+		# Get scripts
+		scripts = pd.read_sql('SELECT s.id, script_name FROM script s LEFT JOIN tool t ON t.id=s.tool_fk', engine).to_dict(orient='records')
+
 		# Render template
-		return render_template('analyze.html')
+		return render_template('analyze.html', entry_point=entry_point, processed_datasets=processed_datasets, scripts=scripts)
+
+
+@app.route(entry_point+'/api/analyze')
+
+def analyze_api():
+
+	# Get query arguments
+	query = request.args.get('q', None, type=str)
+
+	# Get notebook
+	notebook = AnalysisNotebook(json.loads(query))
+
+	# Export to html
+	notebook_html = notebook.export_to_html()
+
+	# Render notebook
+	return notebook_html
 
 ##############################
 ##### 2. Search APIs
@@ -285,7 +303,7 @@ def analyze():
 ### 1. Keyword Search
 #########################
 
-@app.route(route+'/api/keyword_search')
+@app.route(entry_point+'/api/keyword_search')
 
 def keyword_search_api():
 
@@ -310,7 +328,7 @@ def keyword_search_api():
 ### 2. Advanced Search
 #########################
 
-@app.route(route+'/api/advanced_search')
+@app.route(entry_point+'/api/advanced_search')
 
 def advanced_search_api():
 
@@ -338,7 +356,7 @@ def advanced_search_api():
 ### 1. Analysis API
 #########################
 
-@app.route(route+'/api/analysis')
+@app.route(entry_point+'/api/analysis')
 
 def analysis_api():
 
@@ -359,7 +377,7 @@ def analysis_api():
 ### 2. Dataset API
 #########################
 
-@app.route(route+'/api/dataset')
+@app.route(entry_point+'/api/dataset')
 
 def dataset_api():
 
@@ -379,7 +397,7 @@ def dataset_api():
 ### 3. Tool API
 #########################
 
-@app.route(route+'/api/tool')
+@app.route(entry_point+'/api/tool')
 
 def tool_api():
 
@@ -403,7 +421,7 @@ def tool_api():
 ### 1. Upload Analysis
 #########################
 
-@app.route(route+'/api/upload', methods=['POST'])
+@app.route(entry_point+'/api/upload', methods=['POST'])
 
 def upload_api():
 
@@ -440,7 +458,7 @@ def upload_api():
 ### 5. Manual Upload
 #########################
 
-@app.route(route+'/api/manual_upload')
+@app.route(entry_point+'/api/manual_upload')
 
 def manual_upload():
 
@@ -457,7 +475,7 @@ def manual_upload():
 ### 1. Chrome Extension API
 #########################
 
-@app.route(route+'/api/chrome_extension')
+@app.route(entry_point+'/api/chrome_extension')
 
 def chrome_extension_api():
 
@@ -474,7 +492,7 @@ def chrome_extension_api():
 ### 2. Explorer API
 #########################
 
-@app.route(route+'/api/metadata_explorer')
+@app.route(entry_point+'/api/metadata_explorer')
 
 def metadata_explorer():
 
@@ -502,7 +520,7 @@ def metadata_explorer():
 ### 3. ARCHS4 API
 #########################
 
-@app.route(route+'/api/archs4')
+@app.route(entry_point+'/api/archs4')
 
 def archs4_api():
 
@@ -519,7 +537,7 @@ def archs4_api():
 ### 4. Analysis Preview
 #########################
 
-@app.route(route+'/api/get_analysis_preview')
+@app.route(entry_point+'/api/get_analysis_preview')
 
 def analysis_preview_api():
 
@@ -539,7 +557,7 @@ def analysis_preview_api():
 # Gets list of terms which are to be used in the advanced search form,
 # appearing in the selection menu.
 
-@app.route(route+'/advanced_search_terms')
+@app.route(entry_point+'/advanced_search_terms')
 
 def advanced_search_terms():
 

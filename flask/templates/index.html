@@ -26,25 +26,25 @@
 				  <button id="toggler" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
 				    <span class="navbar-toggler-icon"></span>
 				  </button>
-				  <a id="navbar-logo" class="navbar-brand" href="/datasets2tools"><img id="datasets2tools-icon" src="{{ url_for('static', filename='img/d2t_icon.png') }}"><div id="datasets2tools-logo">Datasets2Tools</div></a>
+				  <a id="navbar-logo" class="navbar-brand" href="{{entry_point}}"><img id="datasets2tools-icon" src="{{ url_for('static', filename='img/d2t_icon.png') }}"><div id="datasets2tools-logo">Datasets2Tools</div></a>
 				  <div class="collapse navbar-collapse" id="navbarNavDropdown">
 				    <div class="nav navbar-nav ml-auto">
-					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools">HOME</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="{{entry_point}}">HOME</a>
 					    <ul class="navbar-nav">
 			    	      <li class="nav-item dropdown">
 					        <a class="nav-link dropdown-toggle navbar-link" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					          SEARCH
 					        </a>
 					        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-					          <a class="dropdown-item" href="/datasets2tools/search">BASIC SEARCH</a>
-					          <a class="dropdown-item" href="/datasets2tools/advanced_search">ADVANCED SEARCH</a>
+					          <a class="dropdown-item" href="{{entry_point}}/search">BASIC SEARCH</a>
+					          <a class="dropdown-item" href="{{entry_point}}/advanced_search">ADVANCED SEARCH</a>
 					        </div>
 					      </li>
 					    </ul>
-					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/metadata">EXPLORE</a>
-					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/upload">CONTRIBUTE</a>
-					    <a class="nav-item nav-link pull-xs-right navbar-link" href="https://chrome.google.com/webstore/detail/datasets2tools/fbamphimpljabaailcaidmeegpcpkdel">EXTENSION</a>
-					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/help">HELP</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="{{entry_point}}/metadata">EXPLORE</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="{{entry_point}}/upload">CONTRIBUTE</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="https://chrome.google.com/webstore/detail{{entry_point}}/fbamphimpljabaailcaidmeegpcpkdel">EXTENSION</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="{{entry_point}}/help">HELP</a>
 				    </div>
 				  </div>
 				</nav>
@@ -107,16 +107,16 @@
 					<div class="row">
 						<div class="col-lg-6">
 							<div id="guide-row" class="row">
-								<div class="col-4 guide-option-col"><a class="guide-option" href="/datasets2tools/search"><i class="fa fa-search fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Find</span> analyses, datasets and computational tools.</a></div>
-								<div class="col-4 guide-option-col"><a class="guide-option" href="/datasets2tools/metadata"><i class="fa fa-compass fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Explore</span> analyses based on their metadata.</a></div>
-								<div class="col-4 guide-option-col"><a class="guide-option" href="https://chrome.google.com/webstore/detail/datasets2tools/fbamphimpljabaailcaidmeegpcpkdel"><i class="fa fa-chrome fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Enrich</span> GEO and other repositories with the Chrome Extension.</a></div>
+								<div class="col-4 guide-option-col"><a class="guide-option" href="{{entry_point}}/search"><i class="fa fa-search fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Find</span> analyses, datasets and computational tools.</a></div>
+								<div class="col-4 guide-option-col"><a class="guide-option" href="{{entry_point}}/metadata"><i class="fa fa-compass fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Explore</span> analyses based on their metadata.</a></div>
+								<div class="col-4 guide-option-col"><a class="guide-option" href="https://chrome.google.com/webstore/detail{{entry_point}}/fbamphimpljabaailcaidmeegpcpkdel"><i class="fa fa-chrome fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Enrich</span> GEO and other repositories with the Chrome Extension.</a></div>
 							</div>
 						</div> <!-- .col-6 -->
 						<div class="col-lg-6">
 							<div class="row">
-								<div class="col-4 guide-option-col"><a class="guide-option" href="/datasets2tools/help#api"><i class="fa fa-code fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Access</span> the database programmatically using the API.</a></div>
-								<div class="col-4 guide-option-col"><a class="guide-option" href="/datasets2tools/upload"><i class="fa fa-upload fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Contribute</span> analyses, datasets and tools to the database.</a></div>
-								<div class="col-4 guide-option-col"><a class="guide-option" href="/datasets2tools/help"><i class="fa fa-question-circle fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Learn</span> more about Datasets2Tools.</a></div>
+								<div class="col-4 guide-option-col"><a class="guide-option" href="{{entry_point}}/help#api"><i class="fa fa-code fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Access</span> the database programmatically using the API.</a></div>
+								<div class="col-4 guide-option-col"><a class="guide-option" href="{{entry_point}}/upload"><i class="fa fa-upload fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Contribute</span> analyses, datasets and tools to the database.</a></div>
+								<div class="col-4 guide-option-col"><a class="guide-option" href="{{entry_point}}/help"><i class="fa fa-question-circle fa-5x" aria-hidden="true"></i><br><span class="guide-option-keyword">Learn</span> more about Datasets2Tools.</a></div>
 							</div> <!-- .row -->
 						</div> <!-- .col-6 -->
 					</div> <!-- .row -->

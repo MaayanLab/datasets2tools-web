@@ -8,6 +8,8 @@
 ////////// 1. Main ////////////////
 ///////////////////////////////////
 
+var entry_point = '/datasets2tools-dev';
+
 function main() {
 
 	homepage.main();
@@ -157,7 +159,7 @@ var keywordSearch = {
 
 	// main 
 	main: function() {
-		if (window.location.pathname === '/datasets2tools/search') {
+		if (window.location.pathname === entry_point+'/search') {
 			var self = this;
 			self.submitSearch();
 			self.setExample();
@@ -193,7 +195,7 @@ var developmentSearch = {
 
 	// main 
 	main: function() {
-		if (window.location.pathname === '/datasets2tools/search_dev') {
+		if (window.location.pathname === entry_point+'/search_dev') {
 			var self = this;
 			self.submitSearch();
 		}
@@ -292,7 +294,7 @@ var advancedSearch = {
 
 	// main
 	main: function() {
-		if (window.location.pathname === '/datasets2tools/advanced_search') {
+		if (window.location.pathname === entry_point+'/advanced_search') {
 			var self = this;
 			self.changeSelectionListener();
 			self.addRow();
@@ -334,7 +336,7 @@ var uploadForm = {
 				datasetIdentifier = objectData;
 				objectSummary = JSON.parse($.ajax({ // get annotation from id
 					async: false,
-					url: window.location.origin+'/datasets2tools/api/dataset',
+					url: window.location.origin+entry_point+'/api/dataset',
 					data: {
 					  'dataset_accession':objectData,
 					},
@@ -367,7 +369,7 @@ var uploadForm = {
 			if (typeof objectData === 'string') {
 				objectSummary = JSON.parse($.ajax({ // get annotation from id
 					async: false,
-					url: window.location.origin+'/datasets2tools/api/tool',
+					url: window.location.origin+entry_point+'/api/tool',
 					data: {
 					  'tool_name':objectData,
 					},
@@ -475,7 +477,7 @@ var uploadForm = {
 
 			if (analysisObject['dataset'] != [] && analysisObject['tool'] != '' && Object.values(analysisObject['analysis']).indexOf('') === -1) {
 				$.ajax({ // get preview html from api
-					url: window.location.origin+'/datasets2tools/api/get_analysis_preview',
+					url: window.location.origin+entry_point+'/api/get_analysis_preview',
 					data: {
 					  'data': JSON.stringify(analysisObject),
 					},
@@ -515,7 +517,7 @@ var uploadForm = {
 				$success = $('#upload-success'),
 				$error = $('#upload-error');
 			$.ajax({
-				url: window.location.origin+'/datasets2tools/api/manual_upload',
+				url: window.location.origin+entry_point+'/api/manual_upload',
 				data: {
 				  'data': JSON.stringify(analysisObject),
 				},
@@ -548,7 +550,7 @@ var uploadForm = {
 
 	// main
 	main: function() {
-		if (window.location.pathname === '/datasets2tools/upload') {
+		if (window.location.pathname === entry_point+'/upload') {
 			var self = this,
 				analysisObject = {'dataset': [], 'tool': '', 'analysis': {}};
 			self.changeInputMethod();
@@ -711,7 +713,7 @@ var metadataExplorer = {
 		var self = this;
 			$.ajax({
 				async: true,
-				url: window.location.origin+'/datasets2tools/api/metadata_explorer',
+				url: window.location.origin+entry_point+'/api/metadata_explorer',
 				data: {
 				  'query': JSON.stringify(queryObj)
 				},
@@ -735,7 +737,7 @@ var metadataExplorer = {
 		$('.metadata-explorer-visualize').hide();
 		$.ajax({
 			async: true,
-			url: window.location.origin+'/datasets2tools/api/metadata_explorer',
+			url: window.location.origin+entry_point+'/api/metadata_explorer',
 			data: {
 			  'query': JSON.stringify(queryObj),
 			  'query_type': 'results'
@@ -774,7 +776,7 @@ var metadataExplorer = {
 
 	// main
 	main: function() {
-		if (window.location.pathname === '/datasets2tools/metadata') {
+		if (window.location.pathname === entry_point+'/metadata') {
 			var self = this;
 			self.refreshInterface();
 			self.selectListener();
@@ -804,7 +806,7 @@ var help = {
 
 	// main
 	main: function() {
-		if (window.location.pathname === '/datasets2tools/help') {
+		if (window.location.pathname === entry_point+'/help') {
 			var self = this;
 			self.openAccordion();
 		}
@@ -817,6 +819,11 @@ var help = {
 
 var analyze = {
 
+	// generate json
+	generateAnalysisJson: function() {
+
+	},
+
 	// analyze
 	submitAnalysis: function() {
 		$('#submit-analysis-button').on('click', function(evt) {
@@ -826,11 +833,28 @@ var analyze = {
 		})
 	},
 
+	// generate notebook
+	generateNotebook: function() {
+		// Check if query
+		if (window.location.href.indexOf('?q=') > -1) {
+
+			// Perform ajax call
+			$.ajax({
+				async: true,
+				url: window.location.href.replace('/analyze', '/api/analyze'),
+				success: function(data) {
+					$('body').html(data);
+				}
+			})
+		}
+	},
+
 	// main
 	main: function() {
-		if (window.location.pathname === '/datasets2tools/analyze') {
+		if (window.location.pathname === entry_point+'/analyze') {
 			var self = this;
 			self.submitAnalysis();
+			self.generateNotebook();
 		}
 	}
 };
