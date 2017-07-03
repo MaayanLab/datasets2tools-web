@@ -819,6 +819,38 @@ var help = {
 
 var analyze = {
 
+	// select dataset
+	selectDataset: function() {
+		$('#select-dataset-to-analyze').on('change', function(evt) {
+			// Get selected dataset ID
+			var datasetId = $(evt.target).val();
+
+			// AJAX request
+			$.ajax({
+				async: true,
+				url: window.location.origin+entry_point+'/api/dataset',
+				data: {
+					'd.id': datasetId
+				},
+				success: function(data) {
+					
+					// Get dataset data
+					datasetObj = JSON.parse(data)['results'][0];
+					console.log(datasetObj);
+
+					// Add text
+					$('#selected-dataset-title').html(datasetObj['dataset_title']);
+
+					// Show text
+					$('#selected-dataset-text').css('visibility', 'visible');
+
+					// Show tools
+					$('#first-tool-row').css('visibility', 'visible');
+				}
+			})
+		})
+	},
+
 	// generate json
 	generateAnalysisJson: function() {
 
@@ -853,6 +885,7 @@ var analyze = {
 	main: function() {
 		if (window.location.pathname === entry_point+'/analyze') {
 			var self = this;
+			self.selectDataset();
 			self.submitAnalysis();
 			self.generateNotebook();
 		}

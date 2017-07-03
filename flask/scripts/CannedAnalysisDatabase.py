@@ -194,7 +194,7 @@ class CannedAnalysisDatabase:
 ##############################
 
     def dataset_summary(self, id):
-        dataset_data = pd.read_sql_query('SELECT * FROM dataset d LEFT JOIN repository r on r.id=d.repository_fk WHERE d.id = {id}'.format(**locals()), self.engine)
+        dataset_data = pd.read_sql_query('SELECT * FROM dataset d LEFT JOIN repository r on r.id=d.repository_fk WHERE d.id = {id}'.format(**locals()), self.engine).drop('date', axis=1)
         dataset_analysis_data = pd.read_sql_query('SELECT tool_name, count(*) AS count FROM canned_analysis ca LEFT JOIN dataset d ON d.id=ca.dataset_fk LEFT JOIN tool t ON t.id=ca.tool_fk WHERE d.id = {id} GROUP BY tool_name ORDER BY count DESC'.format(**locals()), self.engine, index_col='tool_name')
         dataset_summary_dict = dataset_data.to_dict(orient='index')[0]
         dataset_summary_dict['canned_analysis_count'] = dataset_analysis_data.to_dict()['count']

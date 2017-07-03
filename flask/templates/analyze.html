@@ -10,7 +10,7 @@
 		<link rel="icon" type="image/ico" href="{{ url_for('static', filename='img/favicon.ico') }}">
 	</head>
 
-	<body>
+	<body style="background-color: white">
 		<div id="main-container" class="container-fluid">
 
 			<div id="navbar-wrapper">
@@ -18,51 +18,145 @@
 				  <button id="toggler" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
 				    <span class="navbar-toggler-icon"></span>
 				  </button>
-				  <a id="navbar-logo" class="navbar-brand" href="/datasets2tools"><img id="datasets2tools-icon" src="{{ url_for('static', filename='img/d2t_icon.png') }}"><div id="datasets2tools-logo">Datasets2Tools</div></a>
+				  <a id="navbar-logo" class="navbar-brand" href="{{entry_point}}/search""><img id="datasets2tools-icon" src="{{ url_for('static', filename='img/d2t_icon.png') }}"><div id="datasets2tools-logo">Datasets2Tools</div></a>
 				  <div class="collapse navbar-collapse" id="navbarNavDropdown">
 				    <div class="nav navbar-nav ml-auto">
-					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools">HOME</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="{{entry_point}}/search"">HOME</a>
 					    <ul class="navbar-nav">
 			    	      <li class="nav-item dropdown">
 					        <a class="nav-link dropdown-toggle navbar-link" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					          SEARCH
 					        </a>
 					        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-					          <a class="dropdown-item" href="/datasets2tools/search">BASIC SEARCH</a>
-					          <a class="dropdown-item" href="/datasets2tools/advanced_search">ADVANCED SEARCH</a>
+					          <a class="dropdown-item" href="{{entry_point}}/search"/search">BASIC SEARCH</a>
+					          <a class="dropdown-item" href="{{entry_point}}/search"/advanced_search">ADVANCED SEARCH</a>
 					        </div>
 					      </li>
 					    </ul>
-					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/metadata">EXPLORE</a>
-					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/upload">CONTRIBUTE</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="{{entry_point}}/search"/metadata">EXPLORE</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="{{entry_point}}/search"/upload">CONTRIBUTE</a>
 					    <a class="nav-item nav-link pull-xs-right navbar-link" href="https://chrome.google.com/webstore/detail/datasets2tools/fbamphimpljabaailcaidmeegpcpkdel">EXTENSION</a>
-					    <a class="nav-item nav-link pull-xs-right navbar-link" href="/datasets2tools/help">HELP</a>
+					    <a class="nav-item nav-link pull-xs-right navbar-link" href="{{entry_point}}/search"/help">HELP</a>
 				    </div>
 				  </div>
 				</nav>
 			</div> <!-- #navbar-wrapper -->
 
 			<div id="analyze-container" class="container">
-				
-				<div class="row">
-					<div class="col-1 text-right">
-						1.
+
+				<div id="select-dataset-row" class="row">
+
+					<div class="col-3 offset-1 analyze-pipeline-step-col">
+						<div class="analyze-pipeline-step">
+							<div class="step-number">1</div>
+							<div class="step-description">Select a Dataset</div>
+						</div>
 					</div>
-					<div class="col-11">
-						<select class="custom-select">
-						  <option selected>Select Dataset</option>
-						  {% for processed_dataset in processed_datasets %}
-							  <option value="{{processed_dataset['id']}}">{{processed_dataset['dataset_accession']}}</option>
-						  {% endfor %}
-						</select>
+
+					<div id="selected-dataset-col" class="col-7">
+						<div class="row">
+
+							<div class="col col-3" id="select-dataset-col">
+								<select id="select-dataset-to-analyze" class="custom-select pipeline-object-select">
+								  <option selected>Select...</option>
+								  {% for processed_dataset in processed_datasets %}
+									  <option value="{{processed_dataset['id']}}">
+										  {{processed_dataset['dataset_accession']}}
+									  </option>
+								  {% endfor %}
+								</select>
+							</div>
+
+							<div class="col col-2" id="selected-dataset-icon-col">
+								<div id="selected-dataset-icon">
+									<i class="fa fa-database"></i>
+								</div>
+							</div>
+
+							<div class="col col-7" id="selected-dataset-text-col">
+								<div id="selected-dataset-text">
+									<div id="selected-dataset-title">
+									</div>
+									<div class="selected-object-icons">
+										<i class="fa fa-info-circle"></i>
+										<i class="fa fa-cog"></i>
+									</div>
+								</div>
+							</div>
+
+						</div>
 					</div>
 				</div>
-				
-				<div class="row">
-					<div class="col-1 text-right">
-						2.
+
+				<div id="added-tool-wrapper">
+
+					<div id="first-tool-row" class="row">
+
+						<div class="col-3 offset-1 analyze-pipeline-step-col">
+							<div class="analyze-pipeline-step">
+								<div class="step-number">2</div>
+								<div class="step-description">Add Tools</div>
+							</div>
+						</div> <!-- .analyze-pipeline-step-col -->
+
+						<div class="col-7 text-left added-tool-col">
+							<div class="row">
+
+								<div class="col col-3 select-tool-col">
+									<select class="custom-select select-tool pipeline-object-select">
+									  <option selected>Select...</option>
+									  {% for script in scripts %}
+										  <option value="{{script['id']}}">
+											  {{script['script_name']}}
+										  </option>
+									  {% endfor %}
+									</select>
+								</div>
+
+								<div class="col col-2 selected-tool-icon-col">
+									<div class="selected-tool-icon">
+										<i class="fa fa-cog"></i>
+									</div>
+								</div>
+
+								<div class="col col-7 selected-tool-text-col">
+									<div class="selected-tool-text">
+										<div class="selected-dataset-title">
+										</div>
+										<div class="selected-object-icons">
+											<i class="fa fa-info-circle"></i>
+											<i class="fa fa-cog"></i>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div> <!-- .added-tool-col -->
+					</div> <!-- #first-tool-row -->
+
+					<div id="add-tool-row" class="row">
+					</div> <!-- #add-tool-row -->
+
+					<div id="submit-pipeline-row" class="row">
+					</div> <!-- #submit-pipeline-row -->
+
+				</div> <!-- #added-tool-wrapper -->
+
+
+
+
+<!-- 				<div class="row">
+					<div class="col-2">
+						<div class="lead">1. Select a Dataset</div>
 					</div>
-					<div class="col-11">
+					<div class="col-10">
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-2">
+						<div class="lead">2. Build the Pipeline</div>
+					</div>
+					<div class="col-10">
 						<select class="custom-select">
 						  <option selected>Select Tool</option>
 						  {% for script in scripts %}
@@ -73,10 +167,10 @@
 				</div>
 				
 				<div class="row">
-					<div class="col-3 text-center">
+					<div class="col-3 text-left">
 						<button id="submit-analysis-button" class="btn btn-blue" type="button">Analyze!</button>
 					</div>
-				</div>
+				</div> -->
 
 			</div>
 

@@ -270,7 +270,8 @@ def analyze():
 	else:
 
 		# Get processed datasets
-		processed_datasets = pd.read_sql('SELECT pd.id, dataset_accession FROM processed_dataset pd LEFT JOIN dataset d ON d.id=pd.dataset_fk', engine).to_dict(orient='records')
+		processed_datasets = pd.read_sql('SELECT id, dataset_accession FROM dataset d LIMIT 500', engine).to_dict(orient='records')
+		# processed_datasets = pd.read_sql('SELECT dataset_fk, dataset_accession FROM processed_dataset pd LEFT JOIN dataset d ON d.id=pd.dataset_fk', engine).to_dict(orient='records')
 
 		# Get scripts
 		scripts = pd.read_sql('SELECT s.id, script_name FROM script s LEFT JOIN tool t ON t.id=s.tool_fk', engine).to_dict(orient='records')
